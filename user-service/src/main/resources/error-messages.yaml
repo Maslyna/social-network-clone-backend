@@ -1,0 +1,3 @@
+validation:
+    email:
+        not-valid: email must be valid

@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: security-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/security-service
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka

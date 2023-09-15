@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>user-service</artifactId>
+    <artifactId>security-service</artifactId>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
@@ -21,14 +21,13 @@
     <dependencies>
         <!--    DATABASE    -->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
         <!--    SPRING-BOOT-WEB    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -38,7 +37,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
         <!--    MAPSTRUCT    -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -50,7 +48,11 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-
+        <!--    SECURITY    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!--    EUREKA NETFLIX    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -62,5 +64,4 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
-
 </project>
