@@ -1,6 +1,6 @@
 services:
-    user-postgres:
-        container_name: user-postgres
+    postgres:
+        container_name: postgres
         image: postgres
         environment:
             POSTGRES_USER: sa

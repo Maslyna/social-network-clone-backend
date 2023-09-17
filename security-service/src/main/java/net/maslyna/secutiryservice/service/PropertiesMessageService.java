@@ -1,12 +1,15 @@
 package net.maslyna.secutiryservice.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultMessageService {
+@Slf4j
+public class PropertiesMessageService {
 
     private final Environment environment;
 

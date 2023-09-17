@@ -1,6 +1,7 @@
 package net.maslyna.secutiryservice.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.maslyna.secutiryservice.model.dto.request.AccountRegistrationRequest;
 import net.maslyna.secutiryservice.service.AuthService;
 import org.springframework.validation.annotation.Validated;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/api/v1/security")
 @Validated
-public record AuthController(
-        AuthService authService
-) {
+@RequiredArgsConstructor
+public class AuthController {
+    private final AuthService authService;
+
     @PostMapping
     public Boolean registration(@RequestBody @Valid AccountRegistrationRequest request) {
         return authService.registration(request.email(), request.password());
