@@ -26,14 +26,22 @@ public class Account implements BaseEntity<Long>, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     @NotNull
     private String email;
+
     @NotNull
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
+
     private boolean isAccountNonExpired;
+
     private boolean isAccountNonLocked;
+
     private boolean isCredentialsNonExpired;
+
     private boolean isEnabled;
 
     @Override
