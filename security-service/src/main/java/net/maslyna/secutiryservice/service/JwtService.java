@@ -6,14 +6,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -59,6 +57,7 @@ public class JwtService {
             UserDetails userDetails,
             Map<String, Object> extraClaims
     ) {
+        log.info("token generation for user {}, claims {}", userDetails.getUsername(), extraClaims);
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())

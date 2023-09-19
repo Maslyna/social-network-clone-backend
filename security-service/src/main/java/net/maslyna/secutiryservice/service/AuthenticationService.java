@@ -1,6 +1,7 @@
 package net.maslyna.secutiryservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiryservice.model.Role;
@@ -10,11 +11,13 @@ import net.maslyna.secutiryservice.model.entity.Account;
 import net.maslyna.secutiryservice.repository.AccountRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
@@ -35,9 +38,10 @@ public class AuthenticationService {
                 .isCredentialsNonExpired(true)
                 .isAccountNonLocked(true)
                 .isAccountNonExpired(true)
-                .build();
-        accountRepository.save(newAccount);
+                .build(); //TODO: mapper
+        newAccount = accountRepository.save(newAccount);
 
+        log.info("new account {} created with id = {}", newAccount.getUsername(), newAccount.getId());
         return new AuthenticationResponse(
                 jwtService.generateToken(newAccount)
         );
