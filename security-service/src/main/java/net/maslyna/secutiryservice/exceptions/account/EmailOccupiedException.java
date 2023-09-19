@@ -1,6 +1,8 @@
-package net.maslyna.secutiryservice.exceptions;
+package net.maslyna.secutiryservice.exceptions.account;
 
-public class EmailOccupiedException extends RuntimeException {
+import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
+
+public class EmailOccupiedException extends GlobalSecurityServiceException {
     public EmailOccupiedException() {
     }
 

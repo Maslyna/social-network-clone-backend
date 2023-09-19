@@ -1,6 +1,8 @@
-package net.maslyna.secutiryservice.exceptions;
+package net.maslyna.secutiryservice.exceptions.account;
 
-public class AccountNotFoundException extends RuntimeException {
+import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
+
+public class AccountNotFoundException extends GlobalSecurityServiceException {
     public AccountNotFoundException() {
         super();
     }

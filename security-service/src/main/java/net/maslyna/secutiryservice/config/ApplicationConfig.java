@@ -1,6 +1,6 @@
 package net.maslyna.secutiryservice.config;
 
-import net.maslyna.secutiryservice.exceptions.AccountNotFoundException;
+import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiryservice.repository.AccountRepository;
 import net.maslyna.secutiryservice.service.PropertiesMessageService;
 import org.springframework.context.annotation.Bean;

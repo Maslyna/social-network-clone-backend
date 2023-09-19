@@ -1,8 +1,8 @@
 package net.maslyna.secutiryservice.service;
 
 import lombok.RequiredArgsConstructor;
-import net.maslyna.secutiryservice.exceptions.AccountNotFoundException;
-import net.maslyna.secutiryservice.exceptions.EmailOccupiedException;
+import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
+import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiryservice.model.Role;
 import net.maslyna.secutiryservice.model.dto.request.AuthenticationRequest;
 import net.maslyna.secutiryservice.model.dto.response.AuthenticationResponse;
@@ -36,7 +36,7 @@ public class AuthenticationService {
                 .isAccountNonLocked(true)
                 .isAccountNonExpired(true)
                 .build();
-        accountRepository.saveAndFlush(newAccount);
+        accountRepository.save(newAccount);
 
         return new AuthenticationResponse(
                 jwtService.generateToken(newAccount)

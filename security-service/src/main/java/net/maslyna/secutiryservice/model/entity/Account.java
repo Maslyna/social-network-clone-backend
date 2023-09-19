@@ -19,7 +19,6 @@ import java.util.Set;
 @Entity
 @Table(name = "t_accounts")
 public class Account implements BaseEntity<Long>, UserDetails {
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
