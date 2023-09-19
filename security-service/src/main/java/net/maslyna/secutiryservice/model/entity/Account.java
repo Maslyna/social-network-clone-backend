@@ -1,7 +1,6 @@
 package net.maslyna.secutiryservice.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import net.maslyna.secutiryservice.model.Role;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,23 +20,17 @@ import java.util.Set;
 public class Account implements BaseEntity<Long>, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "account_id")
     private Long id;
 
-    @NotNull
     private String email;
 
-    @NotNull
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean isAccountNonExpired;
-
     private boolean isAccountNonLocked;
-
-    private boolean isCredentialsNonExpired;
 
     private boolean isEnabled;
 
@@ -49,5 +42,15 @@ public class Account implements BaseEntity<Long>, UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }
