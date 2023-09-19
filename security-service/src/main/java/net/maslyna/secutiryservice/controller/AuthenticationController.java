@@ -4,14 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.model.dto.request.AuthenticationRequest;
+import net.maslyna.secutiryservice.model.dto.response.AccountResponse;
 import net.maslyna.secutiryservice.model.dto.response.AuthenticationResponse;
-import net.maslyna.secutiryservice.model.entity.Account;
 import net.maslyna.secutiryservice.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +39,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<Boolean> validate(Authentication authentication) {
-        return ResponseEntity.ok(true);
+    public ResponseEntity<AccountResponse> validate(@RequestParam("token") String token) {
+        return ResponseEntity.ok(authenticationService.validateToken(token));
     }
 }

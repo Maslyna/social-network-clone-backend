@@ -6,13 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
@@ -37,23 +32,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     throw new MissingAuthHeaderException("missing auth header"); //TODO: custom exception
                 }
 
-                try {
-                    //TODO: REST call AUTH service
-                    //TODO: refactor
-                    HttpHeaders headers = new HttpHeaders();
-                    String jwt = exchange.getRequest().getHeaders().getFirst("Authorization");
-                    headers.set("Authorization", jwt);
-                    RequestEntity<Void> request = new RequestEntity<>(headers, HttpMethod.GET, URI.create(jwtValidationLink));
+                String jwt = extractJwt(exchange.getRequest().getHeaders());
 
-                    ResponseEntity<Boolean> response = restTemplate.exchange(request, Boolean.class);
-
-                    if (response.getStatusCode().is2xxSuccessful()
-                            && response.getBody() != null && response.getBody()) {
-                        return chain.filter(exchange);
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("REST call AUTH service troubles"); //TODO: custom exception
-                }
             }
             return chain.filter(exchange);
         };
