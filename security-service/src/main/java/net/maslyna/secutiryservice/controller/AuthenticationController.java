@@ -9,6 +9,8 @@ import net.maslyna.secutiryservice.model.entity.Account;
 import net.maslyna.secutiryservice.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +42,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<Boolean> validate(@AuthenticationPrincipal Account account) {
-        return ResponseEntity.ok(true); //TODO: looks not so secure
+    public ResponseEntity<Boolean> validate(Authentication authentication) {
+        return ResponseEntity.ok(true);
     }
 }
