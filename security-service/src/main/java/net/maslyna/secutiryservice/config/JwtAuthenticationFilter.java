@@ -24,8 +24,6 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    @Value("${security.prefix}")
-    private String prefix;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -35,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String jwt = extractJwtFromRequest(request);
+        String jwt = jwtService.extractJwt(request);
 
         if (jwt != null && !jwt.isEmpty()
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -68,13 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return jwtService.extractUsername(jwt);
     }
 
-    private String extractJwtFromRequest(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith(prefix)) {
-            return authHeader.substring(prefix.length());
-        }
-        return null;
-    }
 
     private UsernamePasswordAuthenticationToken createAuthToken(HttpServletRequest request, UserDetails userDetails) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

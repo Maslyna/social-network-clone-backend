@@ -3,6 +3,7 @@ package net.maslyna.secutiryservice.exceptions.handler;
 import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
+import net.maslyna.secutiryservice.exceptions.account.TokenNotValidException;
 import net.maslyna.secutiryservice.model.dto.MessageType;
 import net.maslyna.secutiryservice.model.dto.response.ErrorMessageResponse;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class AccountExceptionHandler {
 
+    @ExceptionHandler(GlobalSecurityServiceException.class)
+    public ResponseEntity<ErrorMessageResponse> handleSecurityServiceException(Exception e) {
+        return getErrorMessageBody(e, HttpStatus.NOT_IMPLEMENTED);
+    }
+
     @ExceptionHandler(EmailOccupiedException.class)
     public ResponseEntity<ErrorMessageResponse> handleEmailOccupied(Exception e) {
         return getErrorMessageBody(e, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(GlobalSecurityServiceException.class)
-    public ResponseEntity<ErrorMessageResponse> handleSecurityServiceException(Exception e) {
-        return getErrorMessageBody(e, HttpStatus.NOT_IMPLEMENTED);
+    @ExceptionHandler(TokenNotValidException.class)
+    public ResponseEntity<ErrorMessageResponse> handleNotValidToken(Exception e) {
+        return getErrorMessageBody(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccountNotFoundException.class)

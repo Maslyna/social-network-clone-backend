@@ -11,6 +11,7 @@ import net.maslyna.secutiryservice.model.entity.Account;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final AccountMapper accountMapper;
 
+    @Transactional
     public AuthenticationResponse registration(AuthenticationRequest request) {
         //TODO: registration logic
         if (accountService.isUserAlreadyExists(request.email())) {
@@ -35,6 +37,7 @@ public class AuthenticationService {
         );
     }
 
+    @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         //TODO: authentication logic
         authenticationManager.authenticate(
@@ -51,8 +54,9 @@ public class AuthenticationService {
         );
     }
 
+    @Transactional(readOnly = true)
     public AccountResponse validateToken(String jwt) {
-        return accountMapper.accountToAccountResponse(tokenService.validate(jwt));
+        return accountMapper.accountToAccountResponse(tokenService.getAccount(jwt));
     }
 
 }

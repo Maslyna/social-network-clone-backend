@@ -6,6 +6,7 @@ import net.maslyna.secutiryservice.model.entity.Account;
 import net.maslyna.secutiryservice.model.entity.Token;
 import net.maslyna.secutiryservice.repository.TokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final PropertiesMessageService message;
 
+    @Transactional
     public Token createToken(Account account) {
         return tokenRepository.save(
                 Token.builder()
@@ -23,11 +25,13 @@ public class TokenService {
         );
     }
 
+    @Transactional
     public boolean deletePreviousToken(Account account) {
         return tokenRepository.deleteByAccount(account) > 0;
     }
 
-    public Account validate(String jwt) {
+    @Transactional(readOnly = true)
+    public Account getAccount(String jwt) {
         Token token = tokenRepository.findByJwt(jwt)
                 .orElseThrow(() -> new TokenNotValidException(
                         message.getProperty("error.account.token.not-found")
