@@ -38,47 +38,53 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith(AuthenticationType.BEARER.prefix())) {
-            String jwt = jwtService.extractJwt(authHeader);
-            if (jwt != null && !jwt.isEmpty()
-                    && SecurityContextHolder.getContext().getAuthentication() == null) {
-                try {
-                    UserDetails userDetails = extractUserDetailsFromJwt(jwt);
-                    if (jwtService.isTokenValid(jwt, userDetails)) {
-                        createAuthenticationToken(request, userDetails);
+        if (authHeader != null) {
+            try {
+                if (authHeader.startsWith(AuthenticationType.BEARER.prefix())) {
+                    String jwt = jwtService.extractJwt(authHeader);
+
+                    if (jwt != null && !jwt.isEmpty()
+                            && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = extractUserDetailsFromJwt(jwt);
+
+                        if (jwtService.isTokenValid(jwt, userDetails)) {
+                            setAuthenticationToken(request, userDetails);
+                        }
                     }
-                } catch (GlobalSecurityServiceException e) {
-                    exceptionWriter(response);
                 }
-            }
-        } else if (authHeader != null && authHeader.startsWith(AuthenticationType.BASIC.prefix())) {
-            String basic = basicService.extractBasic(authHeader);
-            if (basic != null && !basic.isEmpty()
-                    && SecurityContextHolder.getContext().getAuthentication() == null) {
-                try {
-                    String decoded = basicService.decodeBasic(basic);
-                    UserDetails userDetails = userDetailsService
-                            .loadUserByUsername(basicService.extractUsername(decoded));
-                    if (basicService.isBasicAuthValid(decoded, userDetails)) {
-                        createAuthenticationToken(request, userDetails);
+
+                if (authHeader.startsWith(AuthenticationType.BASIC.prefix())) {
+                    String decoded = basicService.extractBasic(authHeader);
+
+                    if (decoded != null && !decoded.isEmpty()
+                            && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = userDetailsService
+                                .loadUserByUsername(basicService.extractUsername(decoded));
+
+                        if (basicService.isBasicAuthValid(decoded, userDetails)) {
+                            setAuthenticationToken(request, userDetails);
+                        }
                     }
-                } catch (GlobalSecurityServiceException e) {
-                    exceptionWriter(response);
                 }
+            } catch (GlobalSecurityServiceException e) {
+                exceptionWriter(response);
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void createAuthenticationToken(HttpServletRequest request, UserDetails userDetails) {
-        UsernamePasswordAuthenticationToken authenticationToken = createAuthToken(request, userDetails);
+    private void setAuthenticationToken(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authenticationToken = createAuthenticationToken(request, userDetails);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authenticationToken);
         SecurityContextHolder.setContext(context);
     }
 
-    private UsernamePasswordAuthenticationToken createAuthToken(HttpServletRequest request, UserDetails userDetails) {
+    private UsernamePasswordAuthenticationToken createAuthenticationToken(
+            HttpServletRequest request,
+            UserDetails userDetails
+    ) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
@@ -94,10 +100,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UserDetails extractUserDetailsFromJwt(String jwt) {
-        return userDetailsService.loadUserByUsername(extractUserEmailFromJwt(jwt));
-    }
-
-    private String extractUserEmailFromJwt(String jwt) {
-        return jwtService.extractUsername(jwt);
+        return userDetailsService.loadUserByUsername(jwtService.extractUsername(jwt));
     }
 }

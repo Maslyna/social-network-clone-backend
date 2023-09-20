@@ -1,6 +1,12 @@
 package net.maslyna.secutiryservice.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.maslyna.secutiryservice.model.entity.Account;
+import net.maslyna.secutiryservice.repository.AccountRepository;
+import net.maslyna.secutiryservice.repository.TokenRepository;
+import net.maslyna.secutiryservice.service.AccountService;
+import net.maslyna.secutiryservice.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,7 +15,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,18 +27,23 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
     //TODO: IMPLEMENT SECURITY CONFIG
     private final AuthenticationFilter jwtAuthFilter;
+    private final TokenService tokenService;
+    private final AccountService accountService;
     private final LogoutHandler logoutHandler;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/security/**").permitAll();
-                    request.anyRequest().authenticated();}) // TODO: check every time is matchers are correct
+                    request.anyRequest().authenticated();
+                }) // TODO: check every time is matchers are correct
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -38,7 +51,9 @@ public class SecurityConfig {
                     conf.logoutUrl("/api/v1/security/logout");
                     conf.addLogoutHandler(logoutHandler);
                     conf.logoutSuccessHandler(
-                            ((request, response, authentication) -> SecurityContextHolder.clearContext()));
+                            (request, response, authentication) -> {
+                                SecurityContextHolder.clearContext();
+                            });
                 });
         return http.build();
     }

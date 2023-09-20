@@ -24,7 +24,7 @@ public class BasicService {
 
     public String extractBasic(String authHeader) {
         if (authHeader != null && authHeader.startsWith(PREFIX)) {
-            return authHeader.substring(PREFIX.length());
+            return decodeBasic(authHeader.substring(PREFIX.length()));
         }
         return null;
     }
@@ -39,7 +39,7 @@ public class BasicService {
         return decoded.substring(separatorIndex + 1);
     }
 
-    public String decodeBasic(String basic) {
+    private String decodeBasic(String basic) {
         if (basic != null) {
             return new String(Base64.decode(basic));
         }
