@@ -11,7 +11,7 @@ spring:
                 -   id: security-service
                     uri: lb://SECURITY-SERVICE
                     predicates:
-                        - Path=/api/v1/security/**
+                        - Path=/api/v1/**
                     filters:
                         - AuthenticationFilter
 server:

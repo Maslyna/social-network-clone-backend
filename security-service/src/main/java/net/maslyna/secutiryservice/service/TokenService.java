@@ -17,6 +17,7 @@ public class TokenService {
 
     @Transactional
     public Token createToken(Account account) {
+        deletePreviousToken(account);
         return tokenRepository.save(
                 Token.builder()
                         .jwt(jwtService.generateToken(account))

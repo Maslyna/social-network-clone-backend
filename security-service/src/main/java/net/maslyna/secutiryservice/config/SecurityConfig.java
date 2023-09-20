@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @RequiredArgsConstructor
 public class SecurityConfig {
     //TODO: IMPLEMENT SECURITY CONFIG
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationFilter jwtAuthFilter;
     private final LogoutHandler logoutHandler;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;

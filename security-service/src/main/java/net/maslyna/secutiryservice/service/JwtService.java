@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.secutiryservice.config.AuthenticationType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,7 @@ import java.util.function.Function;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtService {
-    @Value("${security.prefix}")
-    private String prefix;
+    private static final String PREFIX = AuthenticationType.BEARER.prefix();
     @Value("${security.key}")
     private String SECRET_KEY;
 
@@ -38,8 +38,15 @@ public class JwtService {
 
     public String extractJwt(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith(prefix)) {
-            return authHeader.substring(prefix.length());
+        if (authHeader != null && authHeader.startsWith(PREFIX)) {
+            return authHeader.substring(PREFIX.length());
+        }
+        return null;
+    }
+
+    public String extractJwt(String authHeader) {
+        if (authHeader != null && authHeader.startsWith(PREFIX)) {
+            return authHeader.substring(PREFIX.length());
         }
         return null;
     }
