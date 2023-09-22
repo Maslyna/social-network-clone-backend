@@ -7,8 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
+import net.maslyna.secutiryservice.exceptions.account.AuthenticationException;
 import net.maslyna.secutiryservice.service.BasicService;
 import net.maslyna.secutiryservice.service.JwtService;
+import net.maslyna.secutiryservice.service.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ import java.io.IOException;
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final BasicService basicService;
+    private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -45,11 +48,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                     if (jwt != null && !jwt.isEmpty()
                             && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        UserDetails userDetails = extractUserDetailsFromJwt(jwt);
-
-                        if (jwtService.isTokenValid(jwt, userDetails)) {
-                            setAuthenticationToken(request, userDetails);
-                        }
+                        UserDetails userDetails = tokenService.getAccount(jwt);
+                        setAuthenticationToken(request, userDetails);
                     }
                 }
 
@@ -66,7 +66,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         }
                     }
                 }
-            } catch (GlobalSecurityServiceException e) {
+            } catch (AuthenticationException e) {
                 exceptionWriter(response);
             }
         }

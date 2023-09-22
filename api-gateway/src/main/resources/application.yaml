@@ -7,13 +7,6 @@ spring:
                 locator:
                     enabled: true
                     lower-case-service-id: true
-            routes:
-                -   id: security-service
-                    uri: lb://SECURITY-SERVICE
-                    predicates:
-                        - Path=/api/v1/**
-                    filters:
-                        - AuthenticationFilter
 server:
     port: 8765
 
@@ -25,3 +18,4 @@ eureka:
 jwt:
     validation:
         link: http://localhost:8080/api/v1/security/validate
+    prefix: 'Bearer '

@@ -1,6 +1,7 @@
 package net.maslyna.userservice.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.maslyna.userservice.model.dto.request.UserRegistrationRequest;
 import net.maslyna.userservice.model.dto.response.UserResponse;
 import net.maslyna.userservice.service.UserService;
@@ -9,12 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @Validated
 @RestController
 @RequestMapping("/api/v1/user")
-public record UserController(
-        UserService userService
-) {
+public class UserController {
+    private final UserService userService;
+
     @PostMapping
     public ResponseEntity<?> registration(@RequestBody @Valid UserRegistrationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -23,6 +25,6 @@ public record UserController(
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build(); //TODO: getUser
     }
 }

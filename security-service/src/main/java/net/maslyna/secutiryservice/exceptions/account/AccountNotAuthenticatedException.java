@@ -1,8 +1,6 @@
 package net.maslyna.secutiryservice.exceptions.account;
 
-import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
-
-public class AccountNotAuthenticatedException extends GlobalSecurityServiceException {
+public class AccountNotAuthenticatedException extends AuthenticationException {
     public AccountNotAuthenticatedException() {
     }
 

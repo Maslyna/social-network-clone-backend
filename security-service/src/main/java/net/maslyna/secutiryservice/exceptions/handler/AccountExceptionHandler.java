@@ -2,6 +2,7 @@ package net.maslyna.secutiryservice.exceptions.handler;
 
 import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
+import net.maslyna.secutiryservice.exceptions.account.AuthenticationException;
 import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiryservice.exceptions.account.TokenNotValidException;
 import net.maslyna.secutiryservice.model.dto.MessageType;
@@ -27,6 +28,11 @@ public class AccountExceptionHandler {
     @ExceptionHandler(TokenNotValidException.class)
     public ResponseEntity<ErrorMessageResponse> handleNotValidToken(Exception e) {
         return getErrorMessageBody(e, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorMessageResponse> handleAuthException(Exception e) {
+        return getErrorMessageBody(e, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
