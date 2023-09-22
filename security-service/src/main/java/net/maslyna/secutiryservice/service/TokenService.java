@@ -17,7 +17,10 @@ public class TokenService {
 
     @Transactional
     public Token createToken(Account account) {
-        deletePreviousToken(account);
+        Token previousToken = getPreviousToken(account);
+        if (previousToken != null) {
+            return recreateToken(previousToken);
+        }
         return tokenRepository.save(
                 Token.builder()
                         .jwt(jwtService.generateToken(account))
@@ -41,5 +44,14 @@ public class TokenService {
             throw new TokenNotValidException(message.getProperty("error.account.token.not-valid"));
         }
         return token.getAccount();
+    }
+
+    private Token recreateToken(Token token) {
+        token.setJwt(jwtService.generateToken(token.getAccount()));
+        return token;
+    }
+
+    private Token getPreviousToken(Account account) {
+        return tokenRepository.findByAccount_Id(account.getId());
     }
 }

@@ -1,13 +1,10 @@
 package net.maslyna.secutiryservice.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
-import net.maslyna.secutiryservice.model.dto.response.ErrorMessageResponse;
 import net.maslyna.secutiryservice.model.entity.Account;
 import net.maslyna.secutiryservice.service.AccountService;
 import net.maslyna.secutiryservice.service.BasicService;

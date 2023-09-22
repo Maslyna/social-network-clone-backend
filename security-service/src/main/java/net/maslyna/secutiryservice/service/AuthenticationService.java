@@ -2,7 +2,6 @@ package net.maslyna.secutiryservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiryservice.exceptions.account.AccountNotAuthenticatedException;
 import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiryservice.mapper.AccountMapper;
@@ -56,6 +55,15 @@ public class AuthenticationService {
     @Transactional(readOnly = true)
     public AccountResponse validateToken(String jwt) {
         return accountMapper.accountToAccountResponse(tokenService.getAccount(jwt));
+    }
+
+    public AccountResponse getUserInfo(Account account) {
+        if (account == null) {
+            throw new AccountNotAuthenticatedException(
+                    messageService.getProperty("error.account.not-authenticated")
+            );
+        }
+        return accountMapper.accountToAccountResponse(account);
     }
 
 }

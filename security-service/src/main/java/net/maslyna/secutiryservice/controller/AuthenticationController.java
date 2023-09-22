@@ -35,13 +35,15 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @AuthenticationPrincipal Account account
-            ) {
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(authenticationService.authenticate(account));
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<AccountResponse> validate(@RequestParam("token") String token) {
-        return ResponseEntity.ok(authenticationService.validateToken(token));
+    public ResponseEntity<AccountResponse> validateToken(
+            @AuthenticationPrincipal Account account
+    ) {
+        return ResponseEntity.ok(authenticationService.getUserInfo(account));
     }
 }
