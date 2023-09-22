@@ -16,11 +16,12 @@ import java.time.Instant;
 public class User implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long id;
+    @Column(unique = true)
     private String email;
-    private Instant createdAt;
     private String name;
+    private Instant createdAt;
     private String imageUrl;
     private Instant birthday;
 }

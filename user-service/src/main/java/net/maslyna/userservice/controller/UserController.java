@@ -3,6 +3,7 @@ package net.maslyna.userservice.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.userservice.model.dto.request.UserRegistrationRequest;
+import net.maslyna.userservice.model.dto.response.AuthenticationResponse;
 import net.maslyna.userservice.model.dto.response.UserResponse;
 import net.maslyna.userservice.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,17 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> registration(@RequestBody @Valid UserRegistrationRequest request) {
+    public ResponseEntity<AuthenticationResponse> registration(
+            @RequestBody @Valid UserRegistrationRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.registration(request));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable("userId") Long userId) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable("userId") Long userId
+    ) {
         return ResponseEntity.ok().build(); //TODO: getUser
     }
 }

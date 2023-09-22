@@ -28,7 +28,7 @@ public class AuthenticationService {
         //TODO: registration logic
         if (accountService.isUserAlreadyExists(request.email())) {
             throw new EmailOccupiedException(
-                    messageService.getProperty("error.account.email.occupied")
+                    messageService.getProperty("error.user.email.occupied")
             );
         }
         Account newAccount = accountService.createUserAccount(request.email(), request.password());
