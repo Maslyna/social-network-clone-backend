@@ -30,6 +30,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(
             @PathVariable("userId") Long userId
     ) {
-        return ResponseEntity.ok().build(); //TODO: getUser
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.getUser(userId)); //TODO: getUser
     }
 }

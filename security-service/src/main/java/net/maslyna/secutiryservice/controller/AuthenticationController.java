@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.model.dto.request.AuthenticationRequest;
+import net.maslyna.secutiryservice.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiryservice.model.dto.response.AccountResponse;
 import net.maslyna.secutiryservice.model.dto.response.AuthenticationResponse;
 import net.maslyna.secutiryservice.model.entity.Account;
@@ -26,7 +27,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registration(
-            @RequestBody @Valid AuthenticationRequest request
+            @RequestBody @Valid RegistrationRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(authenticationService.registration(request));

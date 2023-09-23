@@ -6,6 +6,7 @@ import net.maslyna.secutiryservice.exceptions.account.AccountNotAuthenticatedExc
 import net.maslyna.secutiryservice.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiryservice.mapper.AccountMapper;
 import net.maslyna.secutiryservice.model.dto.request.AuthenticationRequest;
+import net.maslyna.secutiryservice.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiryservice.model.dto.response.AccountResponse;
 import net.maslyna.secutiryservice.model.dto.response.AuthenticationResponse;
 import net.maslyna.secutiryservice.model.entity.Account;
@@ -24,14 +25,14 @@ public class AuthenticationService {
     private final AccountMapper accountMapper;
 
     @Transactional
-    public AuthenticationResponse registration(AuthenticationRequest request) {
+    public AuthenticationResponse registration(RegistrationRequest request) {
         //TODO: registration logic
-        if (accountService.isUserAlreadyExists(request.email())) {
+        if (accountService.isUserAlreadyExists(request.id(), request.email())) {
             throw new EmailOccupiedException(
                     messageService.getProperty("error.user.email.occupied")
             );
         }
-        Account newAccount = accountService.createUserAccount(request.email(), request.password());
+        Account newAccount = accountService.createUserAccount(request.id(), request.email(), request.password());
 
         log.info("new account {} created with id = {}", newAccount.getUsername(), newAccount.getId());
         return new AuthenticationResponse(

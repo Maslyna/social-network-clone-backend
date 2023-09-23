@@ -8,6 +8,8 @@ import net.maslyna.secutiryservice.repository.TokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -23,7 +25,7 @@ public class TokenService {
         }
         return tokenRepository.save(
                 Token.builder()
-                        .jwt(jwtService.generateToken(account))
+                        .jwt(jwtService.generateToken(account, Map.of("userId", account.getId())))
                         .account(account)
                         .build()
         );

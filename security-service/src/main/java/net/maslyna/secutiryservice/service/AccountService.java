@@ -26,9 +26,10 @@ public class AccountService {
     }
 
     @Transactional
-    public Account createUserAccount(String email, String password) {
+    public Account createUserAccount(Long id, String email, String password) {
         return accountRepository.save(
                 Account.builder()
+                        .id(id)
                         .email(email)
                         .password(passwordEncoder.encode(password))
                         .role(Role.USER)
@@ -39,7 +40,8 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isUserAlreadyExists(String email) {
-        return accountRepository.existsByEmailIgnoreCase(email);
+    public boolean isUserAlreadyExists(Long id, String email) {
+        return accountRepository.existsByEmailIgnoreCase(email)
+                || accountRepository.existsById(id);
     }
 }
