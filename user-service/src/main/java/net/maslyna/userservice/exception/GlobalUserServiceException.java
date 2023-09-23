@@ -1,4 +1,4 @@
-package net.maslyna.userservice.exceptions;
+package net.maslyna.userservice.exception;
 
 public class GlobalUserServiceException extends RuntimeException {
     public GlobalUserServiceException() {

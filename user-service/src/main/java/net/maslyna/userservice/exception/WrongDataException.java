@@ -1,4 +1,4 @@
-package net.maslyna.userservice.exceptions;
+package net.maslyna.userservice.exception;
 
 public class WrongDataException extends GlobalUserServiceException {
     public WrongDataException() {

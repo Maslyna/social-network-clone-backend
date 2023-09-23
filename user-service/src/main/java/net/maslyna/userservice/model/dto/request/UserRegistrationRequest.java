@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record UserRegistrationRequest(
-        @NotBlank @Email(message = "{validation.email.not-valid}")
+        @NotBlank @Email(message = "validation.email.not-valid")
         String email,
         @NotBlank @Size(min = 8)
         String password
