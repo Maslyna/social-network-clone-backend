@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.secutiryservice.exceptions.GlobalSecurityServiceException;
+import net.maslyna.secutiryservice.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiryservice.exceptions.account.AuthenticationException;
 import net.maslyna.secutiryservice.service.BasicService;
 import net.maslyna.secutiryservice.service.JwtService;
@@ -66,7 +67,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         }
                     }
                 }
-            } catch (AuthenticationException e) {
+            } catch (GlobalSecurityServiceException e) {
                 exceptionWriter(response);
             }
         }

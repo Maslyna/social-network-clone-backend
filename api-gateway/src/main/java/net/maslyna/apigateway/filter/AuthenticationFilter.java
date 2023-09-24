@@ -12,6 +12,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -44,7 +45,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (authHeader == null || authHeader.isEmpty()) {
                     throw new MissingAuthHeaderException("missing auth header");
                 }
-                ResponseEntity<AccountResponse> response = sendValidationRequest(authHeader);
+                ResponseEntity<AccountResponse> response;
+
+                try {
+                    response = sendValidationRequest(authHeader);
+                } catch (HttpClientErrorException e) {
+                    throw new ValidationRequestException(e.getMessage());
+                }
+
 
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                     ServerHttpRequest request = exchange.getRequest()
