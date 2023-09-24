@@ -14,6 +14,8 @@ import net.maslyna.userservice.model.dto.response.AuthenticationResponse;
 import net.maslyna.userservice.model.dto.response.UserResponse;
 import net.maslyna.userservice.model.entity.User;
 import net.maslyna.userservice.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,7 @@ public class UserService {
 
     public AuthenticationResponse registration(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new UserAlreadyExistsException(
+            throw new UserAlreadyExistsException( //TODO: exception handler
                     messageService.getProperty("error.user.email.occupied")
             );
         }
@@ -80,5 +82,9 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(request.password()).build();
+    }
+
+    public Page<User> getUsers(Integer page, Integer size) {
+        return userRepository.findUsersPage(PageRequest.of(page, size));
     }
 }

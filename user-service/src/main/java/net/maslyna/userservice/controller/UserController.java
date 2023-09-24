@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import net.maslyna.userservice.mapper.UserMapper;
 import net.maslyna.userservice.model.dto.request.UserRegistrationRequest;
 import net.maslyna.userservice.model.dto.response.AuthenticationResponse;
 import net.maslyna.userservice.model.dto.response.UserResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final UserMapper mapper;
 
     @PostMapping
     public ResponseEntity<AuthenticationResponse> registration(
@@ -40,7 +42,9 @@ public class UserController {
             @Max(value = 1000)
             Integer size
     ) {
-        return null;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.getUsers(page, size)
+                        .map(mapper::userToUserResponse));
     }
 
     @GetMapping("/{userId}")
