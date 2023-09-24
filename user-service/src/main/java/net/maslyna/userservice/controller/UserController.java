@@ -33,10 +33,10 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(
             @RequestParam(value = "page", defaultValue = "0")
-            @PositiveOrZero(message = "validation.properties.positive-or-zero")
+            @PositiveOrZero
             Integer page,
             @RequestParam(value = "size", defaultValue = "5")
-            @Min(value = 1, message = "validation.properties.size")
+            @Min(value = 1)
             @Max(value = 1000)
             Integer size
     ) {

@@ -25,7 +25,7 @@ public class JakartaExceptionHandler {
                 .stream()
                 .map(constraint -> {
                     String value = constraint.getInvalidValue().toString();
-                    String message = messageService.getProperty(constraint.getMessage());
+                    String message = constraint.getMessage();
                     return new JakartaErrorMessage(value, message);
                 })
                 .toList();
