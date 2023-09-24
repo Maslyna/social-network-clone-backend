@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +55,9 @@ public class JakartaExceptionHandler {
     private ResponseEntity<?> getResponseEntity(HttpStatus status, MessageType type, List<JakartaErrorMessage> errors) {
         return ResponseEntity.status(status).body(
                 JakartaErrorResponse.builder()
+                        .createdAt(Instant.now())
                         .status(status)
+                        .statusCode(status.value())
                         .title(type)
                         .errors(errors)
                         .build()
@@ -62,9 +65,12 @@ public class JakartaExceptionHandler {
     }
 }
 
+//TODO: refactor
 @Builder
 record JakartaErrorResponse(
+        Instant createdAt,
         HttpStatus status,
+        int statusCode,
         MessageType title,
         List<JakartaErrorMessage> errors
 ) {
