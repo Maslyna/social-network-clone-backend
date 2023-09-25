@@ -43,16 +43,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
                 if (authHeader == null || authHeader.isEmpty()) {
-                    throw new MissingAuthHeaderException("missing auth header");
+                    throw new MissingAuthHeaderException(HttpStatus.BAD_REQUEST, "missing auth header");
                 }
                 ResponseEntity<AccountResponse> response;
 
-                try {
-                    response = sendValidationRequest(authHeader);
-                } catch (HttpClientErrorException e) {
-                    throw new ValidationRequestException(e.getMessage());
-                }
-
+                response = sendValidationRequest(authHeader);
 
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                     ServerHttpRequest request = exchange.getRequest()
@@ -66,7 +61,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                                     .build()
                     );
                 } else {
-                    throw new ValidationRequestException("jwt token is not valid, status code {%s}"
+                    throw new ValidationRequestException(HttpStatus.UNAUTHORIZED, "jwt token is not valid, status code {%s}"
                             .formatted(response.getStatusCode()));
                 }
             }
@@ -77,11 +72,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private ResponseEntity<AccountResponse> sendValidationRequest(String authHeader) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, authHeader);
-//        RequestEntity<Object> request = new RequestEntity<>(
-//                headers,
-//                HttpMethod.GET,
-//                URI.create(jwtValidationLink)
-//        );
+
         RequestEntity<Void> request = RequestEntity.get(URI.create(jwtValidationLink))
                 .headers(headers)
                 .accept(MediaType.APPLICATION_JSON)

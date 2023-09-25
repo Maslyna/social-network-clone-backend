@@ -20,10 +20,14 @@ public class ApiGatewayConfig {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder rlb, AuthenticationFilter authenticationFilter) {
         return rlb.routes()
-                .route(p -> p.path("/security-service/api/v1/test")
-                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
-                        .uri(SECURITY_SERVICE))
-                .route(p -> p.path("/user-service/api/v1/user", "/user-service/api/v1/user/**")
+                .route(p -> p.path("/user-service/api/v1/user")
+                        .filters(f -> f
+                                .rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
+                        .uri(USER_SERVICE))
+                .route(p -> p.path("/user-service/api/v1/user/*")
+                        .filters(f -> f
+                                .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
+                                .rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
                         .uri(USER_SERVICE))
                 .build();
     }

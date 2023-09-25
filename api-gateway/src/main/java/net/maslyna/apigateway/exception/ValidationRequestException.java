@@ -1,14 +1,25 @@
 package net.maslyna.apigateway.exception;
 
+import org.springframework.http.HttpStatusCode;
+
 public class ValidationRequestException extends GlobalApiGatewayException {
-    public ValidationRequestException() {
+    public ValidationRequestException(HttpStatusCode status) {
+        super(status);
     }
 
-    public ValidationRequestException(String message) {
-        super(message);
+    public ValidationRequestException(HttpStatusCode status, String reason) {
+        super(status, reason);
     }
 
-    public ValidationRequestException(String message, Throwable cause) {
-        super(message, cause);
+    public ValidationRequestException(int rawStatusCode, String reason, Throwable cause) {
+        super(rawStatusCode, reason, cause);
+    }
+
+    public ValidationRequestException(HttpStatusCode status, String reason, Throwable cause) {
+        super(status, reason, cause);
+    }
+
+    public ValidationRequestException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
+        super(status, reason, cause, messageDetailCode, messageDetailArguments);
     }
 }

@@ -2,6 +2,7 @@ package net.maslyna.apigateway.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.apigateway.exception.GlobalApiGatewayException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,11 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
 
         Map<String, Object> errorResponse = super.getErrorAttributes(request, options);
         Throwable error = super.getError(request);
-        log.info(error.getMessage());
-        log.info(error.getMessage().substring(7));
+
         try {
             return parseErrorMessage(error.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Throwable e) {
+            return errorResponse;
         }
 
     }

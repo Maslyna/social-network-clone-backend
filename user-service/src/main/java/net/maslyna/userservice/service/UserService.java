@@ -35,7 +35,7 @@ public class UserService {
     public AuthenticationResponse registration(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new UserAlreadyExistsException( //TODO: exception handler
-                    messageService.getProperty("error.user.email.occupied")
+                    messageService.getProperty("error.user.email.occupied", request.email())
             );
         }
         User user = createUser(request.email());
