@@ -2,10 +2,9 @@ package net.maslyna.post.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import net.maslyna.post.model.PostStatus;
+import net.maslyna.post.model.CommentStatus;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -13,47 +12,29 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 @Entity
-@Table(name = "t_posts")
-public class Post implements BaseEntity<UUID> {
-
+@Table(name = "t_comments")
+public class Comment implements BaseEntity<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "post_id")
+    @Column(name = "comment_id", nullable = false)
     private UUID id;
 
     private Long userId;
 
-    private PostStatus status;
-
-    private String title;
-
     private String text;
 
-    @ManyToMany
-    @JoinTable(
-            name = "t_post_hashtags",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
-    )
-    private Set<Hashtag> hashtags;
-
-    @OneToMany
-    private Set<Comment> comments;
-
-    @OneToMany
-    private Set<Like> likes;
+    private CommentStatus status;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Post post = (Post) o;
+        Comment comment = (Comment) o;
 
-        if (!Objects.equals(id, post.id)) return false;
-        return Objects.equals(userId, post.userId);
+        if (!Objects.equals(id, comment.id)) return false;
+        return Objects.equals(userId, comment.userId);
     }
 
     @Override
