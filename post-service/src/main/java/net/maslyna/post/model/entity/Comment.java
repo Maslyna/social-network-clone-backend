@@ -22,6 +22,9 @@ public class Comment implements BaseEntity<UUID> {
 
     private Long userId;
 
+    @ManyToOne
+    private Post post;
+
     private String text;
 
     private CommentStatus status;

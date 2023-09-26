@@ -1,0 +1,19 @@
+spring:
+    application:
+        name: post-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/post-service
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka

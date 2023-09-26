@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "t_posts")
+@ToString
 public class Post implements BaseEntity<UUID> {
 
     @Id
@@ -25,6 +26,7 @@ public class Post implements BaseEntity<UUID> {
 
     private Long userId;
 
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
 
     private String title;
