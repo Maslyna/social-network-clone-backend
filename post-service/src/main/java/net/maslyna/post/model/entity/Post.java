@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "t_posts")
-@ToString
 public class Post implements BaseEntity<UUID> {
 
     @Id
@@ -41,10 +40,10 @@ public class Post implements BaseEntity<UUID> {
     )
     private Set<Hashtag> hashtags;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes;
 
     @Override
@@ -63,5 +62,16 @@ public class Post implements BaseEntity<UUID> {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", status=" + status +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                '}';
     }
 }
