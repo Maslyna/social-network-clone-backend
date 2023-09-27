@@ -3,7 +3,7 @@ package net.maslyna.user.exception.handler;
 import jakarta.validation.ConstraintViolationException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import net.maslyna.user.model.dto.MessageType;
+import net.maslyna.common.message.MessageType;
 import net.maslyna.user.service.PropertiesMessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.Instant;
 import java.util.List;
 
-import static net.maslyna.user.model.dto.MessageType.VALIDATION_ERROR;
+import static net.maslyna.common.message.MessageType.VALIDATION_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ControllerAdvice
@@ -62,7 +62,7 @@ public class JakartaExceptionHandler {
     }
 }
 
-//TODO: refactor
+//TODO: refactor + edit to default response
 @Builder
 record JakartaErrorResponse(
         Instant createdAt,

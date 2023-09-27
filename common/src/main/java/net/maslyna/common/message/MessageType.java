@@ -1,4 +1,4 @@
-package net.maslyna.user.model.dto;
+package net.maslyna.common.message;
 
 public enum MessageType {
     ERROR, VALIDATION_ERROR

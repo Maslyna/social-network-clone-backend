@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,7 @@ public class PostService {
                 Post.builder() // TODO: after creating file service add opportunity to upload images
                         .userId(userId)
                         .status(request.status())
+                        .createdAt(Instant.now())
                         .title(request.title())
                         .text(request.text())
                         .hashtags(createHashtagSet(request.hashtags()))

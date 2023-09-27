@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import net.maslyna.post.model.PostStatus;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +28,8 @@ public class Post implements BaseEntity<UUID> {
 
     @Enumerated(EnumType.STRING)
     private PostStatus status;
+
+    private Instant createdAt;
 
     private String title;
 

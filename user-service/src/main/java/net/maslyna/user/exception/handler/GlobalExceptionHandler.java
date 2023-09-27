@@ -1,8 +1,8 @@
 package net.maslyna.user.exception.handler;
 
 import lombok.Builder;
+import net.maslyna.common.message.MessageType;
 import net.maslyna.user.exception.*;
-import net.maslyna.user.model.dto.MessageType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 
-import static net.maslyna.user.model.dto.MessageType.ERROR;
-import static net.maslyna.user.model.dto.MessageType.VALIDATION_ERROR;
+import static net.maslyna.common.message.MessageType.ERROR;
+import static net.maslyna.common.message.MessageType.VALIDATION_ERROR;
 import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice

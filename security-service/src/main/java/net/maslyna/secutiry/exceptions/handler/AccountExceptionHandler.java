@@ -1,11 +1,11 @@
 package net.maslyna.secutiry.exceptions.handler;
 
+import net.maslyna.common.message.MessageType;
 import net.maslyna.secutiry.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiry.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiry.exceptions.account.AuthenticationException;
 import net.maslyna.secutiry.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiry.exceptions.account.TokenNotValidException;
-import net.maslyna.secutiry.model.dto.MessageType;
 import net.maslyna.secutiry.model.dto.response.ErrorMessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

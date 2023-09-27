@@ -17,6 +17,8 @@ eureka:
     client:
         service-url:
             defaultZone: http://localhost:8761/eureka
+server:
+    port: 8000
 
 security:
     #    random key, that I generated at http://network-logix.net

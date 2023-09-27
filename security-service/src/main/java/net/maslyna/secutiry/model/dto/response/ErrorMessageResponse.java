@@ -1,7 +1,7 @@
 package net.maslyna.secutiry.model.dto.response;
 
 import lombok.Builder;
-import net.maslyna.secutiry.model.dto.MessageType;
+import net.maslyna.common.message.MessageType;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
