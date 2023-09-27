@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Builder
-public record PostResponse (
+public record FullPostResponse (
         UUID postId,
         Long userId,
         Instant createdAt,

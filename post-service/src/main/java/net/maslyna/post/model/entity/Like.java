@@ -3,6 +3,7 @@ package net.maslyna.post.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,6 +21,8 @@ public class Like implements BaseEntity<UUID> {
     private UUID id;
 
     private Long userId;
+
+    private Instant createdAt;
 
     @ManyToOne
     private Post post;

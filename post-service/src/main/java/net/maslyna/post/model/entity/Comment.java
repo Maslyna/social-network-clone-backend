@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import net.maslyna.post.model.CommentStatus;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,6 +29,8 @@ public class Comment implements BaseEntity<UUID> {
     private String text;
 
     private CommentStatus status;
+
+    private Instant createdAt;
 
     @Override
     public boolean equals(Object o) {
