@@ -3,17 +3,21 @@ package net.maslyna.post.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.post.exception.CommentNotFoundException;
+import net.maslyna.post.mapper.CommentMapper;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
 import net.maslyna.post.model.entity.Post;
 import net.maslyna.post.repository.CommentRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -23,6 +27,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 @Transactional
 public class CommentService {
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final PropertiesMessageService messageService;
@@ -33,7 +38,8 @@ public class CommentService {
             UUID postId,
             PageRequest pageRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
-        return commentRepository.findByPost(post, pageRequest);
+        List<Comment> comments = new ArrayList<>(post.getComments());
+        return new PageImpl<>(comments, pageRequest, comments.size());
     }
 
     public void postComment(
