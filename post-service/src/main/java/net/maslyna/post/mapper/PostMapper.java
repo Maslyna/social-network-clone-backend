@@ -1,16 +1,12 @@
 package net.maslyna.post.mapper;
 
-import net.maslyna.post.model.dto.response.FullPostResponse;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;
 import net.maslyna.post.model.entity.Post;
-import net.maslyna.post.repository.PostRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")

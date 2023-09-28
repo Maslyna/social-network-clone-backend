@@ -49,6 +49,10 @@ public class Post implements BaseEntity<UUID> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes;
 
+    public boolean addComment(Comment comment) {
+        return comments.add(comment);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

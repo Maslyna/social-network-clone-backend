@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @Validated
 public class PostController {
     private final PostService postService;
-    private final PostMapper mapper;
+    private final PostMapper postMapper;
 
     @PostMapping
     @ResponseStatus(CREATED)
@@ -49,10 +49,10 @@ public class PostController {
             String order,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
-        return ResponseEntity.ok( //TODO: mapper
+        return ResponseEntity.ok(
                 postService.getAllPosts(
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
-                ).map(mapper::postToPostResponse)
+                ).map(postMapper::postToPostResponse)
         );
     }
 
@@ -76,7 +76,7 @@ public class PostController {
                         userId,
                         authenticatedUserId,
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
-                ).map(mapper::postToPostResponse)
+                ).map(postMapper::postToPostResponse)
         );
     }
 
@@ -86,7 +86,7 @@ public class PostController {
             @RequestHeader("userId") Long authenticatedUserId
     ) {
         return ResponseEntity.ok(
-                mapper.postToPostResponse(postService.getPost(authenticatedUserId, postId))
+                postMapper.postToPostResponse(postService.getPost(authenticatedUserId, postId))
         );
     }
 }
