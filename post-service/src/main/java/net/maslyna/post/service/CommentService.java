@@ -42,23 +42,41 @@ public class CommentService {
         return new PageImpl<>(comments, pageRequest, comments.size());
     }
 
-    public void postComment(
+    public UUID postComment(
             Long authenticatedUserId,
             UUID postId,
             CommentRequest commentRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
-        post.addComment(createComment(authenticatedUserId, commentRequest.text()));
-        log.info("post comments = {}", post.getComments());
+        Comment comment = createComment(authenticatedUserId, commentRequest.text());
+        post.addComment(comment);
+        return comment.getId();
     }
 
-    public void postComment(
+    public UUID postComment(
             Long authenticatedUserId,
             UUID postId,
             UUID commentId,
             CommentRequest commentRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
-        comment.addComment(createComment(authenticatedUserId, commentRequest.text()));
+        Comment newComment = createComment(authenticatedUserId, commentRequest.text());
+        comment.addComment(newComment);
+        return newComment.getId();
+    }
+
+    public UUID editComment(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            CommentRequest commentRequest) {
+        Post post = postService.getPost(authenticatedUserId, postId);
+        Comment comment = getComment(commentId);
+
+        if (commentRequest.text() != null) {
+            comment.setText(commentRequest.text());
+            comment.setStatus(CommentStatus.EDITED);
+        }
+        return comment.getId();
     }
 
     private Comment getComment(UUID commentId) {
@@ -90,6 +108,4 @@ public class CommentService {
                         .build()
         );
     }
-
-
 }

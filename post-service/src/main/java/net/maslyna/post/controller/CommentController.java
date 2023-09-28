@@ -11,7 +11,6 @@ import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.service.CommentService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,23 +28,38 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     @ResponseStatus(CREATED)
-    public void createComment(
+    public ResponseEntity<UUID> createComment(
             @RequestHeader("userId") Long authenticatedUserId,
             @PathVariable("postId") UUID postId,
             @RequestBody CommentRequest commentRequest
     ) {
-        commentService.postComment(authenticatedUserId, postId, commentRequest);
+        return ResponseEntity.status(CREATED).body(
+                commentService.postComment(authenticatedUserId, postId, commentRequest)
+        );
     }
 
     @PostMapping("/{postId}/comments/{commentId}")
-    @ResponseStatus(CREATED)
-    public void createComment(
+    public ResponseEntity<UUID> createComment(
             @RequestHeader("userId") Long authenticatedUserId,
             @PathVariable("postId") UUID postId,
             @PathVariable("commentId") UUID commentId,
             @RequestBody CommentRequest commentRequest
     ) {
-        commentService.postComment(authenticatedUserId, postId, commentId, commentRequest);
+        return ResponseEntity.status(CREATED).body(
+                commentService.postComment(authenticatedUserId, postId, commentId, commentRequest)
+        );
+    }
+
+    @PutMapping("/{postId}/comments/{commentId}")
+    public ResponseEntity<UUID> editComment(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @PathVariable("commentId") UUID commentId,
+            @RequestBody CommentRequest commentRequest
+    ) {
+        return ResponseEntity.ok(
+                commentService.editComment(authenticatedUserId, postId, commentId, commentRequest)
+        );
     }
 
     @GetMapping("/{postId}/comments")
@@ -74,6 +88,4 @@ public class CommentController {
                 })
         );
     }
-
-
 }

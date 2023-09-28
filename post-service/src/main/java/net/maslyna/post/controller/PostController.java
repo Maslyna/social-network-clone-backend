@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -28,12 +29,24 @@ public class PostController {
     private final PostMapper postMapper;
 
     @PostMapping
-    @ResponseStatus(CREATED)
-    public void createPost(
+    public ResponseEntity<UUID> createPost(
             @RequestHeader(name = "userId") Long userId,
             @Valid @RequestBody PostRequest request
     ) {
-        postService.createPost(userId, request);
+        return ResponseEntity.status(CREATED).body(
+                postService.createPost(userId, request)
+        );
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<UUID> editPost(
+            @RequestHeader(name = "userId") Long authenticatedUserId,
+            @PathVariable(name = "postId") UUID postId,
+            @RequestBody PostRequest request
+    ) {
+        return ResponseEntity.status(OK).body(
+                postService.editPost(authenticatedUserId, postId, request)
+        );
     }
 
     @GetMapping
@@ -56,7 +69,7 @@ public class PostController {
         );
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<?> getPersonPosts(
             @RequestHeader("userId") Long authenticatedUserId,
             @PathVariable("userId") Long userId,

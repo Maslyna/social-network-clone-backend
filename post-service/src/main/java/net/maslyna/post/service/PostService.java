@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -31,11 +32,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final HashtagRepository hashtagRepository;
     private final PropertiesMessageService messageService;
-
-    public void createPost(Long userId, PostRequest request) {
-        Post post = createNewPost(userId, request);
-        log.info("post with id = {} created", post.getId());
-    }
 
     @Transactional(readOnly = true)
     public Page<Post> getAllPosts(PageRequest pageRequest) {
@@ -52,14 +48,48 @@ public class PostService {
     @Transactional(readOnly = true)
     public Post getPost(Long authenticatedUserId, UUID postId) {
         Post post = getPostById(postId);
+
         if (!post.getStatus().equals(PostStatus.PUBLISHED)
                 && !authenticatedUserId.equals(post.getUserId())) {
             throw new AccessDeniedException(
-                    HttpStatus.FORBIDDEN,
+                    FORBIDDEN,
                     messageService.getProperty("error.access.denied")
             );
         }
         return post;
+    }
+
+    public UUID createPost(Long userId, PostRequest request) {
+        Post post = createNewPost(userId, request);
+        log.info("post with id = {} created", post.getId());
+        return post.getId();
+    }
+
+    public UUID editPost(
+            Long authenticatedUserId,
+            UUID postId,
+            PostRequest request) {
+        Post post = getPostById(postId);
+
+        if (!post.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
+
+        if (request.text() != null) {
+            post.setText(request.text());
+        }
+        if (request.title() != null) {
+            post.setTitle(request.title());
+        }
+        if (!request.hashtags().isEmpty()) {
+            post.setHashtags(createHashtagSet(request.hashtags()));
+        }
+        post.setStatus(request.status());
+
+        return post.getId();
     }
 
     private Page<Post> getPublicPosts(Long userId, PageRequest pageRequest) {
