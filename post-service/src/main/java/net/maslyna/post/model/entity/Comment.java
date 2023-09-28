@@ -6,6 +6,7 @@ import net.maslyna.post.model.CommentStatus;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -26,11 +27,21 @@ public class Comment implements BaseEntity<UUID> {
     @ManyToOne
     private Post post;
 
+    @OneToMany
+    private Set<Comment> comments;
+
+    @ManyToOne
+    private Comment comment;
+
     private String text;
 
     private CommentStatus status;
 
     private Instant createdAt;
+
+    public boolean addComment(Comment comment) {
+        return comments.add(comment);
+    }
 
     @Override
     public boolean equals(Object o) {

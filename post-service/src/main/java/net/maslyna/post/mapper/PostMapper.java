@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
-
+    @Mapping(target = "userId", expression = "java(post.getUserId())")
+    @Mapping(target = "createdAt", expression = "java(post.getCreatedAt())")
+    @Mapping(target = "status", expression = "java(post.getStatus())")
+    @Mapping(target = "title", expression = "java(post.getTitle())")
     @Mapping(target = "postId", expression = "java(post.getId())")
     @Mapping(target = "hashtags",
             expression = "java(post.getHashtags().stream().map(this::hashtagToHashtagResponse).collect(java.util.stream.Collectors.toSet()))")

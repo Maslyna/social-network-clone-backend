@@ -6,7 +6,6 @@ import java.util.UUID;
 
 @Builder
 public record CommentRequest(
-        UUID postId,
         String text
 ) {
 }

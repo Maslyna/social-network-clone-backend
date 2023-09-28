@@ -2,6 +2,7 @@ package net.maslyna.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.post.exception.CommentNotFoundException;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
+    private final PropertiesMessageService messageService;
 
     @Transactional(readOnly = true)
     public Page<Comment> getComments(
@@ -38,6 +42,36 @@ public class CommentService {
             CommentRequest commentRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
         post.addComment(createComment(authenticatedUserId, commentRequest.text()));
+        log.info("post comments = {}", post.getComments());
+    }
+
+    public void postComment(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            CommentRequest commentRequest) {
+        Post post = postService.getPost(authenticatedUserId, postId);
+        Comment comment = getComment(commentId);
+        comment.addComment(createComment(authenticatedUserId, commentRequest.text()));
+    }
+
+    private Comment getComment(UUID commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(NOT_FOUND,
+                        messageService.getProperty("error.comment.not-found", commentId)
+                ));
+    }
+
+    private Comment createComment(Long authenticatedUserId, Comment comment, String text) {
+        return commentRepository.save(
+                Comment.builder()
+                        .createdAt(Instant.now())
+                        .userId(authenticatedUserId)
+                        .comment(comment)
+                        .text(text)
+                        .status(CommentStatus.NORMAL)
+                        .build()
+        );
     }
 
     private Comment createComment(Long authenticatedUserId, String text) {
@@ -50,4 +84,6 @@ public class CommentService {
                         .build()
         );
     }
+
+
 }

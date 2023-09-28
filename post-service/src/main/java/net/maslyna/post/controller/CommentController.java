@@ -5,29 +5,47 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.maslyna.post.mapper.CommentMapper;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.service.CommentService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/post")
+@Slf4j
 public class CommentController {
     private final CommentMapper commentMapper;
     private final CommentService commentService;
 
     @PostMapping("/{postId}")
+    @ResponseStatus(CREATED)
     public void createComment(
-            @PathVariable("postId") UUID postId,
             @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
             @RequestBody CommentRequest commentRequest
     ) {
         commentService.postComment(authenticatedUserId, postId, commentRequest);
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}")
+    @ResponseStatus(CREATED)
+    public void createComment(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @PathVariable("commentId") UUID commentId,
+            @RequestBody CommentRequest commentRequest
+    ) {
+        commentService.postComment(authenticatedUserId, postId, commentId, commentRequest);
     }
 
     @GetMapping("/{postId}/comments")
@@ -50,7 +68,12 @@ public class CommentController {
                         authenticatedUserId,
                         postId,
                         PageRequest.of(pageNum, pageSize, Direction.valueOf(order), sortBy)
-                ).map(commentMapper::commentToCommentResponse)
+                ).map(commentMapper::commentToCommentResponse).map(i -> {
+                    log.info("result comment = {}", i);
+                    return i;
+                })
         );
     }
+
+
 }

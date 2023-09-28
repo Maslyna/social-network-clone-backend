@@ -4,6 +4,7 @@ import lombok.Builder;
 import net.maslyna.post.model.CommentStatus;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -12,6 +13,7 @@ public record CommentResponse(
         Long userId,
         String text,
         CommentStatus commentStatus,
+        Set<CommentResponse> comments,
         Instant createdAt
 ) {
 }
