@@ -96,7 +96,7 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    private Comment getComment(UUID commentId) {
+    public Comment getComment(UUID commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(NOT_FOUND,
                         messageService.getProperty("error.comment.not-found", commentId)

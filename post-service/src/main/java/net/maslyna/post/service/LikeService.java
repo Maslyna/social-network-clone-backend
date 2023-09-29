@@ -1,0 +1,117 @@
+package net.maslyna.post.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.maslyna.post.exception.LikeAlreadyExists;
+import net.maslyna.post.exception.NotFoundException;
+import net.maslyna.post.model.entity.Comment;
+import net.maslyna.post.model.entity.Like;
+import net.maslyna.post.model.entity.Post;
+import net.maslyna.post.repository.LikeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
+public class LikeService {
+    private final PostService postService;
+    private final CommentService commentService;
+    private final LikeRepository likeRepository;
+    private final PropertiesMessageService messageService;
+
+    public UUID likePost(Long authenticatedUserId, UUID postId) {
+        if (isLikeOnPostAlreadyExist(authenticatedUserId, postId)) {
+            throw new LikeAlreadyExists(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.like.on-post-already-exists", postId)
+            );
+        }
+        Post post = postService.getPost(authenticatedUserId, postId);
+        Like like = createLike(authenticatedUserId, post);
+        post.addLike(like);
+
+        return like.getId();
+    }
+
+    public UUID likeComment(Long authenticatedUserId, UUID commentId) {
+        if (isLikeOnCommentAlreadyExist(authenticatedUserId, commentId)) {
+            throw new LikeAlreadyExists(
+                    HttpStatus.CREATED,
+                    messageService.getProperty("error.like.on-comment-already-exists", commentId)
+            );
+        }
+        Comment comment = commentService.getComment(commentId);
+        Like like = createLike(authenticatedUserId, comment);
+        comment.addLike(like);
+
+        return like.getId();
+    }
+
+    public void deleteLikeFromPost(Long authenticatedUserId, UUID postId) {
+        if (!isLikeOnPostAlreadyExist(authenticatedUserId, postId)) {
+            throw new NotFoundException(
+                    HttpStatus.NOT_FOUND,
+                    messageService.getProperty("error.like.on-post-not-found", postId)
+            );
+        }
+        likeRepository.deleteByPostAndUserId(authenticatedUserId, postId);
+    }
+
+    public void deleteLikeFromComment(Long authenticatedUserId, UUID commentId) {
+        if (!isLikeOnCommentAlreadyExist(authenticatedUserId, commentId)) {
+            throw new NotFoundException(
+                    HttpStatus.NOT_FOUND,
+                    messageService.getProperty("error.like.on-comment-not-found", commentId)
+            );
+        }
+        likeRepository.deleteByCommentAndUserId(authenticatedUserId, commentId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Like> getLikes(
+            UUID postId,
+            Long authenticatedUserId,
+            PageRequest pageRequest) {
+        Post post = postService.getPost(authenticatedUserId, postId);
+        List<Like> likes = post.getLikes().stream().toList();
+        return new PageImpl<>(likes, pageRequest, likes.size());
+    }
+
+    private boolean isLikeOnPostAlreadyExist(Long authenticatedUserId, UUID postId) {
+        return likeRepository.existsByUserIdAndPostId(authenticatedUserId, postId);
+    }
+
+    private boolean isLikeOnCommentAlreadyExist(Long authenticatedUserId, UUID commentId) {
+        return likeRepository.existsByUserIdAndCommentId(authenticatedUserId, commentId);
+    }
+
+    private Like createLike(Long authenticatedUserId, Post post) {
+        return likeRepository.save(
+                Like.builder()
+                        .createdAt(Instant.now())
+                        .post(post)
+                        .userId(authenticatedUserId)
+                        .build()
+        );
+    }
+
+    private Like createLike(Long authenticatedUserId, Comment comment) {
+        return likeRepository.save(
+                Like.builder()
+                        .createdAt(Instant.now())
+                        .comment(comment)
+                        .userId(authenticatedUserId)
+                        .build()
+        );
+    }
+}

@@ -5,8 +5,6 @@ import net.maslyna.post.model.entity.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.stream.Collectors;
-
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 

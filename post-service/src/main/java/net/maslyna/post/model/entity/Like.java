@@ -25,7 +25,12 @@ public class Like implements BaseEntity<UUID> {
     private Instant createdAt;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @Override
     public boolean equals(Object o) {

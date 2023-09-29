@@ -27,11 +27,14 @@ public class Comment implements BaseEntity<UUID> {
     @ManyToOne
     private Post post;
 
+    @ManyToOne
+    private Comment comment;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
-    @ManyToOne
-    private Comment comment;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likes;
 
     private String text;
 
@@ -41,6 +44,10 @@ public class Comment implements BaseEntity<UUID> {
 
     public boolean addComment(Comment comment) {
         return comments.add(comment);
+    }
+
+    public boolean addLike(Like like) {
+        return likes.add(like);
     }
 
     @Override

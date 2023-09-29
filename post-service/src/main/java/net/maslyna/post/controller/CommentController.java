@@ -29,7 +29,7 @@ public class CommentController {
     private final CommentMapper commentMapper;
     private final CommentService commentService;
 
-    @PostMapping("/{postId}")
+    @PostMapping("/{postId}/comments")
     @ResponseStatus(CREATED)
     public ResponseEntity<UUID> createComment(
             @RequestHeader("userId") Long authenticatedUserId,
