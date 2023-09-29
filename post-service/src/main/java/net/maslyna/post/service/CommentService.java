@@ -2,8 +2,8 @@ package net.maslyna.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.CommentNotFoundException;
-import net.maslyna.post.mapper.CommentMapper;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -27,7 +28,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 @Transactional
 public class CommentService {
-    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final PropertiesMessageService messageService;
@@ -59,7 +59,7 @@ public class CommentService {
             CommentRequest commentRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
-        Comment newComment = createComment(authenticatedUserId, commentRequest.text());
+        Comment newComment = createComment(authenticatedUserId, comment, commentRequest.text());
         comment.addComment(newComment);
         return newComment.getId();
     }
@@ -71,12 +71,29 @@ public class CommentService {
             CommentRequest commentRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
-
+        if (!comment.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
         if (commentRequest.text() != null) {
             comment.setText(commentRequest.text());
             comment.setStatus(CommentStatus.EDITED);
         }
         return comment.getId();
+    }
+
+    public void deleteComment(Long authenticatedUserId, UUID commentId, UUID postId) {
+        Post post = postService.getPost(authenticatedUserId, postId);
+        Comment comment = getComment(commentId);
+        if (!comment.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
+        commentRepository.delete(comment);
     }
 
     private Comment getComment(UUID commentId) {

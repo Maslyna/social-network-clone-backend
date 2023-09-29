@@ -12,15 +12,18 @@ import net.maslyna.post.service.CommentService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/post")
+@Validated
 @Slf4j
 public class CommentController {
     private final CommentMapper commentMapper;
@@ -35,6 +38,30 @@ public class CommentController {
     ) {
         return ResponseEntity.status(CREATED).body(
                 commentService.postComment(authenticatedUserId, postId, commentRequest)
+        );
+    }
+
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<?> getPostComments(
+            @PathVariable("postId") UUID postId,
+            @RequestHeader("userId") Long authenticatedUserId,
+            @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
+            @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
+            @RequestParam(value = "orderBy", defaultValue = "DESC")
+            @Pattern(
+                    regexp = "asc|desc",
+                    flags = {Pattern.Flag.CASE_INSENSITIVE},
+                    message = "error.validation.sort.direction.message"
+            )
+            String order,
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
+    ) {
+        return ResponseEntity.ok(
+                commentService.getComments(
+                        authenticatedUserId,
+                        postId,
+                        PageRequest.of(pageNum, pageSize, Direction.valueOf(order), sortBy)
+                ).map(commentMapper::commentToCommentResponse)
         );
     }
 
@@ -62,30 +89,13 @@ public class CommentController {
         );
     }
 
-    @GetMapping("/{postId}/comments")
-    public ResponseEntity<?> getPostComments(
-            @PathVariable("postId") UUID postId,
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    @ResponseStatus(OK)
+    public void deleteComment(
             @RequestHeader("userId") Long authenticatedUserId,
-            @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
-            @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
-            @RequestParam(value = "orderBy", defaultValue = "DESC")
-            @Pattern(
-                    regexp = "asc|desc",
-                    flags = {Pattern.Flag.CASE_INSENSITIVE},
-                    message = "'direction' query param must be equals ASC or DESC"
-            )
-            String order,
-            @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
+            @PathVariable("postId") UUID postId,
+            @PathVariable("commentId") UUID commentId
     ) {
-        return ResponseEntity.ok(
-                commentService.getComments(
-                        authenticatedUserId,
-                        postId,
-                        PageRequest.of(pageNum, pageSize, Direction.valueOf(order), sortBy)
-                ).map(commentMapper::commentToCommentResponse).map(i -> {
-                    log.info("result comment = {}", i);
-                    return i;
-                })
-        );
+        commentService.deleteComment(authenticatedUserId, postId, commentId);
     }
 }

@@ -11,6 +11,7 @@ import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.service.PostService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +58,7 @@ public class PostController {
             @Pattern(
                     regexp = "asc|desc",
                     flags = {Pattern.Flag.CASE_INSENSITIVE},
-                    message = "'direction' query param must be equals ASC or DESC"
+                    message = "error.validation.sort.direction.message"
             )
             String order,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
@@ -79,7 +80,7 @@ public class PostController {
             @Pattern(
                     regexp = "asc|desc",
                     flags = {Pattern.Flag.CASE_INSENSITIVE},
-                    message = "'direction' query param must be equals ASC or DESC"
+                    message = "error.validation.sort.direction.message"
             )
             String order,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
@@ -101,5 +102,14 @@ public class PostController {
         return ResponseEntity.ok(
                 postMapper.postToPostResponse(postService.getPost(authenticatedUserId, postId))
         );
+    }
+
+    @DeleteMapping("/{postId}")
+    @ResponseStatus(OK)
+    public void deletePost(
+            @PathVariable("postId") UUID postId,
+            @RequestHeader("userId") Long authenticatedUserId
+    ) {
+        postService.deletePost(authenticatedUserId, postId);
     }
 }

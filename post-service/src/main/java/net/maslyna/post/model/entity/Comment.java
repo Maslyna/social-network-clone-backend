@@ -27,7 +27,7 @@ public class Comment implements BaseEntity<UUID> {
     @ManyToOne
     private Post post;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
     @ManyToOne

@@ -92,6 +92,19 @@ public class PostService {
         return post.getId();
     }
 
+    public void deletePost(Long authenticatedUserId, UUID postId) {
+        Post post = getPostById(postId);
+
+        if (!post.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
+
+        postRepository.delete(post);
+    }
+
     private Page<Post> getPublicPosts(Long userId, PageRequest pageRequest) {
         return postRepository.findByUserIdAndStatus(userId, PostStatus.PUBLISHED, pageRequest);
     }
