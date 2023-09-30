@@ -14,6 +14,7 @@ public record CommentResponse(
         String text,
         CommentStatus commentStatus,
         Set<CommentResponse> comments,
+        long likes,
         Instant createdAt
 ) {
 }

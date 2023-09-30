@@ -32,6 +32,14 @@ public class Like implements BaseEntity<UUID> {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    public boolean removeLikeFromComment() {
+        return comment.getLikes().remove(this);
+    }
+
+    public boolean removeLikeFromPost() {
+        return post.getLikes().remove(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -46,7 +46,7 @@ public class LikeService {
     public UUID likeComment(Long authenticatedUserId, UUID commentId) {
         if (isLikeOnCommentAlreadyExist(authenticatedUserId, commentId)) {
             throw new LikeAlreadyExists(
-                    HttpStatus.CREATED,
+                    HttpStatus.CONFLICT,
                     messageService.getProperty("error.like.on-comment-already-exists", commentId)
             );
         }
@@ -58,22 +58,14 @@ public class LikeService {
     }
 
     public void deleteLikeFromPost(Long authenticatedUserId, UUID postId) {
-        if (!isLikeOnPostAlreadyExist(authenticatedUserId, postId)) {
-            throw new NotFoundException(
-                    HttpStatus.NOT_FOUND,
-                    messageService.getProperty("error.like.on-post-not-found", postId)
-            );
-        }
+        Like like = getLikeByUserIdAndPostId(authenticatedUserId, postId);
+        like.removeLikeFromPost();
         likeRepository.deleteByPostAndUserId(authenticatedUserId, postId);
     }
 
     public void deleteLikeFromComment(Long authenticatedUserId, UUID commentId) {
-        if (!isLikeOnCommentAlreadyExist(authenticatedUserId, commentId)) {
-            throw new NotFoundException(
-                    HttpStatus.NOT_FOUND,
-                    messageService.getProperty("error.like.on-comment-not-found", commentId)
-            );
-        }
+        Like like = getLikeByUserIdAndCommentId(authenticatedUserId, commentId);
+        like.removeLikeFromComment();
         likeRepository.deleteByCommentAndUserId(authenticatedUserId, commentId);
     }
 
@@ -85,6 +77,22 @@ public class LikeService {
         Post post = postService.getPost(authenticatedUserId, postId);
         List<Like> likes = post.getLikes().stream().toList();
         return new PageImpl<>(likes, pageRequest, likes.size());
+    }
+
+    private Like getLikeByUserIdAndPostId(Long authenticatedUserId, UUID postId) {
+        return likeRepository.findByUserIdAndPostId(authenticatedUserId, postId)
+                .orElseThrow(() -> new NotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        messageService.getProperty("error.like.on-post-not-found", postId)
+                ));
+    }
+
+    private Like getLikeByUserIdAndCommentId(Long authenticatedUserId, UUID commentId) {
+        return likeRepository.findByUserIdAndCommentId(authenticatedUserId, commentId)
+                .orElseThrow(() -> new NotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        messageService.getProperty("error.like.on-comment-not-found", commentId)
+                ));
     }
 
     private boolean isLikeOnPostAlreadyExist(Long authenticatedUserId, UUID postId) {

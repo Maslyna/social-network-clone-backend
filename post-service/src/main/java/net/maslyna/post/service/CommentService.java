@@ -36,7 +36,8 @@ public class CommentService {
     public Page<Comment> getComments(
             Long authenticatedUserId,
             UUID postId,
-            PageRequest pageRequest) {
+            PageRequest pageRequest
+    ) {
         Post post = postService.getPost(authenticatedUserId, postId);
         List<Comment> comments = new ArrayList<>(post.getComments());
         return new PageImpl<>(comments, pageRequest, comments.size());
@@ -45,7 +46,8 @@ public class CommentService {
     public UUID postComment(
             Long authenticatedUserId,
             UUID postId,
-            CommentRequest commentRequest) {
+            CommentRequest commentRequest
+    ) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = createComment(authenticatedUserId, commentRequest.text());
         post.addComment(comment);
@@ -56,10 +58,12 @@ public class CommentService {
             Long authenticatedUserId,
             UUID postId,
             UUID commentId,
-            CommentRequest commentRequest) {
+            CommentRequest commentRequest
+    ) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         Comment newComment = createComment(authenticatedUserId, comment, commentRequest.text());
+        newComment.setPost(post);
         comment.addComment(newComment);
         return newComment.getId();
     }
@@ -68,7 +72,8 @@ public class CommentService {
             Long authenticatedUserId,
             UUID postId,
             UUID commentId,
-            CommentRequest commentRequest) {
+            CommentRequest commentRequest
+    ) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
@@ -84,7 +89,11 @@ public class CommentService {
         return comment.getId();
     }
 
-    public void deleteComment(Long authenticatedUserId, UUID commentId, UUID postId) {
+    public void deleteComment(
+            Long authenticatedUserId,
+            UUID commentId,
+            UUID postId
+    ) {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
@@ -103,7 +112,11 @@ public class CommentService {
                 ));
     }
 
-    private Comment createComment(Long authenticatedUserId, Comment comment, String text) {
+    private Comment createComment(
+            Long authenticatedUserId,
+            Comment comment,
+            String text
+    ) {
         return commentRepository.save(
                 Comment.builder()
                         .createdAt(Instant.now())
@@ -115,7 +128,10 @@ public class CommentService {
         );
     }
 
-    private Comment createComment(Long authenticatedUserId, String text) {
+    private Comment createComment(
+            Long authenticatedUserId,
+            String text
+    ) {
         return commentRepository.save(
                 Comment.builder()
                         .createdAt(Instant.now())

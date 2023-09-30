@@ -15,6 +15,7 @@ public interface CommentMapper {
     @Mapping(target = "text", expression = "java(comment.getText())")
     @Mapping(target = "comments",
             expression = "java(comment.getComments().stream().map(this::commentToCommentResponse).collect(java.util.stream.Collectors.toSet()))")
+    @Mapping(target = "likes", expression = "java(comment.getLikes().stream().collect(java.util.stream.Collectors.counting()))")
     CommentResponse commentToCommentResponse(Comment comment);
 
 }

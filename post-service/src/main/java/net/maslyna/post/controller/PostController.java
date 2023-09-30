@@ -8,10 +8,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.post.mapper.PostMapper;
 import net.maslyna.post.model.dto.request.PostRequest;
+import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.service.PostService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getPublicPosts(
+    public ResponseEntity<Page<PostResponse>> getPublicPosts(
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
             @RequestParam(value = "orderBy", defaultValue = "DESC")
@@ -71,7 +72,7 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getPersonPosts(
+    public ResponseEntity<Page<PostResponse>> getPersonPosts(
             @RequestHeader("userId") Long authenticatedUserId,
             @PathVariable("userId") Long userId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
@@ -95,7 +96,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getFullPost(
+    public ResponseEntity<PostResponse> getFullPost(
             @PathVariable("postId") UUID postId,
             @RequestHeader("userId") Long authenticatedUserId
     ) {
