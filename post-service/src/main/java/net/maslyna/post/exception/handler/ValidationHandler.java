@@ -2,9 +2,11 @@ package net.maslyna.post.exception.handler;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.post.service.PropertiesMessageService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,10 +33,11 @@ public class ValidationHandler {
 
         Map<String, Object> response = new HashMap<>(createDefaultResponse(status));
         List<?> additionalMessages = violations.stream()
-                .map(exception -> new ErrorMessage(
-                        exception.getInvalidValue(),
-                        getMessage(exception.getMessage())
-                )).toList();
+                .map(exception -> ErrorMessage.builder()
+                        .message(getMessage(exception.getMessage()))
+                        .invalidValue(exception.getInvalidValue())
+                        .build()
+                ).toList();
         response.put("errors", additionalMessages);
 
         return ResponseEntity.status(status).body(response);
@@ -50,7 +53,7 @@ public class ValidationHandler {
         return ResponseEntity.status(status).body(response);
     }
 
-    private Map<String, Object> createDefaultResponse(HttpStatus status) {
+    private Map<String, Object> createDefaultResponse(HttpStatusCode status) {
         return Map.of(
                 "createdAt", Instant.now(),
                 "messageType", VALIDATION_ERROR,
@@ -63,9 +66,13 @@ public class ValidationHandler {
         String result = messageService.getProperty(message);
         return result != null ? result : message;
     }
+
+    @Builder
+    private record ErrorMessage(
+            String message,
+            Object invalidValue
+
+    ) {
+    }
 }
 
-record ErrorMessage(
-        Object invalidValue,
-        String message
-) {}

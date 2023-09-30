@@ -12,7 +12,6 @@ import net.maslyna.post.repository.HashtagRepository;
 import net.maslyna.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +33,10 @@ public class PostService {
     private final PropertiesMessageService messageService;
 
     @Transactional(readOnly = true)
-    public Page<Post> getAllPosts(PageRequest pageRequest) {
-        return postRepository.findByStatus(PostStatus.PUBLISHED, pageRequest);
+    public Page<Post> getPosts(String[] hashtags, PageRequest pageRequest) {
+        return hashtags != null
+                ? postRepository.findPostsByStatusAndHashtags(hashtags, PostStatus.PUBLISHED, pageRequest)
+                : postRepository.findByStatus(PostStatus.PUBLISHED, pageRequest);
     }
 
     @Transactional(readOnly = true)

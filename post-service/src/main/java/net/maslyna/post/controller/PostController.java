@@ -62,10 +62,12 @@ public class PostController {
                     message = "error.validation.sort.direction.message"
             )
             String order,
+            @RequestParam(value = "hashtag", required = false)  String[] hashtags,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                postService.getAllPosts(
+                postService.getPosts(
+                        hashtags,
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(postMapper::postToPostResponse)
         );
@@ -94,6 +96,7 @@ public class PostController {
                 ).map(postMapper::postToPostResponse)
         );
     }
+
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getFullPost(
