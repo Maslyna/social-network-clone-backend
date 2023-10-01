@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface PostRepository extends JpaRepository<Post, UUID> {
     @Query("""
             select p from Post p inner join p.hashtags hashtags
-            where hashtags.text in lower(?1)
+            where hashtags.text in ?1
             and p.status = ?2
             """)
     Page<Post> findPostsByStatusAndHashtags(String[] hashtags, PostStatus status, Pageable pageable);

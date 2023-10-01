@@ -25,9 +25,11 @@ public class Comment implements BaseEntity<UUID> {
     private Long userId;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
+    @JoinColumn(name = "subcomment_on_comment_id")
     private Comment comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,6 +40,8 @@ public class Comment implements BaseEntity<UUID> {
 
     private String text;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 10)
     private CommentStatus status;
 
     private Instant createdAt;

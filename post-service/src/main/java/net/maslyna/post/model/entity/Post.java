@@ -27,12 +27,15 @@ public class Post implements BaseEntity<UUID> {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
     private PostStatus status;
 
     private Instant createdAt;
 
+    @Column(name = "title", length = 100)
     private String title;
 
+    @Column(name = "text", length = 500)
     private String text;
 
     @ManyToMany

@@ -51,6 +51,7 @@ public class CommentService {
         Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = createComment(authenticatedUserId, commentRequest.text());
         post.addComment(comment);
+        comment.setPost(post);
         return comment.getId();
     }
 
