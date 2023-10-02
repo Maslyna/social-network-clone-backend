@@ -7,7 +7,7 @@ import net.maslyna.post.exception.CommentNotFoundException;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
-import net.maslyna.post.model.entity.Post;
+import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.repository.CommentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.entity.like.CommentLike;
+import net.maslyna.post.model.entity.post.Post;
 
 import java.time.Instant;
 import java.util.Objects;

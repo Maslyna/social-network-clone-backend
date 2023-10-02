@@ -3,7 +3,7 @@ package net.maslyna.post.mapper;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;
-import net.maslyna.post.model.entity.Post;
+import net.maslyna.post.model.entity.post.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

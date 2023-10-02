@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.post.exception.LikeAlreadyExists;
 import net.maslyna.post.exception.NotFoundException;
 import net.maslyna.post.model.entity.Comment;
-import net.maslyna.post.model.entity.Post;
+import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.model.entity.like.CommentLike;
 import net.maslyna.post.model.entity.like.PostLike;
 import net.maslyna.post.repository.CommentLikeRepository;

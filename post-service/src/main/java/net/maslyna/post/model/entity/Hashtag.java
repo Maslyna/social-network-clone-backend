@@ -2,6 +2,7 @@ package net.maslyna.post.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import net.maslyna.post.model.entity.post.Post;
 
 import java.util.Objects;
 import java.util.Set;

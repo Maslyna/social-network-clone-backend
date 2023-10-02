@@ -7,7 +7,7 @@ import net.maslyna.post.exception.PostNotFoundException;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
-import net.maslyna.post.model.entity.Post;
+import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.repository.HashtagRepository;
 import net.maslyna.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
