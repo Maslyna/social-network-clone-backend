@@ -74,13 +74,22 @@ public class LikeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostLike> getLikes(
+    public Page<PostLike> getLikesOnPost(
             UUID postId,
             Long authenticatedUserId,
             PageRequest pageRequest) {
         Post post = postService.getPost(authenticatedUserId, postId);
-        List<PostLike> abstractLikes = post.getLikes().stream().toList();
-        return new PageImpl<>(abstractLikes, pageRequest, postLikeRepository.count());
+        List<PostLike> likes = List.copyOf(post.getLikes());
+        return new PageImpl<>(likes, pageRequest, likes.size());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CommentLike> getLikesOnComment(
+            UUID commentId,
+            PageRequest pageRequest) {
+        Comment comment = commentService.getComment(commentId);
+        List<CommentLike> likes = List.copyOf(comment.getLikes());
+        return new PageImpl<>(likes, pageRequest, likes.size());
     }
 
     private PostLike getLikeByUserIdAndPostId(Long authenticatedUserId, UUID postId) {
@@ -121,8 +130,8 @@ public class LikeService {
         return commentLikeRepository.save(
                 CommentLike.builder()
                         .comment(comment)
-                        .createdAt(Instant.now())
                         .userId(authenticatedUserId)
+                        .createdAt(Instant.now())
                         .build()
         );
     }

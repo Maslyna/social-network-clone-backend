@@ -11,11 +11,12 @@ import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
     @Query("""
-            select p from Post p inner join p.hashtags hashtags
-            where hashtags.text in ?1
+            select p from Post p
+            full outer join p.hashtags h
+            where h.text in ?1
             and p.status = ?2
             """)
-    Page<Post> findPostsByStatusAndHashtags(String[] hashtags, PostStatus status, Pageable pageable);
+    Page<Post> findPostsByStatusAndHashtags(String[] hashtags, PostStatus status, Pageable pageable); //TODO: doesn't working at all
     Page<Post> findByUserIdAndStatus(Long userId, PostStatus status, Pageable pageable);
     Page<Post> findByUserId(Long userId, Pageable pageable);
     Page<Post> findByStatus(PostStatus status, Pageable pageable);

@@ -41,7 +41,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<Post> getPersonPosts(Long userId, Long authenticatedUserId, PageRequest pageRequest) {
-        return !authenticatedUserId.equals(userId)
+        return !userId.equals(authenticatedUserId)
                 ? getPublicPosts(userId, pageRequest)
                 : getPrivatePosts(userId, pageRequest);
     }
@@ -51,7 +51,7 @@ public class PostService {
         Post post = getPostById(postId);
 
         if (!post.getStatus().equals(PostStatus.PUBLISHED)
-                && !authenticatedUserId.equals(post.getUserId())) {
+                && !post.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(
                     FORBIDDEN,
                     messageService.getProperty("error.access.denied")
@@ -104,6 +104,7 @@ public class PostService {
         }
 
         postRepository.delete(post);
+        log.info("post with id = {} was deleted", post.getId());
     }
 
     private Page<Post> getPublicPosts(Long userId, PageRequest pageRequest) {

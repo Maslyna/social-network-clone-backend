@@ -44,7 +44,7 @@ public class CommentController {
     @GetMapping("/{postId}/comments")
     public ResponseEntity<?> getPostComments(
             @PathVariable("postId") UUID postId,
-            @RequestHeader("userId") Long authenticatedUserId,
+            @RequestHeader(name = "userId", required = false) Long authenticatedUserId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
             @RequestParam(value = "orderBy", defaultValue = "DESC")

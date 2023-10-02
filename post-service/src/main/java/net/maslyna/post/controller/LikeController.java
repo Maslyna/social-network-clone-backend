@@ -47,10 +47,9 @@ public class LikeController {
                 .body(likeService.likeComment(authenticatedUserId, commentId));
     }
 
-    @GetMapping("/{postId}/like")
-    public ResponseEntity<Page<LikeResponse>> getLikesOnPost(
-            @PathVariable("postId") UUID postId,
-            @RequestHeader("userId") Long authenticatedUserId,
+    @GetMapping("/comments/{commentId}/like")
+    public ResponseEntity<Page<LikeResponse>> getLikesOnComment(
+            @PathVariable("commentId") UUID commentId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
             @RequestParam(value = "orderBy", defaultValue = "DESC")
@@ -63,13 +62,38 @@ public class LikeController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                likeService.getLikes(
+                likeService.getLikesOnComment(
+                        commentId,
+                        PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
+                ).map(likeMapper::likeToLikeResponse)
+        );
+    }
+
+    @GetMapping("/{postId}/like")
+    public ResponseEntity<Page<LikeResponse>> getLikesOnPost(
+            @PathVariable("postId") UUID postId,
+            @RequestHeader(name = "userId", required = false) Long authenticatedUserId,
+            @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
+            @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
+            @RequestParam(value = "orderBy", defaultValue = "DESC")
+            @Pattern(
+                    regexp = "asc|desc",
+                    flags = {Pattern.Flag.CASE_INSENSITIVE},
+                    message = "error.validation.sort.direction.message"
+            )
+            String order,
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
+    ) {
+        return ResponseEntity.ok(
+                likeService.getLikesOnPost(
                         postId,
                         authenticatedUserId,
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(likeMapper::likeToLikeResponse)
         );
     }
+
+
 
     @DeleteMapping("/{postId}/like")
     @ResponseStatus(OK)
