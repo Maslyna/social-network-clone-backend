@@ -1,6 +1,5 @@
 package net.maslyna.post.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public class NotFoundException extends GlobalPostServiceException {

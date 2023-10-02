@@ -3,6 +3,7 @@ package net.maslyna.post.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import net.maslyna.post.model.PostStatus;
+import net.maslyna.post.model.entity.like.PostLike;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -50,9 +51,9 @@ public class Post implements BaseEntity<UUID> {
     private Set<Comment> comments;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likes;
+    private Set<PostLike> likes;
 
-    public boolean addLike(Like like) {
+    public boolean addLike(PostLike like) {
         return likes.add(like);
     }
 
