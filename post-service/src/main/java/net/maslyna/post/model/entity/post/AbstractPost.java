@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import net.maslyna.post.model.PostStatus;
+import net.maslyna.post.model.entity.Publishable;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -43,8 +44,8 @@ public abstract class AbstractPost implements Publishable<UUID> {
 
         AbstractPost post = (AbstractPost) o;
 
-        if (!Objects.equals(id, post.getId())) return false;
-        return Objects.equals(userId, post.getUserId());
+        if (!Objects.equals(id, post.id)) return false;
+        return Objects.equals(userId, post.userId);
     }
 
     @Override

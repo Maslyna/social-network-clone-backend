@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "t_comments")
-public class Comment implements BaseEntity<UUID> {
+public class Comment implements Publishable<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "comment_id", nullable = false)

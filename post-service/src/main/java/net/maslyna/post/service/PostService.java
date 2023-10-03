@@ -8,8 +8,10 @@ import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
 import net.maslyna.post.model.entity.post.Post;
+import net.maslyna.post.model.entity.post.RePost;
 import net.maslyna.post.repository.HashtagRepository;
 import net.maslyna.post.repository.PostRepository;
+import net.maslyna.post.repository.RePostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 public class PostService {
     private final PostRepository postRepository;
+    private final RePostRepository rePostRepository;
     private final HashtagRepository hashtagRepository;
     private final PropertiesMessageService messageService;
 
@@ -64,6 +67,13 @@ public class PostService {
         Post post = createNewPost(userId, request);
         log.info("post with id = {} created", post.getId());
         return post.getId();
+    }
+
+    public UUID createRepost(Long userId, UUID postId, PostRequest request) {
+        Post post = getPost(userId, postId);
+        RePost rePost = createRePost(userId, request, post);
+        log.info("repost with id = {} created", rePost.getId());
+        return rePost.getId();
     }
 
     public UUID editPost(
@@ -124,6 +134,20 @@ public class PostService {
                         .title(request.title())
                         .text(request.text())
                         .hashtags(createHashtagSet(request.hashtags()))
+                        .build()
+        );
+    }
+
+    private RePost createRePost(Long userId, PostRequest request, Post post) {
+        return rePostRepository.save(
+                RePost.builder() // TODO: after creating file service add opportunity to upload images
+                        .userId(userId)
+                        .status(request.status())
+                        .createdAt(Instant.now())
+                        .title(request.title())
+                        .text(request.text())
+                        .hashtags(createHashtagSet(request.hashtags()))
+                        .originalPost(post)
                         .build()
         );
     }

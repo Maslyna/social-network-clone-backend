@@ -15,6 +15,7 @@ public record PostResponse (
         PostStatus status,
         String title,
         String text,
+        UUID originalPost,
         Set<HashtagResponse> hashtags,
         long commentsAmount,
         long likesAmount

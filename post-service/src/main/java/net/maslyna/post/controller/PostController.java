@@ -40,6 +40,17 @@ public class PostController {
         );
     }
 
+    @PostMapping("/{postId}/repost")
+    public ResponseEntity<UUID> createRepost(
+            @RequestHeader("userId") Long userId,
+            @PathVariable("postId") UUID postId,
+            @Valid @RequestBody PostRequest request
+    ) {
+        return ResponseEntity.status(CREATED).body(
+                postService.createRepost(userId, postId, request)
+        );
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<UUID> editPost(
             @RequestHeader(name = "userId") Long authenticatedUserId,

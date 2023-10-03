@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @SuperBuilder
 @MappedSuperclass
-public abstract class AbstractLike implements Likeable<UUID> {
+public abstract class AbstractLike implements Like<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "like_id",nullable = false)
