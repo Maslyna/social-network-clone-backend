@@ -1,18 +1,26 @@
 package net.maslyna.user.exception;
 
+import org.springframework.http.HttpStatusCode;
+
 public class WrongDataException extends GlobalUserServiceException {
-    public WrongDataException() {
+
+    public WrongDataException(HttpStatusCode status) {
+        super(status);
     }
 
-    public WrongDataException(String message, Object... data) {
-        super(message, data);
+    public WrongDataException(HttpStatusCode status, String reason) {
+        super(status, reason);
     }
 
-    public WrongDataException(String message) {
-        super(message);
+    public WrongDataException(int rawStatusCode, String reason, Throwable cause) {
+        super(rawStatusCode, reason, cause);
     }
 
-    public WrongDataException(String message, Throwable cause) {
-        super(message, cause);
+    public WrongDataException(HttpStatusCode status, String reason, Throwable cause) {
+        super(status, reason, cause);
+    }
+
+    protected WrongDataException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
+        super(status, reason, cause, messageDetailCode, messageDetailArguments);
     }
 }

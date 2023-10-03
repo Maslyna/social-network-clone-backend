@@ -15,6 +15,7 @@ import net.maslyna.user.model.entity.User;
 import net.maslyna.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,8 @@ public class UserService {
 
     public AuthenticationResponse registration(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new UserAlreadyExistsException( //TODO: exception handler
+            throw new UserAlreadyExistsException(
+                    HttpStatus.CONFLICT,
                     messageService.getProperty("error.user.email.occupied", request.email())
             );
         }
@@ -42,6 +44,7 @@ public class UserService {
         );
         if (!isResponseValid(response)) {
             throw new UserRegistrationException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
                     messageService.getProperty("error.user.registration")
             );
         }
@@ -50,7 +53,10 @@ public class UserService {
 
     public User getUser(Long userId) {
         if (userId == null) {
-            throw new WrongDataException(messageService.getProperty("validation.data.not-valid"));
+            throw new WrongDataException(
+                    HttpStatus.BAD_REQUEST,
+                    messageService.getProperty("validation.data.not-valid")
+            );
         }
         return getUserById(userId);
     }
@@ -75,6 +81,7 @@ public class UserService {
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
+                        HttpStatus.NOT_FOUND,
                         messageService.getProperty("error.user.not-found", userId)
                 ));
     }

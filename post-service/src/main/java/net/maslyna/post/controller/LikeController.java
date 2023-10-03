@@ -1,5 +1,6 @@
 package net.maslyna.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 import static org.springframework.data.domain.Sort.Direction;
 import static org.springframework.http.HttpStatus.OK;
 
-@Controller
+@RestController
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/post")
@@ -29,6 +29,7 @@ public class LikeController {
     private final LikeService likeService;
     private final LikeMapper likeMapper;
 
+    @Operation(description = "like post")
     @PostMapping("/{postId}/like")
     public ResponseEntity<UUID> likePost(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -38,6 +39,7 @@ public class LikeController {
                 .body(likeService.likePost(authenticatedUserId, postId));
     }
 
+    @Operation(description = "like comment")
     @PostMapping("/comments/{commentId}/like")
     public ResponseEntity<UUID> likeComment(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -47,6 +49,7 @@ public class LikeController {
                 .body(likeService.likeComment(authenticatedUserId, commentId));
     }
 
+    @Operation(description = "get likes on comment")
     @GetMapping("/comments/{commentId}/like")
     public ResponseEntity<Page<LikeResponse>> getLikesOnComment(
             @PathVariable("commentId") UUID commentId,
@@ -69,6 +72,7 @@ public class LikeController {
         );
     }
 
+    @Operation(description = "get likes on post")
     @GetMapping("/{postId}/like")
     public ResponseEntity<Page<LikeResponse>> getLikesOnPost(
             @PathVariable("postId") UUID postId,

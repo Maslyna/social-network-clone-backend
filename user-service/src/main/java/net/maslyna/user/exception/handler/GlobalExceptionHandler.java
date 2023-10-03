@@ -1,69 +1,33 @@
 package net.maslyna.user.exception.handler;
 
-import lombok.Builder;
 import net.maslyna.common.message.MessageType;
-import net.maslyna.user.exception.*;
-import org.springframework.http.HttpStatus;
+import net.maslyna.user.exception.GlobalUserServiceException;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
-
-import static net.maslyna.common.message.MessageType.ERROR;
-import static net.maslyna.common.message.MessageType.VALIDATION_ERROR;
-import static org.springframework.http.HttpStatus.*;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(GlobalUserServiceException.class)
-    public ResponseEntity<?> handleGlobalUserServiceException(GlobalUserServiceException e) {
-        return getResponseEntity(NOT_IMPLEMENTED, ERROR, e);
+    public ResponseEntity<Map<String, Object>> handleGlobalUserServiceException(GlobalUserServiceException e) {
+        return ResponseEntity.status(e.getStatusCode())
+                .body(createErrorResponseWithMessage(e.getStatusCode(), e.getMessage()));
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-        return getResponseEntity(CONFLICT, ERROR, e);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
-        return getResponseEntity(NOT_FOUND, ERROR, e);
-    }
-
-    @ExceptionHandler(WrongDataException.class)
-    public ResponseEntity<?> handleWrongDataException(WrongDataException e) {
-        return getResponseEntity(BAD_REQUEST, VALIDATION_ERROR, e);
-    }
-
-    @ExceptionHandler(UserRegistrationException.class)
-    public ResponseEntity<?> handleUserRegistrationException(UserRegistrationException e) {
-        return getResponseEntity(SERVICE_UNAVAILABLE, ERROR, e);
-    }
-
-    private ResponseEntity<?> getResponseEntity(HttpStatus status, MessageType messageType, Throwable throwable) {
-        return ResponseEntity.status(status).body(
-                MessageErrorResponse.builder()
-                        .createdAt(Instant.now())
-                        .title(messageType)
-                        .status(status.value())
-                        .statusCode(status)
-                        .message(throwable.getMessage())
-                        .build()
+    private Map<String, Object> createErrorResponseWithMessage(
+            HttpStatusCode status,
+            String message) {
+        return Map.of(
+                "createdAt", Instant.now(),
+                "title", MessageType.ERROR,
+                "status", status.value(),
+                "statusCode", status,
+                "message", message
         );
     }
-}
-
-// TODO: refactor
-@Builder
-record MessageErrorResponse(
-        Instant createdAt,
-        MessageType title,
-        int status,
-        HttpStatus statusCode,
-        String message
-
-) {
-
 }

@@ -1,18 +1,27 @@
 package net.maslyna.user.exception;
 
-public class GlobalUserServiceException extends RuntimeException {
-    public GlobalUserServiceException() {
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.server.ResponseStatusException;
+
+public class GlobalUserServiceException extends ResponseStatusException {
+
+    public GlobalUserServiceException(HttpStatusCode status) {
+        super(status);
     }
 
-    public GlobalUserServiceException(String message, Object... data) {
-        super(message.formatted(data));
+    public GlobalUserServiceException(HttpStatusCode status, String reason) {
+        super(status, reason);
     }
 
-    public GlobalUserServiceException(String message) {
-        super(message);
+    public GlobalUserServiceException(int rawStatusCode, String reason, Throwable cause) {
+        super(rawStatusCode, reason, cause);
     }
 
-    public GlobalUserServiceException(String message, Throwable cause) {
-        super(message, cause);
+    public GlobalUserServiceException(HttpStatusCode status, String reason, Throwable cause) {
+        super(status, reason, cause);
+    }
+
+    protected GlobalUserServiceException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
+        super(status, reason, cause, messageDetailCode, messageDetailArguments);
     }
 }

@@ -1,5 +1,6 @@
 package net.maslyna.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -29,6 +30,7 @@ public class CommentController {
     private final CommentMapper commentMapper;
     private final CommentService commentService;
 
+    @Operation(description = "create new comment on the post")
     @PostMapping("/{postId}/comments")
     @ResponseStatus(CREATED)
     public ResponseEntity<UUID> createComment(
@@ -41,6 +43,7 @@ public class CommentController {
         );
     }
 
+    @Operation(description = "get all comments on the post")
     @GetMapping("/{postId}/comments")
     public ResponseEntity<?> getPostComments(
             @PathVariable("postId") UUID postId,
@@ -65,6 +68,7 @@ public class CommentController {
         );
     }
 
+    @Operation(description = "create sub-comment on comment")
     @PostMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<UUID> createComment(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -77,6 +81,7 @@ public class CommentController {
         );
     }
 
+    @Operation(description = "edit sub-comment on comment")
     @PutMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<UUID> editComment(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -89,6 +94,7 @@ public class CommentController {
         );
     }
 
+    @Operation(description = "delete comment")
     @DeleteMapping("/{postId}/comments/{commentId}")
     @ResponseStatus(OK)
     public void deleteComment(

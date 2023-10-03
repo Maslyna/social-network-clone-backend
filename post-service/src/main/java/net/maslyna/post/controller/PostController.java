@@ -1,5 +1,6 @@
 package net.maslyna.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,6 +31,7 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
 
+    @Operation(description = "create new post")
     @PostMapping
     public ResponseEntity<UUID> createPost(
             @RequestHeader(name = "userId") Long userId,
@@ -40,6 +42,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "create new repost")
     @PostMapping("/{postId}/repost")
     public ResponseEntity<UUID> createRepost(
             @RequestHeader("userId") Long userId,
@@ -51,6 +54,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "edit post")
     @PutMapping("/{postId}")
     public ResponseEntity<UUID> editPost(
             @RequestHeader(name = "userId") Long authenticatedUserId,
@@ -62,6 +66,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "get all published posts")
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPublicPosts(
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
@@ -84,6 +89,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "get person's posts")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<PostResponse>> getPersonPosts(
             @RequestHeader(name = "userId", required = false) Long authenticatedUserId,
@@ -108,7 +114,7 @@ public class PostController {
         );
     }
 
-
+    @Operation(description = "get post")
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getFullPost(
             @PathVariable("postId") UUID postId,
@@ -119,6 +125,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "delete post")
     @DeleteMapping("/{postId}")
     @ResponseStatus(OK)
     public void deletePost(
