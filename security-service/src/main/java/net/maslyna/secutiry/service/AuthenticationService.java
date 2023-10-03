@@ -9,6 +9,7 @@ import net.maslyna.secutiry.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiry.model.dto.response.AccountResponse;
 import net.maslyna.secutiry.model.dto.response.AuthenticationResponse;
 import net.maslyna.secutiry.model.entity.Account;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class AuthenticationService {
         //TODO: registration logic
         if (accountService.isUserAlreadyExists(request.id(), request.email())) {
             throw new EmailOccupiedException(
+                    HttpStatus.CONFLICT,
                     messageService.getProperty("error.user.email.occupied")
             );
         }
@@ -43,6 +45,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(Account account) {
         if (account == null) {
             throw new AccountNotAuthenticatedException(
+                    HttpStatus.UNAUTHORIZED,
                     messageService.getProperty("error.account.not-authenticated")
             );
         }
@@ -60,6 +63,7 @@ public class AuthenticationService {
     public AccountResponse getUserInfo(Account account) {
         if (account == null) {
             throw new AccountNotAuthenticatedException(
+                    HttpStatus.UNAUTHORIZED,
                     messageService.getProperty("error.account.not-authenticated")
             );
         }

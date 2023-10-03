@@ -5,6 +5,7 @@ import net.maslyna.secutiry.exceptions.account.TokenNotValidException;
 import net.maslyna.secutiry.model.entity.Account;
 import net.maslyna.secutiry.model.entity.Token;
 import net.maslyna.secutiry.repository.TokenRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,10 +41,14 @@ public class TokenService {
     public Account getAccount(String jwt) {
         Token token = tokenRepository.findByJwt(jwt)
                 .orElseThrow(() -> new TokenNotValidException(
+                        HttpStatus.NOT_FOUND,
                         message.getProperty("error.account.token.not-found")
                 ));
         if (!jwtService.isTokenValid(jwt, token.getAccount())) {
-            throw new TokenNotValidException(message.getProperty("error.account.token.not-valid"));
+            throw new TokenNotValidException(
+                    HttpStatus.FORBIDDEN,
+                    message.getProperty("error.account.token.not-valid")
+            );
         }
         return token.getAccount();
     }

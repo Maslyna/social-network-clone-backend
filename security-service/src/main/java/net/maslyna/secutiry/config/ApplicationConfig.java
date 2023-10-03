@@ -5,6 +5,7 @@ import net.maslyna.secutiry.repository.AccountRepository;
 import net.maslyna.secutiry.service.PropertiesMessageService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,7 @@ public class ApplicationConfig {
             PropertiesMessageService propertiesMessageService) {
         return email -> accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(
+                        HttpStatus.NOT_FOUND,
                         propertiesMessageService.getProperty("error.account.not-found")
                 ));
     }

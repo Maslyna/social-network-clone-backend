@@ -1,15 +1,19 @@
 package net.maslyna.secutiry.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.secutiry.exceptions.AuthenticationException;
 import net.maslyna.secutiry.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiry.service.BasicService;
 import net.maslyna.secutiry.service.JwtService;
+import net.maslyna.secutiry.service.PropertiesMessageService;
 import net.maslyna.secutiry.service.TokenService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +35,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final BasicService basicService;
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
+    private final PropertiesMessageService messageService;
+    private final ObjectMapper mapper;
 
     @Override
     protected void doFilterInternal(
@@ -38,7 +44,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader != null) {
             try {
@@ -50,9 +56,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         UserDetails userDetails = tokenService.getAccount(jwt);
                         setAuthenticationToken(request, userDetails);
                     }
-                }
-
-                if (authHeader.startsWith(AuthenticationType.BASIC.prefix())) {
+                } else if (authHeader.startsWith(AuthenticationType.BASIC.prefix())) {
                     String decoded = basicService.extractBasic(authHeader);
 
                     if (decoded != null && !decoded.isEmpty()
@@ -64,9 +68,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                             setAuthenticationToken(request, userDetails);
                         }
                     }
+                } else {
+                    throw new AuthenticationException(
+                            HttpStatus.NOT_ACCEPTABLE,
+                            messageService.getProperty("error.authentication.not-supported-type")
+                    );
                 }
             } catch (GlobalSecurityServiceException e) {
-                exceptionWriter(response);
+                exceptionWriter(response, e);
             }
         }
 
@@ -93,12 +102,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return authenticationToken;
     }
 
-    private void exceptionWriter(HttpServletResponse response) {
-        response.setContentType("application/json");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-    }
+    private void exceptionWriter(HttpServletResponse response, GlobalSecurityServiceException e) {
 
-    private UserDetails extractUserDetailsFromJwt(String jwt) {
-        return userDetailsService.loadUserByUsername(jwtService.extractUsername(jwt));
+        e.setDetail(e.getMessage());
+        response.setContentType("application/json");
+        response.setStatus(e.getStatusCode().value());
+        try {
+            response.getWriter().write(mapper.writeValueAsString(e.getBody()));
+        } catch (IOException ignored) {}
+
     }
 }

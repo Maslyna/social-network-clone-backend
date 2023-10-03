@@ -19,7 +19,7 @@ public class PropertiesMessageService {
     public String getProperty(String name, Object... params) {
         String property = environment.getProperty(name);
         if (property == null) {
-            throw new RuntimeException("property not found: " + name);
+            return null;
         }
         return property.formatted(params);
     }

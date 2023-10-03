@@ -2,8 +2,10 @@ package net.maslyna.user.model.dto.response;
 
 import lombok.Builder;
 
+import java.util.UUID;
+
 @Builder
 public record AuthenticationResponse (
-        String token
+        UUID token
 ) {
 }

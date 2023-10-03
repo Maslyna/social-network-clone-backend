@@ -94,6 +94,7 @@ public class UserService {
         return SecurityRegistrationRequest.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .password(request.password()).build();
+                .password(request.password())
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.secutiry.config.AuthenticationType;
 import org.bouncycastle.util.encoders.Base64;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class BasicService {
     private final PasswordEncoder passwordEncoder;
 
     public String extractBasic(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith(PREFIX)) {
             return authHeader.substring(PREFIX.length());
         }

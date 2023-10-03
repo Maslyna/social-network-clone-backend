@@ -5,6 +5,7 @@ import net.maslyna.secutiry.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiry.model.Role;
 import net.maslyna.secutiry.model.entity.Account;
 import net.maslyna.secutiry.repository.AccountRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ public class AccountService {
     public Account getAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(
+                        HttpStatus.NOT_FOUND,
                         messageService.getProperty("error.account.not-found")
                 ));
     }
