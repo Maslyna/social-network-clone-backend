@@ -24,13 +24,29 @@ public class User implements BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private List<User> followedAt;
+    private List<User> subscriptions;
 
-    @ManyToMany(mappedBy = "followedAt")
+    @ManyToMany(mappedBy = "subscriptions")
     private List<User> followers;
 
     @Column(columnDefinition = "TRUE")
     private boolean enabledNotifications;
+
+    public boolean addFollower(User user) {
+        return followers.add(user);
+    }
+
+    public boolean removeFollower(User user) {
+        return followers.remove(user);
+    }
+
+    public boolean addSubscribe(User user) {
+        return subscriptions.add(user);
+    }
+
+    public boolean removeSubscribe(User user) {
+        return subscriptions.remove(user);
+    }
 
     @Override
     public boolean equals(Object o) {

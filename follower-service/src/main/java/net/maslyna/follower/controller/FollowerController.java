@@ -18,6 +18,6 @@ public class FollowerController {
     private void userRegistration(
             @RequestBody UserRegistrationRequest request
     ) {
-
+        followerService.userRegistration(request.userId());
     }
 }
