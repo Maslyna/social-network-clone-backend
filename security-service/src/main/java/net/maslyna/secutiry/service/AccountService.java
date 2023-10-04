@@ -1,6 +1,7 @@
 package net.maslyna.secutiry.service;
 
 import lombok.RequiredArgsConstructor;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.secutiry.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiry.model.Role;
 import net.maslyna.secutiry.model.entity.Account;

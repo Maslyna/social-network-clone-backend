@@ -1,4 +1,4 @@
-package net.maslyna.post.service;
+package net.maslyna.common.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,9 @@ public class PropertiesMessageService {
 
     public String getProperty(String name, Object... params) {
         String property = environment.getProperty(name);
-        if (property == null) return null;
+        if (property == null) {
+            return null;
+        }
         return property.formatted(params);
     }
 }

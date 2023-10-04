@@ -2,9 +2,10 @@ package net.maslyna.secutiry.config;
 
 import net.maslyna.secutiry.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiry.repository.AccountRepository;
-import net.maslyna.secutiry.service.PropertiesMessageService;
+import net.maslyna.common.service.PropertiesMessageService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,5 +36,10 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PropertiesMessageService messageService(Environment env) {
+        return new PropertiesMessageService(env);
     }
 }

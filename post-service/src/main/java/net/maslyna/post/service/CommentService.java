@@ -2,6 +2,7 @@ package net.maslyna.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.CommentNotFoundException;
 import net.maslyna.post.model.CommentStatus;

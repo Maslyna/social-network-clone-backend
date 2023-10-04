@@ -1,4 +1,4 @@
-package net.maslyna.post.exception.handler;
+package net.maslyna.secutiry.exceptions.handler;
 
 import net.maslyna.common.message.MessageType;
 import net.maslyna.common.response.ErrorMessageResponse;
@@ -37,4 +37,3 @@ public class GlobalExceptionHandler {
     }
 
 }
-

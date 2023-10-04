@@ -2,6 +2,7 @@ package net.maslyna.secutiry.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.secutiry.exceptions.account.AccountNotAuthenticatedException;
 import net.maslyna.secutiry.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiry.mapper.AccountMapper;
@@ -30,7 +31,7 @@ public class AuthenticationService {
         if (accountService.isUserAlreadyExists(request.id(), request.email())) {
             throw new EmailOccupiedException(
                     HttpStatus.CONFLICT,
-                    messageService.getProperty("error.user.email.occupied")
+                    messageService.getProperty("error.account.email.occupied")
             );
         }
         Account newAccount = accountService.createUserAccount(request.id(), request.email(), request.password());

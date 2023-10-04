@@ -1,17 +1,16 @@
 package net.maslyna.secutiry.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.secutiry.exceptions.AuthenticationException;
 import net.maslyna.secutiry.exceptions.GlobalSecurityServiceException;
 import net.maslyna.secutiry.service.BasicService;
 import net.maslyna.secutiry.service.JwtService;
-import net.maslyna.secutiry.service.PropertiesMessageService;
 import net.maslyna.secutiry.service.TokenService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
     private final PropertiesMessageService messageService;
-    private final ObjectMapper mapper;
 
     @Override
     protected void doFilterInternal(
@@ -68,11 +66,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                             setAuthenticationToken(request, userDetails);
                         }
                     }
-                } else {
-                    throw new AuthenticationException(
-                            HttpStatus.NOT_ACCEPTABLE,
-                            messageService.getProperty("error.authentication.not-supported-type")
-                    );
                 }
             } catch (GlobalSecurityServiceException e) {
                 exceptionWriter(response, e);
@@ -103,13 +96,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void exceptionWriter(HttpServletResponse response, GlobalSecurityServiceException e) {
-
-        e.setDetail(e.getMessage());
         response.setContentType("application/json");
         response.setStatus(e.getStatusCode().value());
-        try {
-            response.getWriter().write(mapper.writeValueAsString(e.getBody()));
-        } catch (IOException ignored) {}
-
     }
 }

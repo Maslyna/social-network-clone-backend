@@ -2,6 +2,7 @@ package net.maslyna.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.LikeAlreadyExists;
 import net.maslyna.post.exception.NotFoundException;
 import net.maslyna.post.model.entity.Comment;
