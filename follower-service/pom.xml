@@ -9,15 +9,15 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>net.maslyna.post</groupId>
-    <artifactId>post-service</artifactId>
+    <groupId>net.maslyna.follower</groupId>
+    <artifactId>follower-service</artifactId>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
+
     <dependencies>
         <!--    DATABASE    -->
         <dependency>
@@ -38,19 +38,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
-        <!--    MAPSTRUCT    -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-
         <!--    EUREKA NETFLIX    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -61,11 +48,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.maslyna.common</groupId>
-            <artifactId>common</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
+
 </project>
