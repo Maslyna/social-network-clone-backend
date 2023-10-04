@@ -82,7 +82,7 @@
             <version>${jjwt-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.maslyna.post</groupId>
+            <groupId>net.maslyna.common</groupId>
             <artifactId>common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>

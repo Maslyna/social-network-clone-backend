@@ -9,8 +9,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>net.maslyna.follower</groupId>
-    <artifactId>follower-service</artifactId>
+    <groupId>net.maslyna.user</groupId>
+    <artifactId>user-service</artifactId>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
@@ -47,6 +47,11 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.maslyna.common</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

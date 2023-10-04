@@ -15,7 +15,7 @@
         <module>security-service</module>
         <module>post-service</module>
         <module>common</module>
-        <module>follower-service</module>
+        <module>user-service</module>
     </modules>
 
     <properties>

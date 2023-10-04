@@ -1,0 +1,21 @@
+spring:
+    application:
+        name: follower-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/follower-service
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+server:
+    port: 8300
