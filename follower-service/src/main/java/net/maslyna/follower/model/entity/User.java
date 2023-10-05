@@ -30,7 +30,24 @@ public class User implements BaseEntity<Long> {
     private List<User> followers;
 
     @Column(columnDefinition = "TRUE")
-    private boolean enabledNotifications;
+    private boolean isEnabledNotifications;
+
+    @Column(columnDefinition = "TRUE")
+    private boolean isPublicFollowers;
+
+    @Column(columnDefinition = "TRUE")
+    private boolean isPublicSubscriptions;
+
+    public boolean isEnabledNotifications() {
+        return isEnabledNotifications;
+    }
+    public boolean isPublicFollowers() {
+        return isPublicFollowers;
+    }
+
+    public boolean isPublicSubscriptions() {
+        return isPublicSubscriptions;
+    }
 
     public boolean addFollower(User user) {
         return followers.add(user);

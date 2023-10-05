@@ -3,6 +3,7 @@ package net.maslyna.follower.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
+import net.maslyna.follower.exception.AccessDeniedException;
 import net.maslyna.follower.exception.UserAlreadyExists;
 import net.maslyna.follower.exception.UserNotFoundException;
 import net.maslyna.follower.model.entity.User;
@@ -41,14 +42,36 @@ public class FollowerService {
 
     @Transactional(readOnly = true)
     public Page<User> getUserFollowers(Long userId, PageRequest pageRequest) {
-        User user = getUserById(userId);
-        return new PageImpl<User>(user.getFollowers(), pageRequest, user.getFollowers().size());
+        return getFollowers(userId, pageRequest);
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getUserSubscribers(Long userId, PageRequest pageRequest) {
+    public Page<User> getUserSubscriptions(Long userId, PageRequest pageRequest) {
+        return getSubscriptions(userId, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<User> getUserSubscriptions(
+            Long authUserId,
+            Long userId,
+            PageRequest pageRequest) {
         User user = getUserById(userId);
-        return new PageImpl<>(user.getSubscriptions(), pageRequest, user.getSubscriptions().size());
+        if (!user.isPublicSubscriptions() && !authUserId.equals(userId)) {
+            throw new AccessDeniedException(HttpStatus.FORBIDDEN);
+        }
+        return getSubscriptions(user, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<User> getUserFollowers(
+            Long authUserId,
+            Long userId,
+            PageRequest pageRequest) {
+        User user = getUserById(userId);
+        if (!user.isPublicFollowers() && !authUserId.equals(userId)) {
+            throw new AccessDeniedException(HttpStatus.FORBIDDEN);
+        }
+        return getFollowers(user, pageRequest);
     }
 
     public boolean follow(Long authUserId, Long userId) {
@@ -57,6 +80,24 @@ public class FollowerService {
 
     public boolean unfollow(Long authUserId, Long userId) {
         return modifyFollower(authUserId, userId, User::removeFollower);
+    }
+
+    private Page<User> getSubscriptions(Long userId, PageRequest pageRequest) {
+        User user = getUserById(userId);
+        return new PageImpl<>(user.getSubscriptions(), pageRequest, user.getSubscriptions().size());
+    }
+
+    private Page<User> getSubscriptions(User user, PageRequest pageRequest) {
+        return new PageImpl<>(user.getSubscriptions(), pageRequest, user.getSubscriptions().size());
+    }
+
+    private Page<User> getFollowers(Long userId, PageRequest pageRequest) {
+        User user = getUserById(userId);
+        return new PageImpl<>(user.getFollowers(), pageRequest, user.getFollowers().size());
+    }
+
+    private Page<User> getFollowers(User user, PageRequest pageRequest) {
+        return new PageImpl<>(user.getFollowers(), pageRequest, user.getFollowers().size());
     }
 
     private boolean modifyFollower(Long authUserId, Long userId, BiFunction<User, User, Boolean> action) {
