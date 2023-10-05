@@ -101,6 +101,12 @@ public class FollowerService {
     }
 
     private boolean modifyFollower(Long authUserId, Long userId, BiFunction<User, User, Boolean> action) {
+        if (authUserId.equals(userId)) {
+            throw new AccessDeniedException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.follow.user-follow-himself")
+            );
+        }
         User authUser = getUserById(authUserId);
         User user = getUserById(userId);
         return action.apply(user, authUser);

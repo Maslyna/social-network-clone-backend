@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,16 +24,34 @@ public class FollowerController {
     private final FollowerService followerService;
     private final UserMapper userMapper;
 
-    @PostMapping("/followers")
+    @PostMapping("/user/followers")
     @ResponseStatus(CREATED)
-    private void userRegistration(
+    public void userRegistration(
             @RequestBody UserRegistrationRequest request
     ) {
         followerService.userRegistration(request.userId());
     }
 
-    @GetMapping("/followers")
-    private ResponseEntity<?> getFollowers(
+    @PostMapping("/user/{userId}/followers")
+    @ResponseStatus(OK)
+    public void follow(
+            @PathVariable("userId") Long userId,
+            @RequestHeader("userId") Long authUserId
+    ) {
+        followerService.follow(authUserId, userId);
+    }
+
+    @DeleteMapping("/user/{userId}/followers")
+    @ResponseStatus(OK)
+    public void unfollow(
+            @PathVariable("userId") Long userId,
+            @RequestHeader("userId") Long authUserId
+    ) {
+        followerService.unfollow(authUserId, userId);
+    }
+
+    @GetMapping("/user/followers")
+    public ResponseEntity<?> getFollowers(
             @RequestHeader("userId") Long userId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
@@ -53,8 +72,8 @@ public class FollowerController {
         );
     }
 
-    @GetMapping("/followers/{userId}")
-    private ResponseEntity<?> getFollowers(
+    @GetMapping("/user/{userId}/followers")
+    public ResponseEntity<?> getFollowers(
             @PathVariable("userId") Long userId,
             @RequestHeader("userId") Long authUserId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
@@ -77,8 +96,8 @@ public class FollowerController {
         );
     }
 
-    @GetMapping("/subscriptions")
-    private ResponseEntity<?> getSubscriptions(
+    @GetMapping("/user/subscriptions")
+    public ResponseEntity<?> getSubscriptions(
             @RequestHeader("userId") Long userId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
@@ -93,6 +112,30 @@ public class FollowerController {
     ) {
         return ResponseEntity.ok(
                 followerService.getUserSubscriptions(
+                        userId,
+                        PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
+                ).map(User::getId)
+        );
+    }
+
+    @GetMapping("/user/{userId}/subscriptions")
+    public ResponseEntity<?> getSubscriptions(
+            @PathVariable("userId") Long userId,
+            @RequestHeader("userId") Long authUserId,
+            @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
+            @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
+            @RequestParam(value = "orderBy", defaultValue = "DESC")
+            @Pattern(
+                    regexp = "asc|desc",
+                    flags = {Pattern.Flag.CASE_INSENSITIVE},
+                    message = "error.validation.sort.direction.message"
+            )
+            String order,
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
+    ) {
+        return ResponseEntity.ok(
+                followerService.getUserSubscriptions(
+                        authUserId,
                         userId,
                         PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
                 ).map(User::getId)
