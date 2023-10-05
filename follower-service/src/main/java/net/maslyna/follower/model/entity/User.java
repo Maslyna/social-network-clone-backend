@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 
 @Entity
-@Table(name = "t_followers")
+@Table(name = "t_users")
 public class User implements BaseEntity<Long> {
     @Id
     @Column(name = "user_id")
@@ -20,7 +20,7 @@ public class User implements BaseEntity<Long> {
 
     @ManyToMany
     @JoinTable(
-            name = "user_followers",
+            name = "t_user_followers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
@@ -29,13 +29,10 @@ public class User implements BaseEntity<Long> {
     @ManyToMany(mappedBy = "subscriptions")
     private List<User> followers;
 
-    @Column(columnDefinition = "TRUE")
     private boolean isEnabledNotifications;
 
-    @Column(columnDefinition = "TRUE")
     private boolean isPublicFollowers;
 
-    @Column(columnDefinition = "TRUE")
     private boolean isPublicSubscriptions;
 
     public boolean isEnabledNotifications() {

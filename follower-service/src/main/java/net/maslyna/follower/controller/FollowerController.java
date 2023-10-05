@@ -88,7 +88,7 @@ public class FollowerController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                followerService.getUserSubscriptions(
+                followerService.getUserFollowers(
                         authUserId,
                         userId,
                         PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)

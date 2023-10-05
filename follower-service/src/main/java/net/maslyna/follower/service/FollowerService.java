@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.function.BiFunction;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,11 +30,7 @@ public class FollowerService {
                     messageService.getProperty("error.user.already-exists", userId)
             );
         }
-        userRepository.save(
-                User.builder()
-                        .id(userId)
-                        .build()
-        );
+        save(userId);
         log.info("user with id = {} was saved", userId);
     }
 
@@ -74,12 +68,32 @@ public class FollowerService {
         return getFollowers(user, pageRequest);
     }
 
-    public boolean follow(Long authUserId, Long userId) {
-        return modifyFollower(authUserId, userId, User::addFollower);
+    public void follow(Long authUserId, Long userId) {
+        if (authUserId.equals(userId)) {
+            throw new AccessDeniedException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.follow.user-follow-himself")
+            );
+        }
+        User authUser = getUserById(authUserId);
+        User user = getUserById(userId);
+
+        authUser.addSubscribe(user);
+        user.addFollower(authUser);
     }
 
-    public boolean unfollow(Long authUserId, Long userId) {
-        return modifyFollower(authUserId, userId, User::removeFollower);
+    public void unfollow(Long authUserId, Long userId) {
+        if (authUserId.equals(userId)) {
+            throw new AccessDeniedException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.follow.user-follow-himself")
+            );
+        }
+        User authUser = getUserById(authUserId);
+        User user = getUserById(userId);
+
+        user.removeFollower(authUser);
+        authUser.removeSubscribe(user);
     }
 
     private Page<User> getSubscriptions(Long userId, PageRequest pageRequest) {
@@ -100,23 +114,22 @@ public class FollowerService {
         return new PageImpl<>(user.getFollowers(), pageRequest, user.getFollowers().size());
     }
 
-    private boolean modifyFollower(Long authUserId, Long userId, BiFunction<User, User, Boolean> action) {
-        if (authUserId.equals(userId)) {
-            throw new AccessDeniedException(
-                    HttpStatus.CONFLICT,
-                    messageService.getProperty("error.user.follow.user-follow-himself")
-            );
-        }
-        User authUser = getUserById(authUserId);
-        User user = getUserById(userId);
-        return action.apply(user, authUser);
-    }
-
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                         HttpStatus.NOT_FOUND,
                         messageService.getProperty("user with id = %s not found", userId)
                 ));
+    }
+
+    private User save(Long userId) {
+        return userRepository.save(
+                User.builder()
+                        .id(userId)
+                        .isEnabledNotifications(true)
+                        .isPublicFollowers(true)
+                        .isPublicSubscriptions(true)
+                        .build()
+        );
     }
 }
