@@ -26,10 +26,11 @@ public class FollowerController {
 
     @PostMapping("/user/followers")
     @ResponseStatus(CREATED)
-    public void userRegistration(
+    public ResponseEntity<Void> userRegistration(
             @RequestBody UserRegistrationRequest request
     ) {
         followerService.userRegistration(request.userId());
+        return ResponseEntity.status(CREATED).build();
     }
 
     @PostMapping("/user/{userId}/followers")
