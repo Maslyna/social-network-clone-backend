@@ -23,3 +23,5 @@ jwt:
 services:
     security-service: 'lb://SECURITY-SERVICE'
     user-service: 'lb://USER-SERVICE'
+    post-service: 'lb://POST-SERVICE'
+    follower-service: 'lb://FOLLOWER-SERVICE'

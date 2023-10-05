@@ -32,7 +32,7 @@ public class PostController {
     private final PostMapper postMapper;
 
     @Operation(description = "create new post")
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<UUID> createPost(
             @RequestHeader(name = "userId") Long userId,
             @Valid @RequestBody PostRequest request
