@@ -27,6 +27,7 @@ public class Account implements BaseEntity<Long>, UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Role role;
 
     private boolean isAccountNonLocked;

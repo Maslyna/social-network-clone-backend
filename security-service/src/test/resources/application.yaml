@@ -1,0 +1,6 @@
+security:
+    key: "772c7d21253627397820457440553d4b4b472d6936757d7547695a663c4e536e"
+    prefix: "Bearer "
+eureka:
+    client:
+        enabled: false
