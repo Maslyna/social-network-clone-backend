@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.follower.exception.AccessDeniedException;
 import net.maslyna.follower.exception.UserAlreadyExists;
-import net.maslyna.follower.exception.UserNotFoundException;
 import net.maslyna.follower.model.entity.User;
 import net.maslyna.follower.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -23,28 +22,14 @@ public class FollowerService {
     private final UserRepository userRepository;
     private final PropertiesMessageService messageService;
 
-    public void userRegistration(Long userId) {
-        if (userRepository.existsById(userId)) {
-            throw new UserAlreadyExists(
-                    HttpStatus.CONFLICT,
-                    messageService.getProperty("error.user.already-exists", userId)
-            );
-        }
-        save(userId);
-        log.info("user with id = {} was saved", userId);
-    }
-
-    @Transactional(readOnly = true)
     public Page<User> getUserFollowers(Long userId, PageRequest pageRequest) {
         return getFollowers(userId, pageRequest);
     }
 
-    @Transactional(readOnly = true)
     public Page<User> getUserSubscriptions(Long userId, PageRequest pageRequest) {
         return getSubscriptions(userId, pageRequest);
     }
 
-    @Transactional(readOnly = true)
     public Page<User> getUserSubscriptions(
             Long authUserId,
             Long userId,
@@ -56,7 +41,6 @@ public class FollowerService {
         return getSubscriptions(user, pageRequest);
     }
 
-    @Transactional(readOnly = true)
     public Page<User> getUserFollowers(
             Long authUserId,
             Long userId,
@@ -116,10 +100,19 @@ public class FollowerService {
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        HttpStatus.NOT_FOUND,
-                        messageService.getProperty("user with id = %s not found", userId)
-                ));
+                .orElseGet(() -> userRegistration(userId));
+    }
+
+    private User userRegistration(Long userId) {
+        if (userRepository.existsById(userId)) {
+            throw new UserAlreadyExists(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.already-exists", userId)
+            );
+        }
+        User user = save(userId);
+        log.info("user with id = {} was saved", userId);
+        return user;
     }
 
     private User save(Long userId) {

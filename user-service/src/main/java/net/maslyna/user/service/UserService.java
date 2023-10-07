@@ -2,14 +2,12 @@ package net.maslyna.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maslyna.user.client.FollowerClient;
 import net.maslyna.user.client.SecurityClient;
 import net.maslyna.user.exception.UserAlreadyExistsException;
 import net.maslyna.user.exception.UserNotFoundException;
 import net.maslyna.user.exception.UserRegistrationException;
 import net.maslyna.user.exception.WrongDataException;
 import net.maslyna.user.model.dto.request.SecurityRegistrationRequest;
-import net.maslyna.user.model.dto.request.UserRegistrationFollowerServiceRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
 import net.maslyna.user.model.dto.request.UserRequest;
 import net.maslyna.user.model.dto.response.AuthenticationResponse;
@@ -31,13 +29,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PropertiesMessageService messageService;
     private final SecurityClient securityClient;
-    private final FollowerClient followerClient;
 
     public AuthenticationResponse registration(UserRegistrationRequest request) {
         isEmailValid(request);
         User user = createUser(request.email());
-
-        userFollowerServiceRegistration(user);
 
         return userSecurityServiceRegistration(request, user);
     }
@@ -90,18 +85,6 @@ public class UserService {
                 .email(user.getEmail())
                 .password(request.password())
                 .build();
-    }
-
-    private void userFollowerServiceRegistration(User user) {
-        ResponseEntity<Void> followerServiceResponse = followerClient.userRegistration(
-                new UserRegistrationFollowerServiceRequest(user.getId())
-        );
-        if (!followerServiceResponse.getStatusCode().is2xxSuccessful()) {
-            throw new UserRegistrationException(
-                    HttpStatus.SERVICE_UNAVAILABLE,
-                    messageService.getProperty("error.user.registration")
-            );
-        }
     }
 
     private AuthenticationResponse userSecurityServiceRegistration(UserRegistrationRequest request, User user) {

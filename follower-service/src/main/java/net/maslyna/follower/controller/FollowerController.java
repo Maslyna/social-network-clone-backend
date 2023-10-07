@@ -22,16 +22,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class FollowerController {
     private final FollowerService followerService;
-    private final UserMapper userMapper;
-
-    @PostMapping("/user/followers")
-    @ResponseStatus(CREATED)
-    public ResponseEntity<Void> userRegistration(
-            @RequestBody UserRegistrationRequest request
-    ) {
-        followerService.userRegistration(request.userId());
-        return ResponseEntity.status(CREATED).build();
-    }
 
     @PostMapping("/user/{userId}/followers")
     @ResponseStatus(OK)
