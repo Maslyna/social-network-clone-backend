@@ -100,23 +100,18 @@ public class FollowerService {
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseGet(() -> userRegistration(userId));
+                .orElseGet(() -> saveUser(userId));
     }
 
-    private User userRegistration(Long userId) {
+
+    private User saveUser(Long userId) {
         if (userRepository.existsById(userId)) {
             throw new UserAlreadyExists(
                     HttpStatus.CONFLICT,
                     messageService.getProperty("error.user.already-exists", userId)
             );
         }
-        User user = save(userId);
-        log.info("user with id = {} was saved", userId);
-        return user;
-    }
-
-    private User save(Long userId) {
-        return userRepository.save(
+        User user = userRepository.save(
                 User.builder()
                         .id(userId)
                         .isEnabledNotifications(true)
@@ -124,5 +119,7 @@ public class FollowerService {
                         .isPublicSubscriptions(true)
                         .build()
         );
+        log.info("User with id = {} was saved", userId);
+        return user;
     }
 }
