@@ -6,11 +6,13 @@ public enum AuthenticationType {
         public String prefix() {
             return "Bearer ";
         }
-    }, BASIC {
+    },
+    BASIC {
         public String prefix() {
             return "Basic ";
         }
     };
 
     public abstract String prefix();
+
 }
