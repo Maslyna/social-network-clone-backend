@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.PostNotFoundException;
+import net.maslyna.post.kafka.dto.PostCreatedResponse;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
@@ -15,6 +16,7 @@ import net.maslyna.post.repository.PostRepository;
 import net.maslyna.post.repository.RePostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,7 @@ public class PostService {
     private final RePostRepository rePostRepository;
     private final HashtagRepository hashtagRepository;
     private final PropertiesMessageService messageService;
+    private final KafkaTemplate<String, PostCreatedResponse> kafkaTemplate;
 
     @Transactional(readOnly = true)
     public Page<Post> getPosts(String[] hashtags, PageRequest pageRequest) {
@@ -89,7 +92,7 @@ public class PostService {
                     messageService.getProperty("error.access.denied")
             );
         }
-
+        //TODO: extract new method
         if (request.text() != null) {
             post.setText(request.text());
         }

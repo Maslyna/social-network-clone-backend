@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -103,7 +105,6 @@ public class FollowerService {
                 .orElseGet(() -> saveUser(userId));
     }
 
-
     private User saveUser(Long userId) {
         if (userRepository.existsById(userId)) {
             throw new UserAlreadyExists(
@@ -114,6 +115,8 @@ public class FollowerService {
         User user = userRepository.save(
                 User.builder()
                         .id(userId)
+                        .followers(new ArrayList<>())
+                        .subscriptions(new ArrayList<>())
                         .isEnabledNotifications(true)
                         .isPublicFollowers(true)
                         .isPublicSubscriptions(true)

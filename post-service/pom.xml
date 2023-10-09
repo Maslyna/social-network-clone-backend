@@ -37,7 +37,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
         <!--    MAPSTRUCT    -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -49,7 +48,6 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-
         <!--    EUREKA NETFLIX    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -60,11 +58,23 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <!--    COMMON    -->
         <dependency>
             <groupId>net.maslyna.common</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <!--    KAFKA    -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <!--    TEST    -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
