@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class CommentController {
     private final CommentMapper commentMapper;
-    private final CommentService commentService;
+    private final CommentService commentServiceImpl;
 
     @Operation(description = "create new comment on the post")
     @PostMapping("/{postId}/comments")
@@ -39,7 +39,7 @@ public class CommentController {
             @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.status(CREATED).body(
-                commentService.postComment(authenticatedUserId, postId, commentRequest)
+                commentServiceImpl.postComment(authenticatedUserId, postId, commentRequest)
         );
     }
 
@@ -60,7 +60,7 @@ public class CommentController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                commentService.getComments(
+                commentServiceImpl.getComments(
                         authenticatedUserId,
                         postId,
                         PageRequest.of(pageNum, pageSize, Direction.valueOf(order), sortBy)
@@ -77,7 +77,7 @@ public class CommentController {
             @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.status(CREATED).body(
-                commentService.postComment(authenticatedUserId, postId, commentId, commentRequest)
+                commentServiceImpl.postComment(authenticatedUserId, postId, commentId, commentRequest)
         );
     }
 
@@ -90,7 +90,7 @@ public class CommentController {
             @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.ok(
-                commentService.editComment(authenticatedUserId, postId, commentId, commentRequest)
+                commentServiceImpl.editComment(authenticatedUserId, postId, commentId, commentRequest)
         );
     }
 
@@ -102,6 +102,6 @@ public class CommentController {
             @PathVariable("postId") UUID postId,
             @PathVariable("commentId") UUID commentId
     ) {
-        commentService.deleteComment(authenticatedUserId, postId, commentId);
+        commentServiceImpl.deleteComment(authenticatedUserId, postId, commentId);
     }
 }

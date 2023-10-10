@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @Validated
 public class PostController {
-    private final PostService postService;
+    private final PostService postServiceImpl;
     private final PostMapper postMapper;
 
     @Operation(description = "create new post")
@@ -38,7 +38,7 @@ public class PostController {
             @Valid @RequestBody PostRequest request
     ) {
         return ResponseEntity.status(CREATED).body(
-                postService.createPost(userId, request)
+                postServiceImpl.createPost(userId, request)
         );
     }
 
@@ -50,7 +50,7 @@ public class PostController {
             @Valid @RequestBody PostRequest request
     ) {
         return ResponseEntity.status(CREATED).body(
-                postService.createRepost(userId, postId, request)
+                postServiceImpl.createRepost(userId, postId, request)
         );
     }
 
@@ -62,7 +62,7 @@ public class PostController {
             @RequestBody PostRequest request
     ) {
         return ResponseEntity.status(OK).body(
-                postService.editPost(authenticatedUserId, postId, request)
+                postServiceImpl.editPost(authenticatedUserId, postId, request)
         );
     }
 
@@ -82,7 +82,7 @@ public class PostController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                postService.getPosts(
+                postServiceImpl.getPosts(
                         hashtags,
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(postMapper::postToPostResponse)
@@ -106,7 +106,7 @@ public class PostController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                postService.getPersonPosts(
+                postServiceImpl.getPersonPosts(
                         userId,
                         authenticatedUserId,
                         PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
@@ -121,7 +121,7 @@ public class PostController {
             @RequestHeader("userId") Long authenticatedUserId
     ) {
         return ResponseEntity.ok(
-                postMapper.postToPostResponse(postService.getPost(authenticatedUserId, postId))
+                postMapper.postToPostResponse(postServiceImpl.getPost(authenticatedUserId, postId))
         );
     }
 
@@ -132,6 +132,6 @@ public class PostController {
             @PathVariable("postId") UUID postId,
             @RequestHeader("userId") Long authenticatedUserId
     ) {
-        postService.deletePost(authenticatedUserId, postId);
+        postServiceImpl.deletePost(authenticatedUserId, postId);
     }
 }

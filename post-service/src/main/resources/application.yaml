@@ -19,6 +19,8 @@ spring:
             partitions: 3
             notification:
                 post: post-notification
+                post-liked: post-liked-notification
+                comment-liked: comment-liked-notification
 
 eureka:
     client:

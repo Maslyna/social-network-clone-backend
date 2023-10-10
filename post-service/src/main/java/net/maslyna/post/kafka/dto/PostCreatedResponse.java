@@ -1,15 +1,15 @@
 package net.maslyna.post.kafka.dto;
 
 import lombok.Builder;
-import net.maslyna.post.model.dto.response.HashtagResponse;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.UUID;
 
 @Builder
 public record PostCreatedResponse(
         Long userId,
+        UUID rePost,
         String title,
-        String text,
-        List<HashtagResponse> hashtags
+        Instant createdAt
 ) {
 }

@@ -1,5 +1,6 @@
 package net.maslyna.post.mapper;
 
+import net.maslyna.post.kafka.dto.PostCreatedResponse;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;
@@ -10,17 +11,16 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper { //TODO: make own mappers will be better idea
 
     default PostResponse postToPostResponse(Post post) {
-        if (post instanceof RePost) {
-            return rePostToPostResponse((RePost) post);
-        }
         return PostResponse.builder()
                 .postId(post.getId())
+                .originalPost(getOriginalPostId(post))
                 .userId(post.getUserId())
                 .title(post.getTitle())
                 .status(post.getStatus())
@@ -32,19 +32,17 @@ public interface PostMapper { //TODO: make own mappers will be better idea
                 .build();
     }
 
-    default PostResponse rePostToPostResponse(RePost rePost) {
-        return PostResponse.builder()
-                .postId(rePost.getId())
-                .userId(rePost.getUserId())
-                .originalPost(rePost.getOriginalPost().getId())
-                .title(rePost.getTitle())
-                .status(rePost.getStatus())
-                .text(rePost.getText())
-                .hashtags(setHashtagToSetHashtagResponse(rePost.getHashtags()))
-                .commentsAmount(countComments(rePost))
-                .likesAmount(countLikes(rePost))
-                .createdAt(rePost.getCreatedAt())
+    default PostCreatedResponse postToPostCreatedResponse(Post post) {
+        return PostCreatedResponse.builder()
+                .userId(post.getUserId())
+                .title(post.getTitle())
+                .rePost(getOriginalPostId(post))
+                .createdAt(post.getCreatedAt())
                 .build();
+    }
+
+    default UUID getOriginalPostId(Post post) {
+        return  (post instanceof RePost) ? ((RePost) post).getOriginalPost().getId() : null;
     }
 
 
