@@ -1,6 +1,5 @@
 package net.maslyna.secutiry.exceptions;
 
-import net.maslyna.secutiry.exceptions.GlobalSecurityServiceException;
 import org.springframework.http.HttpStatusCode;
 
 public class AuthenticationException extends GlobalSecurityServiceException {

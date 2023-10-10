@@ -4,7 +4,6 @@ import net.maslyna.post.kafka.dto.PostCreatedResponse;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;
-import net.maslyna.post.model.entity.post.AbstractPost;
 import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.model.entity.post.RePost;
 import org.mapstruct.Mapper;
