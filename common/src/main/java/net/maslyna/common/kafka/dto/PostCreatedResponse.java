@@ -1,4 +1,4 @@
-package net.maslyna.post.kafka.dto;
+package net.maslyna.common.kafka.dto;
 
 import lombok.Builder;
 

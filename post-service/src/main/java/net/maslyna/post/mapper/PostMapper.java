@@ -1,6 +1,6 @@
 package net.maslyna.post.mapper;
 
-import net.maslyna.post.kafka.dto.PostCreatedResponse;
+import net.maslyna.common.kafka.dto.PostCreatedResponse;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;

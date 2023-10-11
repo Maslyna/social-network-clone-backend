@@ -16,6 +16,7 @@
         <module>post-service</module>
         <module>common</module>
         <module>user-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>
