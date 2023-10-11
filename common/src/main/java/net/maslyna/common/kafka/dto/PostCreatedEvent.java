@@ -6,8 +6,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Builder
-public record PostCreatedResponse(
+public record PostCreatedEvent(
         Long userId,
+        UUID post,
         UUID rePost,
         String title,
         Instant createdAt

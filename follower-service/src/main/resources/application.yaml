@@ -13,6 +13,14 @@ spring:
             hibernate:
                 format_sql: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
+    kafka:
+        bootstrap-servers: localhost:9092
+        topics:
+            partitions: 3
+            notification:
+                post: post-notification
+                notification-send:
+                    post-created: post-created-notification
 eureka:
     client:
         service-url:

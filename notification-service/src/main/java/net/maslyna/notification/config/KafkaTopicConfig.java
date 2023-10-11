@@ -9,21 +9,21 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${spring.kafka.topics.notification.post}")
-    private String postTopic;
-
-    @Value("${spring.kafka.topics.notification.post-liked}")
+    @Value("${spring.kafka.topics.notification.notification-send.post-liked}")
     private String postLikedTopic;
 
-    @Value("${spring.kafka.topics.notification.comment-liked}")
+    @Value("${spring.kafka.topics.notification.notification-send.comment-liked}")
     private String commentLikedTopic;
+
+    @Value("${spring.kafka.topics.notification.notification-send.post-created}")
+    private String postCreatedTopic;
 
     @Value("${spring.kafka.topics.partitions}")
     private int partitions;
 
     @Bean
     public NewTopic postCreatedTopic() {
-        return TopicBuilder.name(postTopic)
+        return TopicBuilder.name(postCreatedTopic)
                 .partitions(partitions)
                 .build();
     }

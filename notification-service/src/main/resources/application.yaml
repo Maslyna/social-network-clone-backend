@@ -18,9 +18,10 @@ spring:
         topics:
             partitions: 3
             notification:
-                post: post-notification
-                post-liked: post-liked-notification
-                comment-liked: comment-liked-notification
+                notification-send:
+                    post-created: post-created-notification
+                    post-liked: post-liked-notification
+                    comment-liked: comment-liked-notification
 server:
     port: 8400
 

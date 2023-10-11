@@ -1,6 +1,6 @@
 package net.maslyna.post.mapper;
 
-import net.maslyna.common.kafka.dto.PostCreatedResponse;
+import net.maslyna.common.kafka.dto.PostCreatedEvent;
 import net.maslyna.post.model.dto.response.HashtagResponse;
 import net.maslyna.post.model.dto.response.PostResponse;
 import net.maslyna.post.model.entity.Hashtag;
@@ -31,10 +31,11 @@ public interface PostMapper { //TODO: make own mappers will be better idea
                 .build();
     }
 
-    default PostCreatedResponse postToPostCreatedResponse(Post post) {
-        return PostCreatedResponse.builder()
+    default PostCreatedEvent postToPostCreatedResponse(Post post) {
+        return PostCreatedEvent.builder()
                 .userId(post.getUserId())
                 .title(post.getTitle())
+                .post(post.getId())
                 .rePost(getOriginalPostId(post))
                 .createdAt(post.getCreatedAt())
                 .build();
