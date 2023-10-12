@@ -2,23 +2,45 @@ package net.maslyna.notification.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.kafka.dto.CommentLikedEvent;
+import net.maslyna.common.kafka.dto.PostLikedEvent;
+import net.maslyna.common.kafka.dto.PostNotificationEvent;
+import net.maslyna.notification.service.EmailService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaListeners {
 
+    private final EmailService emailService;
+
     @KafkaListener(
             topics = "#{ '${spring.kafka.topics.notification.notification-send.post-created}' }",
             groupId = "post",
             containerFactory = "kafkaListenerFactory"
     )
-    public void handlerPostMessageSendingEvent(List<String> emails) {
-//        PostCreatedResponse response = objectMapper.readValue(o, PostCreatedResponse.class);
-        log.info("emails = {}", emails);
+    public void handlerPostCreatedEvent(PostNotificationEvent event) {
+        //TODO: implement notification logic
+        log.info("postnotificationevent = {}", event);
+    }
+
+    @KafkaListener(
+            topics = "#{ '${spring.kafka.topics.notification.notification-send.post-liked}' }",
+            groupId = "post",
+            containerFactory = "kafkaListenerFactory"
+    )
+    public void handlePostLikedEvent(PostLikedEvent event) {
+        log.info("postlikedevent = {}", event);
+    }
+
+    @KafkaListener(
+            topics = "#{ '${spring.kafka.topics.notification.notification-send.comment-liked}' }",
+            groupId = "post",
+            containerFactory = "kafkaListenerFactory"
+    )
+    public void handleCommentLikedEvent(CommentLikedEvent event) {
+        log.info("commentlikedevent = {}", event);
     }
 }

@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+        <!--    COMMON    -->
+        <dependency>
+            <groupId>net.maslyna.common</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <!--    DATABASE    -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -63,11 +70,10 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
+        <!--    MAIL    -->
         <dependency>
-            <groupId>net.maslyna.common</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
     </dependencies>
 </project>

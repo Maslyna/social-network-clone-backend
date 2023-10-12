@@ -1,8 +1,8 @@
 package net.maslyna.post.kafka.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import net.maslyna.post.kafka.dto.CommentLikedResponse;
-import net.maslyna.post.kafka.dto.PostLikedResponse;
+import net.maslyna.common.kafka.dto.CommentLikedEvent;
+import net.maslyna.common.kafka.dto.PostLikedEvent;
 import net.maslyna.post.kafka.service.KafkaService;
 import net.maslyna.post.mapper.PostMapper;
 import net.maslyna.post.model.entity.Comment;
@@ -32,7 +32,7 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public void sendPostLiked(Long authUser, Post post) {
         kafkaTemplate.send(postLikedTopic,
-                PostLikedResponse.builder()
+                PostLikedEvent.builder()
                         .postOwnerId(post.getUserId())
                         .userId(authUser)
                         .build()
@@ -42,7 +42,7 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public void sendCommentLiked(Long authenticatedUserId, Comment comment) {
         kafkaTemplate.send(commentLikedTopic,
-                CommentLikedResponse.builder()
+                CommentLikedEvent.builder()
                         .userId(authenticatedUserId)
                         .commentId(comment.getId())
                         .postId(comment.getPost().getId())

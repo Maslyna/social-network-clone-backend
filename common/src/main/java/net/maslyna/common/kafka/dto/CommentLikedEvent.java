@@ -1,11 +1,11 @@
-package net.maslyna.post.kafka.dto;
+package net.maslyna.common.kafka.dto;
 
 import lombok.Builder;
 
 import java.util.UUID;
 
 @Builder
-public record CommentLikedResponse(
+public record CommentLikedEvent(
         UUID commentId,
         UUID postId,
         Long commentOwnerId,

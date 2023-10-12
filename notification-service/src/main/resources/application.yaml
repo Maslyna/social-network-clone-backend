@@ -22,6 +22,14 @@ spring:
                     post-created: post-created-notification
                     post-liked: post-liked-notification
                     comment-liked: comment-liked-notification
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: '${EMAIL_USER}'
+        password: '${EMAIL_PASSWORD}'
+        properties:
+            mail.smtp.auth: true
+            mail.smtp.starttls.enable: true
 server:
     port: 8400
 
