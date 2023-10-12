@@ -8,16 +8,22 @@ import java.util.List;
 
 public interface FollowerService {
 
+    User getUserById(Long userId);
+
+    List<User> getFollowers(Long userId);
+
+    List<User> getSubscriptions(Long userId);
+
     Page<User> getUserFollowers(Long userId, PageRequest pageRequest);
 
     Page<User> getUserSubscriptions(Long userId, PageRequest pageRequest);
 
-    Page<User> getUserSubscriptions(
+    Page<User> getSubscriptions(
             Long authUserId,
             Long userId,
             PageRequest pageRequest);
 
-    Page<User> getUserFollowers(
+    Page<User> getFollowers(
             Long authUserId,
             Long userId,
             PageRequest pageRequest);

@@ -17,7 +17,7 @@ public class KafkaListeners {
             groupId = "post",
             containerFactory = "kafkaListenerFactory"
     )
-    public void listener(List<String> emails) {
+    public void handlerPostMessageSendingEvent(List<String> emails) {
 //        PostCreatedResponse response = objectMapper.readValue(o, PostCreatedResponse.class);
         log.info("emails = {}", emails);
     }

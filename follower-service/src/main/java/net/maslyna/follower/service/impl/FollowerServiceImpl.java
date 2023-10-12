@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,17 +27,35 @@ public class FollowerServiceImpl implements FollowerService {
     private final PropertiesMessageService messageService;
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseGet(() -> saveUser(userId));
+    }
+
+    @Override
+    public List<User> getFollowers(Long userId) {
+        return getUserById(userId).getFollowers();
+    }
+
+
+    @Override
+    public List<User> getSubscriptions(Long userId) {
+        return getUserById(userId).getSubscriptions();
+    }
+
+
+    @Override
     public Page<User> getUserFollowers(Long userId, PageRequest pageRequest) {
-        return getFollowers(userId, pageRequest);
+        return getFollowersPage(userId, pageRequest);
     }
 
     @Override
     public Page<User> getUserSubscriptions(Long userId, PageRequest pageRequest) {
-        return getSubscriptions(userId, pageRequest);
+        return getSubscriptionsPage(userId, pageRequest);
     }
 
     @Override
-    public Page<User> getUserSubscriptions(
+    public Page<User> getSubscriptions(
             Long authUserId,
             Long userId,
             PageRequest pageRequest) {
@@ -44,11 +63,11 @@ public class FollowerServiceImpl implements FollowerService {
         if (!user.isPublicSubscriptions() && !authUserId.equals(userId)) {
             throw new AccessDeniedException(HttpStatus.FORBIDDEN);
         }
-        return getSubscriptions(user, pageRequest);
+        return getSubscriptionsPage(user, pageRequest);
     }
 
     @Override
-    public Page<User> getUserFollowers(
+    public Page<User> getFollowers(
             Long authUserId,
             Long userId,
             PageRequest pageRequest) {
@@ -56,7 +75,7 @@ public class FollowerServiceImpl implements FollowerService {
         if (!user.isPublicFollowers() && !authUserId.equals(userId)) {
             throw new AccessDeniedException(HttpStatus.FORBIDDEN);
         }
-        return getFollowers(user, pageRequest);
+        return getFollowersPage(user, pageRequest);
     }
 
     @Override
@@ -89,27 +108,22 @@ public class FollowerServiceImpl implements FollowerService {
         authUser.removeSubscribe(user);
     }
 
-    private Page<User> getSubscriptions(Long userId, PageRequest pageRequest) {
+    private Page<User> getSubscriptionsPage(Long userId, PageRequest pageRequest) {
         User user = getUserById(userId);
         return new PageImpl<>(user.getSubscriptions(), pageRequest, user.getSubscriptions().size());
     }
 
-    private Page<User> getSubscriptions(User user, PageRequest pageRequest) {
+    private Page<User> getSubscriptionsPage(User user, PageRequest pageRequest) {
         return new PageImpl<>(user.getSubscriptions(), pageRequest, user.getSubscriptions().size());
     }
 
-    private Page<User> getFollowers(Long userId, PageRequest pageRequest) {
+    private Page<User> getFollowersPage(Long userId, PageRequest pageRequest) {
         User user = getUserById(userId);
         return new PageImpl<>(user.getFollowers(), pageRequest, user.getFollowers().size());
     }
 
-    private Page<User> getFollowers(User user, PageRequest pageRequest) {
+    private Page<User> getFollowersPage(User user, PageRequest pageRequest) {
         return new PageImpl<>(user.getFollowers(), pageRequest, user.getFollowers().size());
-    }
-
-    private User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseGet(() -> saveUser(userId));
     }
 
     private User saveUser(Long userId) {

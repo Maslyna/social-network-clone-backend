@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 
 @Entity
-@Table(name = "t_users")
+@Table(name = "t_user_connections")
 public class User implements BaseEntity<Long> {
     @Id
     @Column(name = "user_id")

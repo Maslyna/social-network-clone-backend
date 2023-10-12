@@ -76,7 +76,7 @@ public class FollowerController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                followerService.getUserFollowers(
+                followerService.getFollowers(
                         authUserId,
                         userId,
                         PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
@@ -122,7 +122,7 @@ public class FollowerController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                followerService.getUserSubscriptions(
+                followerService.getSubscriptions(
                         authUserId,
                         userId,
                         PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
