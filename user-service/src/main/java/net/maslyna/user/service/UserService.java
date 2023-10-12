@@ -75,9 +75,6 @@ public class UserService {
                 ));
     }
 
-    private boolean isResponseValid(ResponseEntity<?> response) {
-        return response.getStatusCode().is2xxSuccessful() && response.getBody() != null;
-    }
 
     private SecurityRegistrationRequest getRegistrationRequest(UserRegistrationRequest request, User user) {
         return SecurityRegistrationRequest.builder()
@@ -85,6 +82,10 @@ public class UserService {
                 .email(user.getEmail())
                 .password(request.password())
                 .build();
+    }
+
+    private boolean isResponseValid(ResponseEntity<?> response) {
+        return response.getStatusCode().is2xxSuccessful() && response.getBody() != null;
     }
 
     private AuthenticationResponse userSecurityServiceRegistration(UserRegistrationRequest request, User user) {

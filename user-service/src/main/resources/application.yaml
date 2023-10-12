@@ -7,12 +7,16 @@ spring:
         url: jdbc:postgresql://localhost:5432/user-service
     jpa:
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: none
         show-sql: true
         properties:
             hibernate:
                 format_sql: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
+    sql:
+        init:
+            mode: always
+
 eureka:
     client:
         service-url:

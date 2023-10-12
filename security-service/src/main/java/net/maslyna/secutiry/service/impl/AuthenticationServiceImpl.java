@@ -35,7 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (accountService.isUserAlreadyExists(request.id(), request.email())) {
             throw new EmailOccupiedException(
                     HttpStatus.CONFLICT,
-                    messageService.getProperty("error.account.email.occupied")
+                    messageService.getProperty("error.account.occupied", request.email(), request.id())
             );
         }
         Account newAccount = accountService.createUserAccount(request.id(), request.email(), request.password());
