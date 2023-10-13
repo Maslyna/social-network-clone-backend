@@ -1,6 +1,7 @@
 package net.maslyna.post.kafka.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import net.maslyna.common.kafka.dto.CommentCreatedEvent;
 import net.maslyna.common.kafka.dto.CommentLikedEvent;
 import net.maslyna.common.kafka.dto.PostLikedEvent;
 import net.maslyna.post.kafka.service.KafkaService;
@@ -38,6 +39,7 @@ public class KafkaServiceImpl implements KafkaService {
                         .build()
         );
     }
+
 
     @Override
     public void sendCommentLiked(Long authenticatedUserId, Comment comment) {

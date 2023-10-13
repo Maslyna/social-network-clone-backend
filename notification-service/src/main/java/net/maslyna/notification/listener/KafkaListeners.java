@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.kafka.dto.CommentLikedEvent;
 import net.maslyna.common.kafka.dto.PostLikedEvent;
 import net.maslyna.common.kafka.dto.PostNotificationEvent;
+import net.maslyna.notification.model.HtmlTemplate;
 import net.maslyna.notification.service.EmailService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaListeners {
-
     private final EmailService emailService;
 
     @KafkaListener(
@@ -23,7 +23,9 @@ public class KafkaListeners {
     )
     public void handlerPostCreatedEvent(PostNotificationEvent event) {
         //TODO: implement notification logic
-        log.info("postnotificationevent = {}", event);
+        log.info("postCreatedEvent = {}", event);
+        HtmlTemplate template = HtmlTemplate.POST_CREATED;
+
     }
 
     @KafkaListener(
@@ -32,7 +34,7 @@ public class KafkaListeners {
             containerFactory = "kafkaListenerFactory"
     )
     public void handlePostLikedEvent(PostLikedEvent event) {
-        log.info("postlikedevent = {}", event);
+        log.info("postLikedEvent = {}", event);
     }
 
     @KafkaListener(
@@ -41,6 +43,6 @@ public class KafkaListeners {
             containerFactory = "kafkaListenerFactory"
     )
     public void handleCommentLikedEvent(CommentLikedEvent event) {
-        log.info("commentlikedevent = {}", event);
+        log.info("commentLikedEvent = {}", event);
     }
 }

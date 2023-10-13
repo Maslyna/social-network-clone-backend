@@ -20,6 +20,7 @@ spring:
             notification:
                 post: post-notification
                 post-liked: post-liked-notification
+                comment: comment-notification
                 comment-liked: comment-liked-notification
 
 eureka:

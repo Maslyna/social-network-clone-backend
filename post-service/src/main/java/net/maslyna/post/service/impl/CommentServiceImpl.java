@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.CommentNotFoundException;
+import net.maslyna.post.kafka.service.KafkaService;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
@@ -32,7 +33,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final PostService postServiceImpl;
+    private final PostService postService;
     private final PropertiesMessageService messageService;
 
     @Override
@@ -42,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
             UUID postId,
             PageRequest pageRequest
     ) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         List<Comment> comments = new ArrayList<>(post.getComments());
         return new PageImpl<>(comments, pageRequest, comments.size());
     }
@@ -53,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
             UUID postId,
             CommentRequest commentRequest
     ) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = createComment(authenticatedUserId, commentRequest.text());
         post.addComment(comment);
         comment.setPost(post);
@@ -67,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             CommentRequest commentRequest
     ) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         Comment newComment = createComment(authenticatedUserId, comment, commentRequest.text());
         newComment.setPost(post);
@@ -82,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             CommentRequest commentRequest
     ) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(
@@ -103,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             UUID postId
     ) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(

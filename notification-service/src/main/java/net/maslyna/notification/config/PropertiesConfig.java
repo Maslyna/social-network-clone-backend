@@ -4,6 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:${envTarget:error-messages}.properties")
+@PropertySource("classpath:${envTarget:notification}.properties")
 public class PropertiesConfig {
 }
