@@ -75,3 +75,11 @@
 > future. Include details on API endpoints, data models, and any specific configurations.
 
 ---
+
+## TESTs
+
+#### Global test coverage:
+TODO: make global test coverage
+
+#### 1. SECURITY-SERVICE coverage:
+![security-service-test-coverage.png](images%2Fsecurity-service-test-coverage.png)
