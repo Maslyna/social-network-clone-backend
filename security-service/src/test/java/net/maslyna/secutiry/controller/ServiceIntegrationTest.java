@@ -1,5 +1,6 @@
 package net.maslyna.secutiry.controller;
 
+import net.maslyna.secutiry.config.AuthenticationType;
 import net.maslyna.secutiry.service.BasicService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,20 +55,58 @@ public class ServiceIntegrationTest {
     }
 
     @Test
-    public void normalRegistration_ReturnsCreated() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
+    public void registrationTests() throws Exception {
+        normalRegistration_ReturnsCreated();
+        emptyRegistration_ReturnsBadRequest();
+        emailOccupiedRegistration_ReturnsConflict();
+    }
+
+    @Test
+    public void authenticationTests() throws Exception {
+        createDefaultUser();
+        basicAuth_ReturnsOk();
+        emptyAuth_ReturnsUnauthorized();
+        notValidAuth_ReturnsUnauthorized();
+    }
+
+    @Test
+    public void logoutTests() throws Exception {
+        logout_ReturnsOk();
+    }
+
+
+    private void logout_ReturnsOk() throws Exception {
+        MockHttpServletResponse response = createDefaultUser();
+        String token = objectMapper.reader().readTree(response.getContentAsString()).get("token").asText();
+        System.out.println(token);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.LOGOUT)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, AuthenticationType.BEARER.prefix() + token)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    private void normalRegistration_ReturnsCreated() throws Exception {
+        createDefaultUser();
+    }
+
+    private MockHttpServletResponse createDefaultUser() throws Exception {
+        return mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.REGISTRATION)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(createRegistrationRequest())
+                        .content(toJSON(defaultTestUser))
         ).andExpectAll(
                 status().isCreated(),
                 content().contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
     }
 
-    @Test
-    public void emptyRegistration_ReturnsBadRequest() throws Exception {
+
+    private void emptyRegistration_ReturnsBadRequest() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.REGISTRATION)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -76,23 +115,20 @@ public class ServiceIntegrationTest {
         );
     }
 
-    @Test
-    public void emailOccupiedRegistration_ReturnsConflict() throws Exception {
-        normalRegistration_ReturnsCreated();
+
+    private void emailOccupiedRegistration_ReturnsConflict() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.REGISTRATION)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(createRegistrationRequest())
+                        .content(toJSON(defaultTestUser))
         ).andExpectAll(
                 status().isConflict(),
                 content().contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
     }
 
-    @Test
-    public void normalAuth_ReturnsOk() throws Exception {
-        normalRegistration_ReturnsCreated();
+    private void basicAuth_ReturnsOk() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.AUTHENTICATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -104,9 +140,7 @@ public class ServiceIntegrationTest {
         );
     }
 
-    @Test
-    public void emptyAuth_ReturnsUnauthorized() throws Exception {
-        normalRegistration_ReturnsCreated();
+    private void emptyAuth_ReturnsUnauthorized() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.AUTHENTICATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -117,9 +151,7 @@ public class ServiceIntegrationTest {
         );
     }
 
-    @Test
     public void notValidAuth_ReturnsUnauthorized() throws Exception {
-        normalRegistration_ReturnsCreated();
         mockMvc.perform(
                 MockMvcRequestBuilders.post(ServiceURI.AUTHENTICATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -129,14 +161,6 @@ public class ServiceIntegrationTest {
         ).andExpectAll(
                 status().isUnauthorized()
         );
-    }
-
-    private String createRegistrationRequest() throws Exception {
-        return toJSON(defaultTestUser);
-    }
-
-    private String createRegistrationRequest(Long id, String email, String password) throws Exception {
-        return toJSON(new TestRegistrationRequest(id, email, password));
     }
 
     private String toJSON(Object obj) throws Exception {
