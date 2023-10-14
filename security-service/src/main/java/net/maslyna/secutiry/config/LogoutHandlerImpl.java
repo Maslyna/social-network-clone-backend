@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.message.MessageType;
+import net.maslyna.common.response.ErrorMessageResponse;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.secutiry.exceptions.AuthenticationException;
 import net.maslyna.secutiry.exceptions.GlobalSecurityServiceException;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -66,9 +69,15 @@ public class LogoutHandlerImpl implements LogoutHandler {
     private void exceptionWriter(HttpServletResponse response, GlobalSecurityServiceException e) {
         response.setContentType("application/json");
         response.setStatus(e.getBody().getStatus());
-        e.getBody().setDetail(e.getMessage());
+        ErrorMessageResponse error = ErrorMessageResponse.builder()
+                .createdAt(Instant.now())
+                .statusCode((HttpStatus) e.getStatusCode())
+                .status(e.getStatusCode().value())
+                .type(MessageType.ERROR)
+                .message(e.getReason())
+                .build();
         try {
-            response.getWriter().write(objectMapper.writeValueAsString(e.getBody()));
+            response.getWriter().write(objectMapper.writeValueAsString(error));
         } catch (IOException ignored) {
 
         }

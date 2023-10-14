@@ -32,7 +32,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final BasicService basicService;
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
-    private final PropertiesMessageService messageService;
 
     @Override
     protected void doFilterInternal(
