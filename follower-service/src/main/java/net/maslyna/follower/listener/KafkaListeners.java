@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.kafka.dto.PostCreatedEvent;
 import net.maslyna.follower.client.UserClient;
-import net.maslyna.follower.client.UserResponse;
+import net.maslyna.common.response.UserResponse;
 import net.maslyna.follower.model.entity.User;
 import net.maslyna.follower.producer.KafkaProducer;
 import net.maslyna.follower.service.FollowerService;
@@ -37,8 +37,9 @@ public class KafkaListeners {
                 .map(userClient::getUserById)
                 .map(UserResponse::email).toList();
 
-        producer.sendPostNotificationsEvent(event, emails);
-
-        log.info("notifications was sent for users with emails = {}", emails);
+        if (!emails.isEmpty()) {
+            producer.sendPostNotificationsEvent(event, emails);
+            log.info("notifications was sent for users with emails = {}", emails);
+        }
     }
 }

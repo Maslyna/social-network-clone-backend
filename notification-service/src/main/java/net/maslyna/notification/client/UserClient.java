@@ -1,4 +1,4 @@
-package net.maslyna.follower.client;
+package net.maslyna.notification.client;
 
 import net.maslyna.common.response.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;

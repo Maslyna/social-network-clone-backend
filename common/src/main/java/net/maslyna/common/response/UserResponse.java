@@ -1,4 +1,4 @@
-package net.maslyna.notification.model.dto;
+package net.maslyna.common.response;
 
 import lombok.Builder;
 
