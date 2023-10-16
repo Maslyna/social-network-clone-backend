@@ -1,0 +1,18 @@
+eureka:
+    client:
+        enabled: false
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+    kafka:
+        bootstrap-servers: localhost:9092
+        topics:
+            partitions: 1
+            notification:
+                post: post-notification
+                post-liked: post-liked-notification
+                comment: comment-notification
+                comment-liked: comment-liked-notification
+        consumer:
+            group-id: post

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.PostNotFoundException;
-import net.maslyna.post.kafka.service.KafkaService;
+import net.maslyna.post.producer.KafkaProducer;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService {
     private final RePostRepository rePostRepository;
     private final HashtagRepository hashtagRepository;
     private final PropertiesMessageService messageService;
-    private final KafkaService kafkaService;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
 
         log.info("post with id = {} created", post.getId());
 
-        kafkaService.sendPostCreated(post);
+        kafkaProducer.sendPostCreatedEvent(post);
         return post.getId();
     }
 
@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
 
         log.info("repost with id = {} created", rePost.getId());
 
-        kafkaService.sendPostCreated(rePost);
+        kafkaProducer.sendPostCreatedEvent(rePost);
         return rePost.getId();
     }
 

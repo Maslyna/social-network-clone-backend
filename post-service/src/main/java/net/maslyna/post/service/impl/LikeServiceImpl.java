@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.LikeAlreadyExists;
 import net.maslyna.post.exception.NotFoundException;
-import net.maslyna.post.kafka.service.KafkaService;
+import net.maslyna.post.producer.KafkaProducer;
 import net.maslyna.post.model.entity.Comment;
 import net.maslyna.post.model.entity.like.CommentLike;
 import net.maslyna.post.model.entity.like.PostLike;
@@ -39,7 +39,7 @@ public class LikeServiceImpl implements LikeService {
     private final CommentLikeRepository commentLikeRepository;
     private final PostLikeRepository postLikeRepository;
     private final PropertiesMessageService messageService;
-    private final KafkaService kafkaService;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public UUID likePost(Long authenticatedUserId, UUID postId) {
@@ -53,7 +53,7 @@ public class LikeServiceImpl implements LikeService {
         PostLike like = createLike(authenticatedUserId, post);
         post.addLike(like);
 
-        kafkaService.sendPostLiked(authenticatedUserId, post);
+        kafkaProducer.sendPostLikedEvent(authenticatedUserId, post);
 
         return like.getId();
     }
@@ -70,7 +70,7 @@ public class LikeServiceImpl implements LikeService {
         CommentLike like = createLike(authenticatedUserId, comment);
         comment.addLike(like);
 
-        kafkaService.sendCommentLiked(authenticatedUserId, comment);
+        kafkaProducer.sendCommentLikedEvent(authenticatedUserId, comment);
 
         return like.getId();
     }

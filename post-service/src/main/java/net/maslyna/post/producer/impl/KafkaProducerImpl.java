@@ -1,20 +1,24 @@
-package net.maslyna.post.kafka.service.impl;
+package net.maslyna.post.producer.impl;
 
 import lombok.RequiredArgsConstructor;
-import net.maslyna.common.kafka.dto.CommentCreatedEvent;
+import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.kafka.dto.CommentLikedEvent;
 import net.maslyna.common.kafka.dto.PostLikedEvent;
-import net.maslyna.post.kafka.service.KafkaService;
 import net.maslyna.post.mapper.PostMapper;
 import net.maslyna.post.model.entity.Comment;
 import net.maslyna.post.model.entity.post.Post;
+import net.maslyna.post.producer.KafkaProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.Arrays;
+
+@Component
+@Slf4j
 @RequiredArgsConstructor
-public class KafkaServiceImpl implements KafkaService {
+public class KafkaProducerImpl implements KafkaProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final PostMapper postMapper;
 
@@ -26,13 +30,13 @@ public class KafkaServiceImpl implements KafkaService {
     private String commentLikedTopic;
 
     @Override
-    public void sendPostCreated(Post post) {
-        kafkaTemplate.send(postCreatedTopic, postMapper.postToPostCreatedResponse(post));
+    public void sendPostCreatedEvent(Post post) {
+        send(postCreatedTopic, postMapper.postToPostCreatedResponse(post));
     }
 
     @Override
-    public void sendPostLiked(Long authUser, Post post) {
-        kafkaTemplate.send(postLikedTopic,
+    public void sendPostLikedEvent(Long authUser, Post post) {
+        send(postLikedTopic,
                 PostLikedEvent.builder()
                         .postOwnerId(post.getUserId())
                         .userId(authUser)
@@ -42,13 +46,23 @@ public class KafkaServiceImpl implements KafkaService {
 
 
     @Override
-    public void sendCommentLiked(Long authenticatedUserId, Comment comment) {
-        kafkaTemplate.send(commentLikedTopic,
+    public void sendCommentLikedEvent(Long authenticatedUserId, Comment comment) {
+        send(commentLikedTopic,
                 CommentLikedEvent.builder()
                         .userId(authenticatedUserId)
                         .commentId(comment.getId())
                         .postId(comment.getPost().getId())
                         .build()
         );
+    }
+
+    private void send(String topic, Object object) {
+        try {
+            log.info("send event with topic: {}, value: {}", topic, object);
+            kafkaTemplate.send(topic, object);
+        } catch (Exception e) {
+            log.error("error sending kafka message {}",  e.getMessage());
+            log.error("stack trace: ", e);
+        }
     }
 }
