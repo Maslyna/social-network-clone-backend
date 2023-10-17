@@ -94,7 +94,7 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
     }
 
     private void sendPostLikedEvent_thenMessageReceived() throws Exception {
-        Long authUserId = 2L;
+        long authUserId = 2L;
 
         producer.sendPostLikedEvent(authUserId, testPost);
 
@@ -120,7 +120,7 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
     }
 
     private void sendCommentLikedEvent_thenMessageReceived() throws Exception {
-        Long authUserId = 2L;
+        long authUserId = 2L;
 
         producer.sendCommentLikedEvent(authUserId, testComment);
 

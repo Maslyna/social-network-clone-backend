@@ -1,6 +1,7 @@
 package net.maslyna.post.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.maslyna.post.integration.service.JsonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +24,8 @@ public class BasicIntegrationTest {
     protected MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
+    @Autowired
+    protected JsonService jsonService;
 
     @Container
     static KafkaContainer kafka =
