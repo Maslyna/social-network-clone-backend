@@ -25,7 +25,8 @@ public interface PostService {
     UUID editPost(
             Long authenticatedUserId,
             UUID postId,
-            PostRequest request);
+            PostRequest request
+    );
 
     void deletePost(Long authenticatedUserId, UUID postId);
 }

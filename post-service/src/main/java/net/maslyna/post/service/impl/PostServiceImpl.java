@@ -150,6 +150,8 @@ public class PostServiceImpl implements PostService {
                         .createdAt(Instant.now())
                         .title(request.title())
                         .text(request.text())
+                        .comments(Set.of())
+                        .likes(Set.of())
                         .hashtags(createHashtagSet(request.hashtags()))
                         .build()
         );
