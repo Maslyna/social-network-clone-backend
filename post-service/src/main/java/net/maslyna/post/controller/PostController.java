@@ -92,7 +92,7 @@ public class PostController {
     @Operation(description = "get person's posts")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<PostResponse>> getPersonPosts(
-            @RequestHeader(name = "userId", required = false) Long authenticatedUserId,
+            @RequestHeader(name = "userId") Long authenticatedUserId,
             @PathVariable("userId") Long userId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,

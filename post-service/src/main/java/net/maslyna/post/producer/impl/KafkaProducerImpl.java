@@ -31,13 +31,21 @@ public class KafkaProducerImpl implements KafkaProducer {
 
     @Override
     public void sendPostCreatedEvent(Post post) {
+        if (post == null) {
+            log.warn("given post must not be null");
+            return;
+        }
         send(postCreatedTopic, postMapper.postToPostCreatedResponse(post));
     }
 
     @Override
     public void sendPostLikedEvent(Long authenticatedUserId, Post post) {
+        if (authenticatedUserId == null || post == null) {
+            log.warn("authenticated user id or post equals null");
+            return;
+        }
         send(postLikedTopic,
-                PostLikedEvent.builder()
+                PostLikedEvent.builder() //TODO: mapper
                         .postOwnerId(post.getUserId())
                         .postId(post.getId())
                         .userId(authenticatedUserId)
@@ -48,8 +56,12 @@ public class KafkaProducerImpl implements KafkaProducer {
 
     @Override
     public void sendCommentLikedEvent(Long authenticatedUserId, Comment comment) {
+        if (authenticatedUserId == null || comment == null) {
+            log.warn("authenticated user id or comment equals null");
+            return;
+        }
         send(commentLikedTopic,
-                CommentLikedEvent.builder()
+                CommentLikedEvent.builder() //TODO: mapper
                         .userId(authenticatedUserId)
                         .commentId(comment.getId())
                         .postId(comment.getPost().getId())
@@ -63,7 +75,7 @@ public class KafkaProducerImpl implements KafkaProducer {
             log.info("send event with topic: {}, value: {}", topic, object);
             kafkaTemplate.send(topic, object);
         } catch (Exception e) {
-            log.error("error sending kafka message {}",  e.getMessage());
+            log.error("error sending kafka message {}", e.getMessage());
             log.error("stack trace: ", e);
         }
     }

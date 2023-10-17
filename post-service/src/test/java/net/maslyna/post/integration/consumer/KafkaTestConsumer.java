@@ -52,8 +52,9 @@ public class KafkaTestConsumer {
         latch.countDown();
     }
 
-    public void resetLatch() {
+    public void reset() {
         latch = new CountDownLatch(1);
+        payload = null;
     }
 
 }

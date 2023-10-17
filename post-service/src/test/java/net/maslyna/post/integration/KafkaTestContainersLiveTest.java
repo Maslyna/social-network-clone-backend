@@ -17,8 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
@@ -56,16 +55,19 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
     @Test
     public void sendPostCreatedEventTests() throws Exception {
         sendPostCreatedEvent_thenMessageReceived();
+        sendNullPostCreatedEvent_thenMessageNotReceived();
     }
 
     @Test
     public void sendPostLikedEventTests() throws Exception {
         sendPostLikedEvent_thenMessageReceived();
+        sendNullPostLikedEvent_thenMessageNotReceived();
     }
 
     @Test
     public void sendCommentLikedEventTests() throws Exception {
         sendCommentLikedEvent_thenMessageReceived();
+        sendNullCommentLikedEvent_thenMessageNotReceived();
     }
 
     private void sendPostCreatedEvent_thenMessageReceived() throws Exception {
@@ -81,6 +83,14 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
         assertEquals(testPost.getId(), event.post());
         assertEquals(testPost.getUserId(), event.userId());
         assertEquals(testPost.getTitle(), event.title());
+        consumer.reset();
+    }
+
+    private void sendNullPostCreatedEvent_thenMessageNotReceived() throws Exception {
+        producer.sendPostCreatedEvent(null);
+        boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
+        assertFalse(messageConsumed);
+        consumer.reset();
     }
 
     private void sendPostLikedEvent_thenMessageReceived() throws Exception {
@@ -98,6 +108,15 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
         assertEquals(authUserId, event.userId());
         assertEquals(testPost.getUserId(), event.postOwnerId());
         assertEquals(testPost.getId(), event.postId());
+
+        consumer.reset();
+    }
+
+    private void sendNullPostLikedEvent_thenMessageNotReceived() throws Exception {
+        producer.sendPostLikedEvent(null, null);
+        boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
+        assertFalse(messageConsumed);
+        consumer.reset();
     }
 
     private void sendCommentLikedEvent_thenMessageReceived() throws Exception {
@@ -116,5 +135,14 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
         assertEquals(testComment.getUserId(), event.commentOwnerId());
         assertEquals(testComment.getId(), event.commentId());
         assertEquals(testComment.getPost().getId(), event.postId());
+
+        consumer.reset();
+    }
+
+    private void sendNullCommentLikedEvent_thenMessageNotReceived() throws Exception {
+        producer.sendCommentLikedEvent(null, null);
+        boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
+        assertFalse(messageConsumed);
+        consumer.reset();
     }
 }
