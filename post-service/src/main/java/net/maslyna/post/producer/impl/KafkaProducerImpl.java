@@ -35,11 +35,12 @@ public class KafkaProducerImpl implements KafkaProducer {
     }
 
     @Override
-    public void sendPostLikedEvent(Long authUser, Post post) {
+    public void sendPostLikedEvent(Long authenticatedUserId, Post post) {
         send(postLikedTopic,
                 PostLikedEvent.builder()
                         .postOwnerId(post.getUserId())
-                        .userId(authUser)
+                        .postId(post.getId())
+                        .userId(authenticatedUserId)
                         .build()
         );
     }
@@ -52,6 +53,7 @@ public class KafkaProducerImpl implements KafkaProducer {
                         .userId(authenticatedUserId)
                         .commentId(comment.getId())
                         .postId(comment.getPost().getId())
+                        .commentOwnerId(comment.getUserId())
                         .build()
         );
     }
