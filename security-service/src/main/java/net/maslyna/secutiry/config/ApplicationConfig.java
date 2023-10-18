@@ -1,6 +1,7 @@
 package net.maslyna.secutiry.config;
 
 import net.maslyna.common.service.PropertiesMessageService;
+import net.maslyna.common.service.impl.PropertiesMessageServiceImpl;
 import net.maslyna.secutiry.exceptions.account.AccountNotFoundException;
 import net.maslyna.secutiry.repository.AccountRepository;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,6 @@ public class ApplicationConfig {
 
     @Bean
     public PropertiesMessageService messageService(Environment env) {
-        return new PropertiesMessageService(env);
+        return new PropertiesMessageServiceImpl(env);
     }
 }

@@ -1,4 +1,4 @@
-package net.maslyna.notification.config;
+package net.maslyna.user.config;
 
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.common.service.impl.PropertiesMessageServiceImpl;
@@ -8,8 +8,9 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class AppConfig {
+
     @Bean
-    PropertiesMessageService messageService(Environment env) {
-        return new PropertiesMessageServiceImpl(env);
+    public PropertiesMessageService messageService(Environment environment) {
+        return new PropertiesMessageServiceImpl(environment);
     }
 }

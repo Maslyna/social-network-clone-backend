@@ -4,7 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import net.maslyna.user.service.PropertiesMessageService;
+import net.maslyna.common.service.PropertiesMessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

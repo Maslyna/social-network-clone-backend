@@ -2,6 +2,7 @@ package net.maslyna.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.user.client.SecurityClient;
 import net.maslyna.user.exception.UserAlreadyExistsException;
 import net.maslyna.user.exception.UserNotFoundException;
