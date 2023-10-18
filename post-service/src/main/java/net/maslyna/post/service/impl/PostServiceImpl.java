@@ -36,8 +36,8 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final RePostRepository rePostRepository;
     private final HashtagRepository hashtagRepository;
-    private final PropertiesMessageService messageService;
     private final KafkaProducer kafkaProducer;
+    private final PropertiesMessageService messageService;
 
     @Override
     @Transactional(readOnly = true)
