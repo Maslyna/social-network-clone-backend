@@ -60,12 +60,13 @@ public class PostServiceImpl implements PostService {
     public Post getPost(Long authenticatedUserId, UUID postId) {
         Post post = getPostById(postId);
 
-        if (!post.getStatus().equals(PostStatus.PUBLISHED)
-                && !post.getUserId().equals(authenticatedUserId)) {
-            throw new AccessDeniedException(
-                    FORBIDDEN,
-                    messageService.getProperty("error.access.denied")
-            );
+        if (!post.getStatus().equals(PostStatus.PUBLISHED)) {
+            if (!post.getUserId().equals(authenticatedUserId)) {
+                throw new AccessDeniedException(
+                        FORBIDDEN,
+                        messageService.getProperty("error.access.denied")
+                );
+            }
         }
         return post;
     }

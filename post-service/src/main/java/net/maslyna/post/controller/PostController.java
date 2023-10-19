@@ -116,7 +116,7 @@ public class PostController {
 
     @Operation(description = "get post")
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getFullPost(
+    public ResponseEntity<PostResponse> getPost(
             @PathVariable("postId") UUID postId,
             @RequestHeader("userId") Long authenticatedUserId
     ) {

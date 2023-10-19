@@ -1,6 +1,6 @@
 package net.maslyna.post.integration;
 
-public class ServiceURI {
+public class PostURI {
     public static final String CREATE_POST = "/api/v1/post/create";
     public static final String CREATE_REPOST = "/api/v1/post/%s/repost";
     public static final String EDIT_POST = "/api/v1/post/%s";
