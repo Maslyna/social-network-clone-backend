@@ -1,6 +1,7 @@
-package net.maslyna.post.integration;
+package net.maslyna.post.integration.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.maslyna.post.integration.consumer.KafkaTestConsumer;
 import net.maslyna.post.integration.service.JsonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class BasicIntegrationTest {
     protected ObjectMapper objectMapper;
     @Autowired
     protected JsonService jsonService;
+    @Autowired
+    protected KafkaTestConsumer consumer;
+
 
     @Container
     static KafkaContainer kafka =
@@ -34,6 +38,9 @@ public class BasicIntegrationTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
+
+    public static final String USER_HEADER = "userId";
+    public static final long DEFAULT_USER = 1L;
 
     @BeforeEach
     void prepare() {

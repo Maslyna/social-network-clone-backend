@@ -1,10 +1,9 @@
-package net.maslyna.post.integration;
+package net.maslyna.post.integration.tests;
 
-import net.maslyna.post.integration.consumer.KafkaTestConsumer;
+import net.maslyna.post.integration.uri.PostURI;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -16,12 +15,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class PostIntegrationTests extends BasicIntegrationTest {
-    @Autowired
-    private KafkaTestConsumer consumer;
 
     private static final PostRequest publicPost =
             PostRequest.builder()
@@ -37,9 +35,6 @@ public class PostIntegrationTests extends BasicIntegrationTest {
             .hashtags(Set.of("test", "back-end", "not-boring-naming"))
             .status(PostStatus.HIDDEN)
             .build();
-
-    private static final String USER_HEADER = "userId";
-    private static final long DEFAULT_USER = 1L;
 
     @Test
     public void createPostTests() throws Exception {
@@ -262,7 +257,6 @@ public class PostIntegrationTests extends BasicIntegrationTest {
     }
 
     private void deletePost_ReturnsNotFound() throws Exception {
-        final MockHttpServletResponse post = createPost(DEFAULT_USER, publicPost);
         final UUID postId = UUID.randomUUID();
 
         mockMvc.perform(

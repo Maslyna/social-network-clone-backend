@@ -1,4 +1,4 @@
-package net.maslyna.post.integration;
+package net.maslyna.post.integration.uri;
 
 public class PostURI {
     public static final String CREATE_POST = "/api/v1/post/create";

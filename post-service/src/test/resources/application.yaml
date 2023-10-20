@@ -4,7 +4,10 @@ eureka:
 spring:
     jpa:
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: none
+    sql:
+        init:
+            mode: always
     kafka:
         bootstrap-servers: localhost:9092
         topics:

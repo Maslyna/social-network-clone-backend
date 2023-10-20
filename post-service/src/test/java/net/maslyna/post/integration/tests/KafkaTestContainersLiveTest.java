@@ -1,9 +1,10 @@
-package net.maslyna.post.integration;
+package net.maslyna.post.integration.tests;
 
 import net.maslyna.common.kafka.dto.CommentLikedEvent;
 import net.maslyna.common.kafka.dto.PostCreatedEvent;
 import net.maslyna.common.kafka.dto.PostLikedEvent;
 import net.maslyna.post.integration.consumer.KafkaTestConsumer;
+import net.maslyna.post.integration.tests.BasicIntegrationTest;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.entity.Comment;
@@ -21,9 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
-
-    @Autowired
-    private KafkaTestConsumer consumer;
 
     @Autowired
     private KafkaProducer producer;
