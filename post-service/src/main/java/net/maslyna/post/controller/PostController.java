@@ -59,7 +59,7 @@ public class PostController {
     public ResponseEntity<UUID> editPost(
             @RequestHeader(name = "userId") Long authenticatedUserId,
             @PathVariable(name = "postId") UUID postId,
-            @RequestBody PostRequest request
+            @Valid @RequestBody PostRequest request
     ) {
         return ResponseEntity.status(OK).body(
                 postService.editPost(authenticatedUserId, postId, request)
