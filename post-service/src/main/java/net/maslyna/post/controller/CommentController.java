@@ -29,7 +29,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class CommentController {
     private final CommentMapper commentMapper;
-    private final CommentService commentServiceImpl;
+    private final CommentService commentService;
 
     @Operation(description = "create new comment on the post")
     @PostMapping("/{postId}/comments")
@@ -40,7 +40,7 @@ public class CommentController {
             @Valid @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.status(CREATED).body(
-                commentServiceImpl.postComment(authenticatedUserId, postId, commentRequest)
+                commentService.postComment(authenticatedUserId, postId, commentRequest)
         );
     }
 
@@ -48,7 +48,7 @@ public class CommentController {
     @GetMapping("/{postId}/comments")
     public ResponseEntity<?> getPostComments(
             @PathVariable("postId") UUID postId,
-            @RequestHeader(name = "userId", required = false) Long authenticatedUserId,
+            @RequestHeader(name = "userId") Long authenticatedUserId,
             @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer pageSize,
             @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer pageNum,
             @RequestParam(value = "orderBy", defaultValue = "DESC")
@@ -61,7 +61,7 @@ public class CommentController {
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(
-                commentServiceImpl.getComments(
+                commentService.getComments(
                         authenticatedUserId,
                         postId,
                         PageRequest.of(pageNum, pageSize, Direction.valueOf(order), sortBy)
@@ -75,10 +75,10 @@ public class CommentController {
             @RequestHeader("userId") Long authenticatedUserId,
             @PathVariable("postId") UUID postId,
             @PathVariable("commentId") UUID commentId,
-            @RequestBody CommentRequest commentRequest
+            @Valid @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.status(CREATED).body(
-                commentServiceImpl.postComment(authenticatedUserId, postId, commentId, commentRequest)
+                commentService.postComment(authenticatedUserId, postId, commentId, commentRequest)
         );
     }
 
@@ -91,7 +91,7 @@ public class CommentController {
             @Valid @RequestBody CommentRequest commentRequest
     ) {
         return ResponseEntity.ok(
-                commentServiceImpl.editComment(authenticatedUserId, postId, commentId, commentRequest)
+                commentService.editComment(authenticatedUserId, postId, commentId, commentRequest)
         );
     }
 
@@ -103,6 +103,6 @@ public class CommentController {
             @PathVariable("postId") UUID postId,
             @PathVariable("commentId") UUID commentId
     ) {
-        commentServiceImpl.deleteComment(authenticatedUserId, commentId, postId);
+        commentService.deleteComment(authenticatedUserId, commentId, postId);
     }
 }

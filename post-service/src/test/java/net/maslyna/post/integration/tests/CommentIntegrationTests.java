@@ -30,10 +30,34 @@ public class CommentIntegrationTests extends BasicIntegrationTest {
     }
 
     @Test
+    public void getPostCommentsTests() throws Exception {
+        getComments_ReturnsOk();
+        getCommentsNotValidParams_ReturnsBadRequest();
+    }
+
+    @Test
+    public void createSubCommentTests() throws Exception {
+        final UUID commentId = createComment(DEFAULT_USER, DEFAULT_COMMENT);
+
+        createSubComment_ReturnsOk(commentId);
+        createNotValidSubComment_ReturnsBadRequest(commentId);
+        createSubCommentOnNotExistsPost_ReturnsNotFound(commentId);
+        createSubCommentOnNotExistsComment_ReturnsNotFound();
+    }
+
+    @Test
     public void deleteCommentTests() throws Exception {
         deleteComment_ReturnsOk();
         deleteAnotherUserComment_ReturnsForbidden();
         deleteNotExistsComment_ReturnsNotFound();
+    }
+
+    @Test
+    public void editCommentTests() throws Exception {
+        final UUID commentId = createComment(DEFAULT_USER, DEFAULT_COMMENT);
+
+        editComment_ReturnsOk(commentId);
+        notCommentOwnerEditComment_ReturnsForbidden(commentId);
     }
 
     private void createComment_ReturnsOk() throws Exception {
@@ -118,6 +142,99 @@ public class CommentIntegrationTests extends BasicIntegrationTest {
         );
     }
 
+    private void getComments_ReturnsOk() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(CommentURI.GET_COMMENTS.formatted(DEFAULT_POST_ID))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private void getCommentsNotValidParams_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(CommentURI.GET_COMMENTS.formatted(DEFAULT_POST_ID))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("size", "-1")
+                        .param("page", "-1")
+                        .param("orderBy", "-1")
+                        .param("sortBy", "-1")
+        ).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private void createSubComment_ReturnsOk(final UUID commentId) throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(CommentURI.CREATE_SUB_COMMENT.formatted(DEFAULT_POST_ID, commentId))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(DEFAULT_COMMENT))
+        ).andExpectAll(
+                status().isCreated()
+        );
+    }
+
+    private void createNotValidSubComment_ReturnsBadRequest(final UUID commentId) throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(CommentURI.CREATE_SUB_COMMENT.formatted(DEFAULT_POST_ID, commentId))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(new CommentRequest("     ")))
+        ).andExpectAll(
+                status().isBadRequest()
+        );
+    }
+
+    private void createSubCommentOnNotExistsPost_ReturnsNotFound(final UUID commentId) throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(CommentURI.CREATE_SUB_COMMENT.formatted(UUID.randomUUID(), commentId))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(DEFAULT_COMMENT))
+        ).andExpectAll(
+                status().isNotFound()
+        );
+    }
+
+    private void createSubCommentOnNotExistsComment_ReturnsNotFound() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(CommentURI.CREATE_SUB_COMMENT.formatted(DEFAULT_POST_ID, UUID.randomUUID()))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(DEFAULT_COMMENT))
+        ).andExpectAll(
+                status().isNotFound()
+        );
+    }
+
+    private void editComment_ReturnsOk(final UUID commentId) throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(CommentURI.EDIT_COMMENT.formatted(DEFAULT_POST_ID, commentId))
+                        .header(USER_HEADER, DEFAULT_USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(new CommentRequest("new test text for comment")))
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    private void notCommentOwnerEditComment_ReturnsForbidden(final UUID commentId) throws Exception {
+        final long userId = DEFAULT_USER + 1;
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(CommentURI.EDIT_COMMENT.formatted(DEFAULT_POST_ID, commentId))
+                        .header(USER_HEADER, userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonService.toJson(new CommentRequest("new test text for comment")))
+        ).andExpectAll(
+                status().isForbidden()
+        );
+    }
+
     private UUID createComment(final long userId, final CommentRequest request) throws Exception {
         final String response = mockMvc.perform(
                 MockMvcRequestBuilders.post(CommentURI.CREATE_COMMENT.formatted(DEFAULT_POST_ID))
@@ -135,4 +252,5 @@ public class CommentIntegrationTests extends BasicIntegrationTest {
     private UUID createComment(final long userId, final String content) throws Exception {
         return createComment(userId, new CommentRequest(content));
     }
+
 }

@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -148,6 +146,8 @@ public class CommentServiceImpl implements CommentService {
                         .userId(authenticatedUserId)
                         .text(text)
                         .status(CommentStatus.NORMAL)
+                        .likes(new HashSet<>())
+                        .comments(new HashSet<>())
                         .build()
         );
     }
