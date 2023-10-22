@@ -32,8 +32,8 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class LikeServiceImpl implements LikeService {
-    private final PostService postServiceImpl;
-    private final CommentService commentServiceImpl;
+    private final PostService postService;
+    private final CommentService commentService;
     //TODO: separate likes repo logic in different service
     private final LikeRepository likeRepository;
     private final CommentLikeRepository commentLikeRepository;
@@ -49,7 +49,7 @@ public class LikeServiceImpl implements LikeService {
                     messageService.getProperty("error.like.on-post-already-exists", postId)
             );
         }
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         PostLike like = createLike(authenticatedUserId, post);
         post.addLike(like);
 
@@ -66,7 +66,7 @@ public class LikeServiceImpl implements LikeService {
                     messageService.getProperty("error.like.on-comment-already-exists", commentId)
             );
         }
-        Comment comment = commentServiceImpl.getComment(commentId);
+        Comment comment = commentService.getComment(commentId);
         CommentLike like = createLike(authenticatedUserId, comment);
         comment.addLike(like);
 
@@ -93,7 +93,7 @@ public class LikeServiceImpl implements LikeService {
             UUID postId,
             Long authenticatedUserId,
             PageRequest pageRequest) {
-        Post post = postServiceImpl.getPost(authenticatedUserId, postId);
+        Post post = postService.getPost(authenticatedUserId, postId);
         List<PostLike> likes = List.copyOf(post.getLikes());
         return new PageImpl<>(likes, pageRequest, likes.size());
     }
@@ -103,7 +103,7 @@ public class LikeServiceImpl implements LikeService {
     public Page<CommentLike> getLikesOnComment(
             UUID commentId,
             PageRequest pageRequest) {
-        Comment comment = commentServiceImpl.getComment(commentId);
+        Comment comment = commentService.getComment(commentId);
         List<CommentLike> likes = List.copyOf(comment.getLikes());
         return new PageImpl<>(likes, pageRequest, likes.size());
     }

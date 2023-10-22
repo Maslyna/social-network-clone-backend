@@ -143,4 +143,5 @@ public class KafkaTestContainersLiveTest extends BasicIntegrationTest {
         assertFalse(messageConsumed);
         consumer.reset();
     }
+
 }

@@ -32,7 +32,7 @@ public class BasicIntegrationTest {
 
 
     @Container
-    static KafkaContainer kafka =
+    static KafkaContainer kafkaContainer =
             new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
 
     @Container
@@ -45,5 +45,6 @@ public class BasicIntegrationTest {
     @BeforeEach
     void prepare() {
         postgreSQLContainer.start();
+        kafkaContainer.start();
     }
 }
