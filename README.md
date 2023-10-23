@@ -82,4 +82,7 @@
 TODO: make global test coverage
 
 #### 1. SECURITY-SERVICE coverage:
-![security-service-test-coverage.png](images%2Fsecurity-service-test-coverage.png)
+![security-service-test-coverage.png](images/security-service-test-coverage.png)
+
+#### 2. POST-SERVICE coverage:
+![post-service-coverage.png](images/post-service-test-coverage.png)
