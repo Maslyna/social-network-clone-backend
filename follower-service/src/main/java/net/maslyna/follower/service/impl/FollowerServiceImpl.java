@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 public class FollowerServiceImpl implements FollowerService {
     private final UserRepository userRepository;
     private final PropertiesMessageService messageService;
@@ -58,7 +57,8 @@ public class FollowerServiceImpl implements FollowerService {
     public Page<User> getSubscriptions(
             Long authUserId,
             Long userId,
-            PageRequest pageRequest) {
+            PageRequest pageRequest
+    ) {
         User user = getUserById(userId);
         if (!user.isPublicSubscriptions() && !authUserId.equals(userId)) {
             throw new AccessDeniedException(HttpStatus.FORBIDDEN);
@@ -70,7 +70,8 @@ public class FollowerServiceImpl implements FollowerService {
     public Page<User> getFollowers(
             Long authUserId,
             Long userId,
-            PageRequest pageRequest) {
+            PageRequest pageRequest
+    ) {
         User user = getUserById(userId);
         if (!user.isPublicFollowers() && !authUserId.equals(userId)) {
             throw new AccessDeniedException(HttpStatus.FORBIDDEN);

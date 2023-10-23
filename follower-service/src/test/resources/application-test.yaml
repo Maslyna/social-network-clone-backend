@@ -1,10 +1,10 @@
 spring:
     application:
-        name: post-service
+        name: follower-service
     datasource:
         username: sa
         password: password
-        url: jdbc:postgresql://localhost:5432/post-service
+        url: jdbc:postgresql://localhost:5432/follower-service
     jpa:
         hibernate:
             ddl-auto: none
@@ -14,20 +14,17 @@ spring:
     kafka:
         bootstrap-servers: localhost:9092
         topics:
-            partitions: 3
+            partitions: 1
             notification:
                 post: post-notification
-                post-liked: post-liked-notification
-                comment: comment-notification
-                comment-liked: comment-liked-notification
-
+                notification-send:
+                    post-created: post-created-notification
 eureka:
     client:
         service-url:
             defaultZone: http://localhost:8761/eureka
 server:
-    port: 8200
-springdoc:
-    api-docs:
-        enabled: true
-    
+    port: 8300
+logging:
+    level:
+        root: trace

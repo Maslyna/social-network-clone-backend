@@ -3,9 +3,11 @@ package net.maslyna.follower.service;
 import net.maslyna.follower.model.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public interface FollowerService {
 
     User getUserById(Long userId);
@@ -21,12 +23,14 @@ public interface FollowerService {
     Page<User> getSubscriptions(
             Long authUserId,
             Long userId,
-            PageRequest pageRequest);
+            PageRequest pageRequest
+    );
 
     Page<User> getFollowers(
             Long authUserId,
             Long userId,
-            PageRequest pageRequest);
+            PageRequest pageRequest
+    );
 
     void follow(Long authUserId, Long userId);
 

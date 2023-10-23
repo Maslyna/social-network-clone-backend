@@ -29,7 +29,7 @@ public class KafkaListeners {
     )
     @Transactional(readOnly = true)
     public void listener(PostCreatedEvent event) {
-        log.info("kafka listener (post-notification) post info = {}", event);
+        log.debug("post created event = {}", event);
 
         List<String> emails = followerService.getFollowers(event.userId())
                 .stream()
@@ -39,7 +39,7 @@ public class KafkaListeners {
 
         if (!emails.isEmpty()) {
             producer.sendPostNotificationsEvent(event, emails);
-            log.info("notifications was sent for users with emails = {}", emails);
+            log.debug("notifications were sent for emails = {}", emails);
         }
     }
 }

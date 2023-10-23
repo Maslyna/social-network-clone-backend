@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import net.maslyna.follower.model.entity.User;
 import net.maslyna.follower.service.FollowerService;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +55,7 @@ public class FollowerController {
         return ResponseEntity.ok(
                 followerService.getUserFollowers(
                         userId,
-                        PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
+                        PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(User::getId)
         );
     }
@@ -79,7 +79,7 @@ public class FollowerController {
                 followerService.getFollowers(
                         authUserId,
                         userId,
-                        PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
+                        PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(User::getId)
         );
     }
@@ -101,7 +101,7 @@ public class FollowerController {
         return ResponseEntity.ok(
                 followerService.getUserSubscriptions(
                         userId,
-                        PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
+                        PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(User::getId)
         );
     }
@@ -125,7 +125,7 @@ public class FollowerController {
                 followerService.getSubscriptions(
                         authUserId,
                         userId,
-                        PageRequest.of(pageNum, pageSize, Sort.Direction.fromString(order), sortBy)
+                        PageRequest.of(pageNum, pageSize, Direction.fromString(order), sortBy)
                 ).map(User::getId)
         );
     }
