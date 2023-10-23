@@ -35,4 +35,10 @@ public interface FollowerService {
     void follow(Long authUserId, Long userId);
 
     void unfollow(Long authUserId, Long userId);
+
+    @Transactional(readOnly = true)
+    boolean isUserSubscribed(Long authenticatedUserId, Long userId);
+
+    @Transactional(readOnly = true)
+    boolean isUserFollowed(Long authenticatedUserId, Long userId);
 }

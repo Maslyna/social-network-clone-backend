@@ -38,6 +38,26 @@ public class FollowerController {
         followerService.unfollow(authUserId, userId);
     }
 
+    @GetMapping("/user/{userId}/is-subscribed")
+    public ResponseEntity<Boolean> isSubscribed(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("userId") Long userId
+    ) {
+        return ResponseEntity.ok(
+                followerService.isUserSubscribed(authenticatedUserId, userId)
+        );
+    }
+
+    @GetMapping("/user/{userId}/is-followed")
+    public ResponseEntity<Boolean> isFollowed(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("userId") Long userId
+    ) {
+        return ResponseEntity.ok(
+                followerService.isUserFollowed(authenticatedUserId, userId)
+        );
+    }
+
     @GetMapping("/user/followers")
     public ResponseEntity<?> getFollowers(
             @RequestHeader("userId") Long userId,

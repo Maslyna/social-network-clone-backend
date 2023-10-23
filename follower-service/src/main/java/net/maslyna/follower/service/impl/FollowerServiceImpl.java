@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +106,22 @@ public class FollowerServiceImpl implements FollowerService {
 
         user.removeFollower(authUser);
         authUser.removeSubscribe(user);
+    }
+
+    @Override
+    public boolean isUserSubscribed(Long authenticatedUserId, Long userId) {
+        if (authenticatedUserId.equals(userId)) {
+            return false;
+        }
+        return userRepository.isUserSubscribed(authenticatedUserId, userId);
+    }
+
+    @Override
+    public boolean isUserFollowed(Long authenticatedUserId, Long userId) {
+        if (authenticatedUserId.equals(userId)) {
+            return false;
+        }
+        return userRepository.isUserFollowed(authenticatedUserId, userId);
     }
 
     private Page<User> getSubscriptionsPage(Long userId, PageRequest pageRequest) {
