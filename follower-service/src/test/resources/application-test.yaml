@@ -19,9 +19,13 @@ spring:
                 post: post-notification
                 notification-send:
                     post-created: post-created-notification
+    main:
+        allow-bean-definition-overriding: true
 eureka:
     client:
+        enabled: false
         service-url:
             defaultZone: http://localhost:8761/eureka
+        user-service: user-service
 server:
     port: 8300

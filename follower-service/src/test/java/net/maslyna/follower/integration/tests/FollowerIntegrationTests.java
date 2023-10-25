@@ -26,6 +26,84 @@ public class FollowerIntegrationTests extends BasicIntegrationTest {
         unfollowFromMyself_ReturnsConflict();
     }
 
+    @Test
+    public void isFollowedTests() throws Exception {
+        final long userId = DEFAULT_USER + 1;
+        assertFalse(isFollowed(DEFAULT_USER, userId));
+        follow(userId, DEFAULT_USER);
+        assertTrue(isFollowed(DEFAULT_USER, userId));
+        isFollowedUserOnHimself();
+    }
+
+    @Test
+    public void isSubscribedTests() throws Exception {
+        final long userId = DEFAULT_USER + 1;
+        assertFalse(isSubscribed(DEFAULT_USER, userId));
+        follow(DEFAULT_USER, userId);
+        assertTrue(isSubscribed(DEFAULT_USER, userId));
+        isSubscribedUserOnHimself();
+    }
+
+    @Test
+    public void getSubscription_ReturnsOk() throws Exception {
+        final long userId = DEFAULT_USER + 1;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.GET_SUBSCRIPTIONS.formatted(userId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(USER_HEADER, DEFAULT_USER)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    @Test
+    public void getPrivateFollowers_ReturnsOk() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.GET_PRIVATE_FOLLOWERS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(USER_HEADER, DEFAULT_USER)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    @Test
+    public void getFollowers_ReturnsOk() throws Exception {
+        final long userId = DEFAULT_USER + 1;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.GET_FOLLOWERS.formatted(userId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(USER_HEADER, DEFAULT_USER)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    @Test
+    public void getPrivateSubscriptions_ReturnsOk() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.GET_PRIVATE_SUBSCRIPTIONS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(USER_HEADER, DEFAULT_USER)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
+    @Test
+    public void getSubscriptions_ReturnsOk() throws Exception {
+        final long userId = DEFAULT_USER + 1;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.GET_SUBSCRIPTIONS.formatted(userId))
+                        .header(USER_HEADER, DEFAULT_USER)
+        ).andExpectAll(
+                status().isOk()
+        );
+    }
+
     private void follow_ReturnsOk() throws Exception {
         final long anotherUser = DEFAULT_USER + 1;
 
@@ -99,6 +177,26 @@ public class FollowerIntegrationTests extends BasicIntegrationTest {
         ).andExpectAll(
                 status().isOk()
         );
+    }
+
+    private void isFollowedUserOnHimself() throws Exception {
+        assertFalse(isFollowed(DEFAULT_USER, DEFAULT_USER));
+    }
+
+    private void isSubscribedUserOnHimself() throws Exception {
+        assertFalse(isSubscribed(DEFAULT_USER, DEFAULT_USER));
+    }
+
+    private boolean isFollowed(final long userId, final long followedTo) throws Exception {
+        String content = mockMvc.perform(
+                MockMvcRequestBuilders.get(ServiceURI.IS_FOLLOWED.formatted(followedTo))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(USER_HEADER, userId)
+        ).andExpectAll(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        return jsonService.extract(content, Boolean.class);
     }
 
     private boolean isSubscribed(final long userId, final long subscribedTo) throws Exception {

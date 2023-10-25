@@ -2,7 +2,6 @@ package net.maslyna.follower.integration.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,19 +18,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-import static org.springframework.cloud.contract.wiremock.WireMockSpring.options;
-
 @TestConfiguration
 @ActiveProfiles("test")
 public class TestConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     public String boostrapServers;
-
-
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public WireMockServer mockBooksService() {
-        return new WireMockServer(options().dynamicPort());
-    }
 
     @Bean
     public Map<String, Object> consumerConfig() {
