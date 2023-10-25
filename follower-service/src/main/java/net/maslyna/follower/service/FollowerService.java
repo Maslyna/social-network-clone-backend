@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 public interface FollowerService {
@@ -36,9 +37,7 @@ public interface FollowerService {
 
     void unfollow(Long authUserId, Long userId);
 
-    @Transactional(readOnly = true)
     boolean isUserSubscribed(Long authenticatedUserId, Long userId);
 
-    @Transactional(readOnly = true)
     boolean isUserFollowed(Long authenticatedUserId, Long userId);
 }

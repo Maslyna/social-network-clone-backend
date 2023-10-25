@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.follower.exception.AccessDeniedException;
+import net.maslyna.follower.exception.GlobalFollowerServiceException;
 import net.maslyna.follower.exception.UserAlreadyExists;
 import net.maslyna.follower.model.entity.User;
 import net.maslyna.follower.repository.UserRepository;
@@ -86,6 +87,15 @@ public class FollowerServiceImpl implements FollowerService {
                     messageService.getProperty("error.user.follow.user-follow-himself")
             );
         }
+
+        if (isUserSubscribed(authUserId, userId)) {
+            throw new GlobalFollowerServiceException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.follow.user-already-subscribed")
+                            .formatted(authUserId, userId)
+            );
+        }
+
         User authUser = getUserById(authUserId);
         User user = getUserById(userId);
 
@@ -99,6 +109,13 @@ public class FollowerServiceImpl implements FollowerService {
             throw new AccessDeniedException(
                     HttpStatus.CONFLICT,
                     messageService.getProperty("error.user.follow.user-follow-himself")
+            );
+        }
+        if (!isUserSubscribed(authUserId, userId)) {
+            throw new GlobalFollowerServiceException(
+                    HttpStatus.BAD_REQUEST,
+                    messageService.getProperty("error.user.unfollow.user-not-followed")
+                            .formatted(authUserId, userId)
             );
         }
         User authUser = getUserById(authUserId);
