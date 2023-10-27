@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -31,15 +32,21 @@ public class KafkaListeners {
     public void listener(PostCreatedEvent event) {
         log.debug("post created event = {}", event);
 
-        List<String> emails = followerService.getFollowers(event.userId())
-                .stream()
-                .map(User::getId)
-                .map(userClient::getUserById)
-                .map(UserResponse::email).toList();
+        List<String> emails = getFollowersEmails(event.userId());
 
         if (!emails.isEmpty()) {
             producer.sendPostNotificationsEvent(event, emails);
             log.debug("notifications were sent for emails = {}", emails);
         }
+    }
+
+    private List<String> getFollowersEmails(Long userId) {
+        return followerService.getFollowers(userId)
+                .stream()
+                .map(User::getId)
+                .map(userClient::getUserById)
+                .map(UserResponse::email)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

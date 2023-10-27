@@ -21,7 +21,7 @@ public class UserMocks {
 
     public static void setupMockBooksResponse(WireMockServer mockService) throws IOException {
         mockService.stubFor(
-                WireMock.get(WireMock.urlEqualTo("/api/v1/user/1"))
+                WireMock.get(WireMock.urlMatching("/api/v1/user/[0-9]+"))
                         .willReturn(
                                 WireMock.aResponse()
                                         .withStatus(HttpStatus.OK.value())

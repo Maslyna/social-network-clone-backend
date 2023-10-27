@@ -17,6 +17,7 @@
         <module>common</module>
         <module>user-service</module>
         <module>notification-service</module>
+        <module>file-service</module>
     </modules>
 
     <properties>

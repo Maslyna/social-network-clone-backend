@@ -3,11 +3,12 @@ package net.maslyna.follower.integration.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-@Service
+@TestComponent
 @RequiredArgsConstructor
 public class JsonService {
     private final ObjectMapper objectMapper;
