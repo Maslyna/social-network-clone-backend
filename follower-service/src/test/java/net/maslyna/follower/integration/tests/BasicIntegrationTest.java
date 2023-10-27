@@ -2,9 +2,9 @@ package net.maslyna.follower.integration.tests;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.extern.slf4j.Slf4j;
-import net.maslyna.follower.client.UserClient;
 import net.maslyna.follower.integration.config.TestConfig;
 import net.maslyna.follower.integration.config.UserMocks;
+import net.maslyna.follower.integration.consumer.TestKafkaConsumer;
 import net.maslyna.follower.integration.producer.TestKafkaProducer;
 import net.maslyna.follower.integration.service.JsonService;
 import org.junit.jupiter.api.AfterAll;
@@ -39,7 +39,7 @@ import static org.springframework.cloud.contract.wiremock.WireMockSpring.options
 @AutoConfigureMockMvc
 @EnableConfigurationProperties
 @ContextConfiguration(classes = TestConfig.class)
-@Import(value = {JsonService.class, TestKafkaProducer.class})
+@Import(value = {JsonService.class, TestKafkaProducer.class, TestKafkaConsumer.class})
 @Testcontainers(parallel = true)
 
 @Transactional
@@ -49,9 +49,9 @@ public class BasicIntegrationTest {
     @Autowired
     protected JsonService jsonService;
     @Autowired
-    protected UserClient userClient;
-    @Autowired
     protected TestKafkaProducer testKafkaProducer;
+    @Autowired
+    protected TestKafkaConsumer testKafkaConsumer;
 
     @Container
     static KafkaContainer kafkaContainer =

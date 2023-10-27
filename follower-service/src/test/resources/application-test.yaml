@@ -14,11 +14,13 @@ spring:
     kafka:
         bootstrap-servers: localhost:9092
         topics:
-            partitions: 1
+            partitions: 3
             notification:
-                post: post-notification
+                post: 'testpostnotification'
                 notification-send:
-                    post-created: post-created-notification
+                    post-created: 'testpostcreatednotification'
+        consumer:
+            group-id: post
     main:
         allow-bean-definition-overriding: true
 eureka:

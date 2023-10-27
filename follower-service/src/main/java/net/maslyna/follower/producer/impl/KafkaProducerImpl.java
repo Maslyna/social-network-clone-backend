@@ -18,7 +18,8 @@ public class KafkaProducerImpl implements KafkaProducer {
     @Value("${spring.kafka.topics.notification.notification-send.post-created}")
     private String postCreatedTopic;
 
-    @Override public void sendPostNotificationsEvent(PostCreatedEvent event, List<String> emails) {
+    @Override
+    public void sendPostNotificationsEvent(PostCreatedEvent event, List<String> emails) {
         kafkaTemplate.send(
                 postCreatedTopic,
                 PostNotificationEvent.builder()
