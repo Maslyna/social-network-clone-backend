@@ -1,0 +1,31 @@
+gcp:
+    bucket:
+        name: ${BUCKET_NAME}
+spring:
+    application:
+        name: file-service
+    cloud:
+        gcp:
+            storage:
+                credentials:
+                    default-scopes: file:${CREDENTIALS_LOCATION}
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/file-service
+    jpa:
+        hibernate:
+            ddl-auto: update
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+        enabled: false
+server:
+    port: 8400
+
+file:
+    content-types:
+        - image/jpeg
+        - image/png
+        - image/gif
