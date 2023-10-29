@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class MediaServiceImpl implements MediaService {
 
         List<FileEntity> files = fileRepository.findAllById(filesIds);
 
-        files.stream().filter(file -> storageService.delete(file.getGcsFileLink()))
+        files.stream().filter(file -> storageService.delete(file.getFileName()))
                 .forEach(file -> {
                     fileRepository.delete(file);
                     files.remove(file);
@@ -120,7 +121,7 @@ public class MediaServiceImpl implements MediaService {
             UUID fileId
     ) {
         FileEntity entity = getFileById(fileId);
-        if (!storageService.delete(entity.getGcsFileLink())) {
+        if (!storageService.delete(entity.getFileName())) {
             throw new GlobalFileServiceException(
                     HttpStatus.NOT_IMPLEMENTED,
                     messageService.getProperty("error.file.delete-exception") //TODO: make custom exceptions with message
@@ -134,14 +135,14 @@ public class MediaServiceImpl implements MediaService {
             UUID fileId
     ) {
         FileEntity entity = getFileById(fileId);
-        return storageService.getLink(entity.getGcsFileLink());
+        return storageService.getLink(entity.getFileName());
     }
 
     @Override
     public String getLink(
             FileEntity entity
     ) {
-        return storageService.getLink(entity.getGcsFileLink());
+        return storageService.getLink(entity.getFileName());
     }
 
 
@@ -154,21 +155,18 @@ public class MediaServiceImpl implements MediaService {
     }
 
     private FileEntity createFile(MultipartFile file, Long userId, UUID contentId, FileType type) {
-        final String filename = "%s/%s".formatted(type, contentId + file.getOriginalFilename());
+        final String filename = "%s/%s/%s_%s".formatted(type, userId, contentId, Instant.now());
         return fileRepository.save(
                 FileEntity.builder()
                         .fileType(type)
                         .contentId(contentId)
                         .userId(userId)
                         .fileName(filename)
-                        .gcsFileLink(filename)
+                        .size(file.getSize())
                         .build()
         );
     }
 
-    private String createGcsFileLink(FileType type, String filename) {
-        return "%s/%s".formatted(type, filename);
-    }
 
     private void isFileValid(MultipartFile file) {
         final List<String> errorDetails = new ArrayList<>();

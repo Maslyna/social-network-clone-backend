@@ -7,8 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import java.time.Instant;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,6 +20,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleGlobalFileServiceException(GlobalFileServiceException e) {
         return ResponseEntity.status(e.getStatusCode().value())
                 .body(getDefaultResponseBody(e));
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<?> handleMultipartException(MultipartException e) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(getDefaultResponseBody(BAD_REQUEST, e));
+    }
+
+    private ErrorMessageResponse getDefaultResponseBody(HttpStatus status, Exception e) {
+        return ErrorMessageResponse.builder()
+                .statusCode(status)
+                .status(status.value())
+                .type(MessageType.ERROR)
+                .createdAt(Instant.now())
+                .message(e.getMessage())
+                .details(Map.of())
+                .build();
     }
 
     private ErrorMessageResponse getDefaultResponseBody(GlobalFileServiceException e) {

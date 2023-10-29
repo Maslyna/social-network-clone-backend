@@ -24,8 +24,8 @@ public class FileEntity implements FileInfo {
 
     private String fileName;
 
-    private String gcsFileLink;
-
     @Enumerated(EnumType.STRING)
     private FileType fileType;
+
+    private long size;
 }
