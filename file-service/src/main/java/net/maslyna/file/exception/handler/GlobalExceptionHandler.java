@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     private ErrorMessageResponse getDefaultResponseBody(GlobalFileServiceException e) {
         return ErrorMessageResponse.builder()
                 .statusCode(HttpStatus.valueOf(e.getStatusCode().value()))
-                .message(e.getMessage())
+                .message(e.getReason())
                 .type(MessageType.ERROR)
                 .status(e.getStatusCode().value())
                 .createdAt(Instant.now())

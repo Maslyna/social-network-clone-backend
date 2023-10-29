@@ -23,9 +23,3 @@ eureka:
         enabled: false
 server:
     port: 8400
-
-file:
-    content-types:
-        - image/jpeg
-        - image/png
-        - image/gif
