@@ -1,5 +1,6 @@
 package net.maslyna.file.exception.handler;
 
+import net.maslyna.common.exception.AbstractServiceException;
 import net.maslyna.common.message.MessageType;
 import net.maslyna.common.response.ErrorMessageResponse;
 import net.maslyna.file.exception.GlobalFileServiceException;
@@ -16,8 +17,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(GlobalFileServiceException.class)
-    public ResponseEntity<?> handleGlobalFileServiceException(GlobalFileServiceException e) {
+    @ExceptionHandler(AbstractServiceException.class)
+    public ResponseEntity<?> handleGlobalFileServiceException(AbstractServiceException e) {
         return ResponseEntity.status(e.getStatusCode().value())
                 .body(getDefaultResponseBody(e));
     }
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    private ErrorMessageResponse getDefaultResponseBody(GlobalFileServiceException e) {
+    private ErrorMessageResponse getDefaultResponseBody(AbstractServiceException e) {
         return ErrorMessageResponse.builder()
                 .statusCode(HttpStatus.valueOf(e.getStatusCode().value()))
                 .message(e.getReason())

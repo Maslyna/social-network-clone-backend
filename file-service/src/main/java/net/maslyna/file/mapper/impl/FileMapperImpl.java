@@ -14,7 +14,6 @@ public class FileMapperImpl implements FileMapper {
     public FileResponse fileToFileResponse(FileEntity entity, String link) {
         return FileResponse.builder()
                 .fileId(entity.getId())
-                .contentId(entity.getContentId())
                 .link(link)
                 .userId(entity.getUserId())
                 .build();

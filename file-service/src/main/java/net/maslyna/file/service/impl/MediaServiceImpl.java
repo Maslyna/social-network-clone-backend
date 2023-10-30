@@ -1,10 +1,12 @@
 package net.maslyna.file.service.impl;
 
+import com.google.cloud.storage.Blob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.model.FileType;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.file.entity.FileEntity;
+import net.maslyna.file.entity.FileInfo;
 import net.maslyna.file.exception.GlobalFileServiceException;
 import net.maslyna.file.repository.FileRepository;
 import net.maslyna.file.response.FileStatus;
@@ -33,133 +35,49 @@ public class MediaServiceImpl implements MediaService {
     private final PropertiesMessageService messageService;
     private final List<String> VALID_CONTENT_TYPES; //DON'T CHANGE NAME
 
-
     @Override
-    public String save(
-            MultipartFile file,
-            Long userId,
-            UUID contentId,
-            FileType type
-    ) {
+    public String save(UUID contentId, Long userId, FileType type, MultipartFile file) {
         isFileValid(file);
-        if (userId == null || contentId == null || type == null) {
-            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST); //TODO: make custom exceptions with message
-        }
-
-        FileEntity entity = createFile(file, userId, contentId, type);
+        FileInfo fileInfo = createFile(contentId, userId, type, file);
         try {
-            return storageService.upload(entity.getFileName(), file.getInputStream(), file.getContentType())
-                    .getMediaLink();
+            Blob blob = storageService.upload(fileInfo.getFileName(), file.getInputStream(), file.getContentType());
+            log.info("file '{}' was saved", fileInfo.getFileName());
+            return blob.getMediaLink();
         } catch (IOException e) {
-            throw new GlobalFileServiceException(
-                    HttpStatus.BAD_REQUEST,
-                    messageService.getProperty("error.file.not-valid")
-            );
+            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST, "error.file.not-valid");
         }
     }
 
     @Override
-    public List<FileEntity> getFiles(
-            UUID contentId,
-            FileType type
-    ) {
-        if (contentId == null) {
-            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST); //TODO: make custom exceptions with message
-        }
-
-        return type == null
-                ? fileRepository.findByContentId(contentId)
-                : fileRepository.findByContentIdAndType(contentId, type);
+    public String getLink(UUID contentId) {
+        FileInfo fileInfo = getFileById(contentId);
+        return storageService.getLink(fileInfo.getFileName());
     }
 
     @Override
-    public List<FileEntity> getUserFiles(
-            Long userId
-    ) {
-        if (userId == null) {
-            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST); //TODO: make custom exceptions with message
+    public FileStatus remove(Long userId, UUID contentId) {
+        FileEntity entity = getFileById(contentId);
+        if (!entity.getUserId().equals(userId)) {
+            throw new GlobalFileServiceException(HttpStatus.FORBIDDEN);
         }
-
-        return fileRepository.findFilesByUserId(userId);
-    }
-
-    @Override
-    @Transactional
-    public FileStatus remove(
-            List<UUID> filesIds
-    ) {
-        if (filesIds == null || filesIds.isEmpty()) {
-            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST); //TODO: make custom exceptions with message
-        }
-
-        List<FileEntity> files = fileRepository.findAllById(filesIds);
-
-        files.stream().filter(file -> storageService.delete(file.getFileName()))
-                .forEach(file -> {
-                    fileRepository.delete(file);
-                    files.remove(file);
-                });
-
-        if (!files.isEmpty()) {
-            List<UUID> undeletedFiles = files.stream()
-                    .map(FileEntity::getId)
-                    .toList();
-            return FileStatus.builder()
-                    .status("not all files were deleted")
-                    .details(Map.of(
-                            "error",
-                            messageService.getProperty("error.file.multiple-delete-exception", undeletedFiles)
-                    )).build();
-        }
+        boolean removed = storageService.delete(entity.getFileName());
+        String status = removed ? "file was removed" : "file wasn't removed";
         return FileStatus.builder()
-                .status("files deleted  successfully")
+                .status(status)
                 .build();
     }
 
-    @Override
-    public void remove(
-            UUID fileId
-    ) {
-        FileEntity entity = getFileById(fileId);
-        if (!storageService.delete(entity.getFileName())) {
-            throw new GlobalFileServiceException(
-                    HttpStatus.NOT_IMPLEMENTED,
-                    messageService.getProperty("error.file.delete-exception") //TODO: make custom exceptions with message
-            );
-        }
-        fileRepository.delete(entity);
-    }
-
-    @Override
-    public String getLink(
-            UUID fileId
-    ) {
-        FileEntity entity = getFileById(fileId);
-        return storageService.getLink(entity.getFileName());
-    }
-
-    @Override
-    public String getLink(
-            FileEntity entity
-    ) {
-        return storageService.getLink(entity.getFileName());
-    }
-
-
     private FileEntity getFileById(UUID fileId) {
-        if (fileId == null) {
-            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST); //TODO: make custom exceptions with message
-        }
         return fileRepository.findById(fileId)
                 .orElseThrow(() -> new GlobalFileServiceException(HttpStatus.NOT_FOUND, "error.file.not-found"));
     }
 
-    private FileEntity createFile(MultipartFile file, Long userId, UUID contentId, FileType type) {
+    private FileEntity createFile(UUID contentId, Long userId, FileType type, MultipartFile file) {
         final String filename = "%s/%s/%s_%s".formatted(type, userId, contentId, Instant.now());
         return fileRepository.save(
                 FileEntity.builder()
+                        .id(contentId)
                         .fileType(type)
-                        .contentId(contentId)
                         .userId(userId)
                         .fileName(filename)
                         .size(file.getSize())

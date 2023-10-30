@@ -12,36 +12,11 @@ import java.util.UUID;
 
 @Transactional
 public interface MediaService {
-    String save(
-            MultipartFile file,
-            Long userId,
-            UUID contentId,
-            FileType type
-    );
 
-    List<FileEntity> getFiles(
-            UUID contentId,
-            @Nullable FileType type
-    );
+    String save(UUID contentId, Long userId, FileType type, MultipartFile file);
 
-    List<FileEntity> getUserFiles(
-            Long userId
-    );
+    @Transactional(readOnly = true)
+    String getLink(UUID contentId);
 
-    FileStatus remove(
-            List<UUID> filesIds
-    );
-
-    void remove(
-            UUID fileId
-    );
-
-    String getLink(
-            UUID fileId
-    );
-
-
-    String getLink(
-            FileEntity entity
-    );
+    FileStatus remove(Long userId, UUID contentId);
 }

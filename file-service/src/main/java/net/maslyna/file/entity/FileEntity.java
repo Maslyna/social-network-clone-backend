@@ -15,12 +15,9 @@ import java.util.UUID;
 @Entity
 public class FileEntity implements FileInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private Long userId;
-
-    private UUID contentId;
 
     private String fileName;
 
