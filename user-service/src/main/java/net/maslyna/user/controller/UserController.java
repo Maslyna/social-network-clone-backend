@@ -59,11 +59,11 @@ public class UserController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<UserResponse> editUserById(
+    @ResponseStatus(OK)
+    public void editUserById(
             @RequestHeader("userId") Long userId,
             @RequestBody EditUserRequest userRequest
     ) {
-        return ResponseEntity.status(OK)
-                .body(mapper.userToUserResponse(userService.editUser(userId, userRequest)));
+        userService.editUser(userId, userRequest);
     }
 }

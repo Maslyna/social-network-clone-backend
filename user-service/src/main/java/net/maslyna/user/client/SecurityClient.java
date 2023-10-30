@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient("security-service")
 public interface SecurityClient {
     @PostMapping("/api/v1/security/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    ResponseEntity<AuthenticationResponse> register(
             @RequestBody SecurityRegistrationRequest request
     );
 }

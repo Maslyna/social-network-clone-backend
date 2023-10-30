@@ -8,9 +8,11 @@ import java.time.Instant;
 public record UserResponse(
         Long id,
         String name,
+        String nickname,
         String email,
+        String location,
         Instant createdAt,
         Instant birthday,
-        String imageUrl
-) {
+        String imageUrl,
+        boolean isPublicAccount) {
 }

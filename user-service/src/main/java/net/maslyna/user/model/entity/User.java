@@ -24,8 +24,17 @@ public class User implements BaseEntity<Long> {
     @Column(unique = true, length = 100)
     private String email;
 
-    @Column(length = 50)
+    @Column(length = 100)
+    private String nickname;
+
+    @Column(length = 100)
     private String name;
+
+    @Column(length = 1000)
+    private String bio;
+
+    @Column(length = 200)
+    private String location;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
@@ -38,6 +47,8 @@ public class User implements BaseEntity<Long> {
 
     private Instant createdAt;
 
+    private boolean isPublicAccount;
+
     public boolean addPhoto(Photo photo) {
         return userPhotos.add(photo);
     }
@@ -45,4 +56,5 @@ public class User implements BaseEntity<Long> {
     public boolean removePhoto(Photo photo) {
         return userPhotos.remove(photo);
     }
+
 }

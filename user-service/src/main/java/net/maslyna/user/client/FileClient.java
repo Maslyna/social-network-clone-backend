@@ -1,6 +1,7 @@
 package net.maslyna.user.client;
 
 import net.maslyna.common.model.FileType;
+import net.maslyna.user.client.response.FileStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

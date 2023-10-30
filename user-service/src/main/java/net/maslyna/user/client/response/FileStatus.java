@@ -1,4 +1,4 @@
-package net.maslyna.user.client;
+package net.maslyna.user.client.response;
 
 import lombok.Builder;
 

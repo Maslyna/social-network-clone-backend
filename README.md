@@ -10,6 +10,8 @@
 - Spring Cloud
 - Spring Data JPA
 - PostgresSQL
+- Kafka
+
 
 ---
 
@@ -21,7 +23,7 @@
 > Use token-based authentication to ensure secure access to user-specific data. Also, manage authorization to control
 > what actions users can perform.
 
-- [ ] User Profile Management
+- [X] User Profile Management
 
 > Create endpoints to handle user profiles. Users should be able to update their profiles,
 > change passwords, and manage account settings.
@@ -45,10 +47,6 @@
 
 > Allow users to add hashtags to their posts for categorization. Implement a search functionality
 > so users can discover posts based on hashtags or other criteria.
-
-- [ ] Messaging System
-
-> Consider adding a messaging system for private communication between users.
 
 ---
 

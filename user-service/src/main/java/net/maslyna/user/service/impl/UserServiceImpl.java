@@ -51,15 +51,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isUserExists(Long userId) {
+        return userRepository.existsById(userId);
+    }
+
+    @Override
     public Page<User> getUsers(Integer page, Integer size) {
         return userRepository.findUsersPage(PageRequest.of(page, size));
     }
 
     @Override
-    public User editUser(Long userId, EditUserRequest userRequest) {
-        User user = getUserById(userId);
+    public void editUser(Long userId, EditUserRequest userRequest) {
+        final User user = getUserById(userId);
 
-        return null; //TODO: edit user + email edit
+        if (userRequest.name() != null)
+            user.setName(userRequest.name());
+
+        if (userRequest.nickname() != null)
+            user.setNickname(userRequest.nickname());
+
+        if (userRequest.isPublicAccount() != null)
+            user.setPublicAccount(user.isPublicAccount());
+
+        if (userRequest.bio() != null)
+            user.setBio(userRequest.bio());
+
+        if (userRequest.birthday() != null)
+            user.setBirthday(userRequest.birthday());
+
+        if (userRequest.location() != null)
+            user.setLocation(userRequest.location());
     }
 
 
@@ -68,6 +89,7 @@ public class UserServiceImpl implements UserService {
                 User.builder()
                         .email(email) // TODO: random name generator
                         .createdAt(Instant.now())
+                        .isPublicAccount(true)
                         .build()
         );
     }

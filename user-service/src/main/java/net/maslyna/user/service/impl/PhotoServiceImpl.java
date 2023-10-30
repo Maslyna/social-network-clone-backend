@@ -3,14 +3,18 @@ package net.maslyna.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.model.FileType;
+import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.user.client.FileClient;
-import net.maslyna.user.client.FileStatus;
+import net.maslyna.user.client.response.FileStatus;
 import net.maslyna.user.exception.GlobalUserServiceException;
+import net.maslyna.user.exception.NotPublicAccountException;
 import net.maslyna.user.model.entity.Photo;
 import net.maslyna.user.model.entity.User;
 import net.maslyna.user.repository.PhotoRepository;
 import net.maslyna.user.service.PhotoService;
 import net.maslyna.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PhotoServiceImpl implements PhotoService {
+    private final PropertiesMessageService messageService;
     private final UserService userService;
     private final PhotoRepository photoRepository;
     private final FileClient fileClient;
@@ -62,6 +67,20 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         return fileClient.delete(photo.getId(), user.getId());
+    }
+
+    @Override
+    public Page<Photo> getUserPhoto(Long userId, Long authUserId, Pageable pageable) {
+        if (!authUserId.equals(userId)) {
+            final User user = userService.getUser(userId);
+            if (!user.isPublicAccount()) {
+                throw new NotPublicAccountException(
+                        HttpStatus.FORBIDDEN,
+                        messageService.getProperty("error.user.not-public-account")
+                );
+            }
+        }
+        return photoRepository.findUserImages(userId, pageable);
     }
 
     private Photo getPhotoById(UUID photoId) {

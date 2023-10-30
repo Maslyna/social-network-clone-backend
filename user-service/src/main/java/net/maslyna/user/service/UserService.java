@@ -13,10 +13,11 @@ public interface UserService {
     @Transactional(readOnly = true)
     User getUser(Long userId);
 
+    boolean isUserExists(Long userId);
+
     @Transactional(readOnly = true)
     Page<User> getUsers(Integer page, Integer size);
 
     @Transactional
-    User editUser(Long userId, EditUserRequest userRequest);
-
+    void editUser(Long userId, EditUserRequest userRequest);
 }
