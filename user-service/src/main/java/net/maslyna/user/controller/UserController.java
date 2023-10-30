@@ -6,8 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.user.mapper.UserMapper;
+import net.maslyna.user.model.dto.request.EditUserRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
-import net.maslyna.user.model.dto.request.UserRequest;
 import net.maslyna.user.model.dto.response.AuthenticationResponse;
 import net.maslyna.user.model.dto.response.UserResponse;
 import net.maslyna.user.service.UserService;
@@ -61,7 +61,7 @@ public class UserController {
     @PutMapping("/edit")
     public ResponseEntity<UserResponse> editUserById(
             @RequestHeader("userId") Long userId,
-            @RequestBody UserRequest userRequest
+            @RequestBody EditUserRequest userRequest
     ) {
         return ResponseEntity.status(OK)
                 .body(mapper.userToUserResponse(userService.editUser(userId, userRequest)));

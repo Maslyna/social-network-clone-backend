@@ -1,9 +1,11 @@
 package net.maslyna.user.exception;
 
+import net.maslyna.common.exception.AbstractServiceException;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.server.ResponseStatusException;
 
-public class GlobalUserServiceException extends ResponseStatusException {
+import java.util.Map;
+
+public class GlobalUserServiceException extends AbstractServiceException {
 
     public GlobalUserServiceException(HttpStatusCode status) {
         super(status);
@@ -13,15 +15,7 @@ public class GlobalUserServiceException extends ResponseStatusException {
         super(status, reason);
     }
 
-    public GlobalUserServiceException(int rawStatusCode, String reason, Throwable cause) {
-        super(rawStatusCode, reason, cause);
-    }
-
-    public GlobalUserServiceException(HttpStatusCode status, String reason, Throwable cause) {
-        super(status, reason, cause);
-    }
-
-    protected GlobalUserServiceException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
-        super(status, reason, cause, messageDetailCode, messageDetailArguments);
+    public GlobalUserServiceException(HttpStatusCode status, String reason, Map<String, Object> details) {
+        super(status, reason, details);
     }
 }

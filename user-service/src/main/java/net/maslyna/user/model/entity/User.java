@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -25,10 +27,22 @@ public class User implements BaseEntity<Long> {
     @Column(length = 50)
     private String name;
 
-    private Instant createdAt;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_photo_id")
+    private Photo profilePhoto;
 
-    @Column(length = 500)
-    private String imageUrl;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Photo> userPhotos = new ArrayList<>();
 
     private Instant birthday;
+
+    private Instant createdAt;
+
+    public boolean addPhoto(Photo photo) {
+        return userPhotos.add(photo);
+    }
+
+    public boolean removePhoto(Photo photo) {
+        return userPhotos.remove(photo);
+    }
 }

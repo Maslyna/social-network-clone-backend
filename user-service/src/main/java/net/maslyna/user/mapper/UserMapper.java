@@ -13,5 +13,6 @@ public interface UserMapper {
     @Mapping(target = "name", expression = "java(user.getName())")
     @Mapping(target = "createdAt", expression = "java(user.getCreatedAt())")
     @Mapping(target = "birthday", expression = "java(user.getBirthday())")
+    @Mapping(target = "imageUrl", expression = "java(user.getProfilePhoto().getImageUrl())")
     UserResponse userToUserResponse(User user);
 }

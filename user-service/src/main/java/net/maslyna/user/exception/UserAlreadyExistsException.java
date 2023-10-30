@@ -2,6 +2,8 @@ package net.maslyna.user.exception;
 
 import org.springframework.http.HttpStatusCode;
 
+import java.util.Map;
+
 public class UserAlreadyExistsException extends GlobalUserServiceException {
 
     public UserAlreadyExistsException(HttpStatusCode status) {
@@ -12,15 +14,7 @@ public class UserAlreadyExistsException extends GlobalUserServiceException {
         super(status, reason);
     }
 
-    public UserAlreadyExistsException(int rawStatusCode, String reason, Throwable cause) {
-        super(rawStatusCode, reason, cause);
-    }
-
-    public UserAlreadyExistsException(HttpStatusCode status, String reason, Throwable cause) {
-        super(status, reason, cause);
-    }
-
-    protected UserAlreadyExistsException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
-        super(status, reason, cause, messageDetailCode, messageDetailArguments);
+    public UserAlreadyExistsException(HttpStatusCode status, String reason, Map<String, Object> details) {
+        super(status, reason, details);
     }
 }
