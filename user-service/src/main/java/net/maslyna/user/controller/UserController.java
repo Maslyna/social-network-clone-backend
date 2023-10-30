@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import net.maslyna.user.mapper.UserMapper;
+import net.maslyna.user.model.dto.request.EditUserAccountRequest;
 import net.maslyna.user.model.dto.request.EditUserRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
 import net.maslyna.user.model.dto.response.AuthenticationResponse;

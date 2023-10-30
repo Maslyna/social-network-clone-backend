@@ -3,6 +3,7 @@ package net.maslyna.secutiry.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.secutiry.model.dto.request.AuthenticationRequest;
 import net.maslyna.secutiry.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiry.model.dto.response.AccountResponse;
 import net.maslyna.secutiry.model.dto.response.AuthenticationResponse;
@@ -30,6 +31,14 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(authenticationService.registration(request));
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<AuthenticationResponse> edit(
+            @AuthenticationPrincipal Account account,
+            @RequestBody @Valid AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.edit(account, request));
     }
 
     @PostMapping("/authenticate")

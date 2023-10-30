@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.user.client.SecurityClient;
-import net.maslyna.user.exception.UserAlreadyExistsException;
-import net.maslyna.user.exception.UserNotFoundException;
-import net.maslyna.user.exception.UserRegistrationException;
-import net.maslyna.user.exception.WrongDataException;
+import net.maslyna.user.exception.*;
 import net.maslyna.user.model.dto.request.EditUserRequest;
 import net.maslyna.user.model.dto.request.SecurityRegistrationRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
@@ -33,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthenticationResponse registration(UserRegistrationRequest request) {
-        isEmailValid(request);
+        isEmailValid(request.email());
         User user = createUser(request.email());
 
         return userSecurityServiceRegistration(request, user);
@@ -63,6 +60,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(Long userId, EditUserRequest userRequest) {
         final User user = getUserById(userId);
+
+        if (userRepository.existsByEmail(userRequest.email())) {
+            throw new GlobalUserServiceException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.user.email.occupied")
+            );
+        }
 
         if (userRequest.name() != null)
             user.setName(userRequest.name());
@@ -110,10 +114,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private boolean isResponseValid(ResponseEntity<?> response) {
-        return response.getStatusCode().is2xxSuccessful() && response.getBody() != null;
-    }
-
     private AuthenticationResponse userSecurityServiceRegistration(UserRegistrationRequest request, User user) {
         ResponseEntity<AuthenticationResponse> securityServiceResponse = securityClient.register(
                 getRegistrationRequest(request, user)
@@ -127,11 +127,15 @@ public class UserServiceImpl implements UserService {
         return securityServiceResponse.getBody();
     }
 
-    private void isEmailValid(UserRegistrationRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+    private boolean isResponseValid(ResponseEntity<?> response) {
+        return response.getStatusCode().is2xxSuccessful() && response.getBody() != null;
+    }
+
+    private void isEmailValid(String email) {
+        if (userRepository.existsByEmail(email)) {
             throw new UserAlreadyExistsException(
                     HttpStatus.CONFLICT,
-                    messageService.getProperty("error.user.email.occupied", request.email())
+                    messageService.getProperty("error.user.email.occupied", email)
             );
         }
     }

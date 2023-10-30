@@ -6,6 +6,7 @@ import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.secutiry.exceptions.account.AccountNotAuthenticatedException;
 import net.maslyna.secutiry.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiry.mapper.AccountMapper;
+import net.maslyna.secutiry.model.dto.request.AuthenticationRequest;
 import net.maslyna.secutiry.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiry.model.dto.response.AccountResponse;
 import net.maslyna.secutiry.model.dto.response.AuthenticationResponse;
@@ -76,6 +77,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         }
         return accountMapper.accountToAccountResponse(account);
+    }
+
+    @Override
+    public AuthenticationResponse edit(Account account, AuthenticationRequest request) {
+        if (account == null) {
+            throw new AccountNotAuthenticatedException(
+                    HttpStatus.UNAUTHORIZED,
+                    messageService.getProperty("error.account.not-authenticated")
+            );
+        }
+        account.setEmail(request.email());
+        account.setPassword(request.password());
+        return new AuthenticationResponse(
+                tokenService.createToken(account).getJwt()
+        );
     }
 
 }

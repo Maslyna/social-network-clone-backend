@@ -19,7 +19,8 @@ public class AccountServiceImp implements AccountService {
     private final PropertiesMessageService messageService;
     private final PasswordEncoder passwordEncoder;
 
-    @Override@Transactional(readOnly = true)
+    @Override
+    @Transactional(readOnly = true)
     public Account getAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(
@@ -28,7 +29,8 @@ public class AccountServiceImp implements AccountService {
                 ));
     }
 
-    @Override@Transactional
+    @Override
+    @Transactional
     public Account createUserAccount(Long id, String email, String password) {
         return accountRepository.save(
                 Account.builder()
@@ -42,9 +44,15 @@ public class AccountServiceImp implements AccountService {
         );
     }
 
-    @Override@Transactional(readOnly = true)
+    @Override
+    @Transactional(readOnly = true)
     public boolean isUserAlreadyExists(Long id, String email) {
         return accountRepository.existsByEmailIgnoreCase(email)
                 || accountRepository.existsById(id);
+    }
+
+    @Override
+    public boolean isUserAlreadyExists(String email) {
+        return accountRepository.existsByEmailIgnoreCase(email);
     }
 }

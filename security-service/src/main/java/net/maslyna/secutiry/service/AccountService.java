@@ -12,4 +12,7 @@ public interface AccountService {
 
     @Transactional(readOnly = true)
     boolean isUserAlreadyExists(Long id, String email);
+
+    @Transactional(readOnly = true)
+    boolean isUserAlreadyExists(String email);
 }
