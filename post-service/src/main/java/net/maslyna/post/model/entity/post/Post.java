@@ -8,8 +8,10 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import net.maslyna.post.model.entity.Comment;
 import net.maslyna.post.model.entity.Hashtag;
+import net.maslyna.post.model.entity.Photo;
 import net.maslyna.post.model.entity.like.PostLike;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -27,13 +29,16 @@ public class Post extends AbstractPost {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "hashtag_id")
     )
-    private Set<Hashtag> hashtags;
+    private Set<Hashtag> hashtags = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PostLike> likes;
+    private Set<PostLike> likes = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Photo> photos = new HashSet<>();
 
     public boolean addLike(PostLike like) {
         return likes.add(like);
@@ -43,4 +48,11 @@ public class Post extends AbstractPost {
         return comments.add(comment);
     }
 
+    public boolean addPhoto(Photo photo) {
+        return photos.add(photo);
+    }
+
+    public boolean removePhoto(Photo photo) {
+        return photos.remove(photo);
+    }
 }

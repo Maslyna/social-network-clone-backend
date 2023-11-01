@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.PostNotFoundException;
-import net.maslyna.post.producer.KafkaProducer;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
 import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.model.entity.post.RePost;
+import net.maslyna.post.producer.KafkaProducer;
 import net.maslyna.post.repository.HashtagRepository;
 import net.maslyna.post.repository.PostRepository;
 import net.maslyna.post.repository.RePostRepository;
@@ -151,8 +151,6 @@ public class PostServiceImpl implements PostService {
                         .createdAt(Instant.now())
                         .title(request.title())
                         .text(request.text())
-                        .comments(Set.of())
-                        .likes(Set.of())
                         .hashtags(createHashtagSet(request.hashtags()))
                         .build()
         );

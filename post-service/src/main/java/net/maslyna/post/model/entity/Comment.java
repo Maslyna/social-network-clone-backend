@@ -7,6 +7,7 @@ import net.maslyna.post.model.entity.like.CommentLike;
 import net.maslyna.post.model.entity.post.Post;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -35,12 +36,15 @@ public class Comment implements Publishable<UUID> {
     private Comment comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CommentLike> likes;
+    private Set<CommentLike> likes = new HashSet<>();
 
     private String text;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Photo photo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 10)

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -93,6 +94,16 @@ public class CommentController {
         return ResponseEntity.ok(
                 commentService.editComment(authenticatedUserId, postId, commentId, commentRequest)
         );
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}/photo")
+    public void addPhotoOnComment(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @PathVariable("commentId") UUID commentId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        commentService.addPhoto(authenticatedUserId, postId, commentId, file);
     }
 
     @Operation(description = "delete comment")

@@ -30,4 +30,3 @@ server:
 springdoc:
     api-docs:
         enabled: true
-    

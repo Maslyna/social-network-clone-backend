@@ -5,6 +5,7 @@ import net.maslyna.post.model.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -43,4 +44,11 @@ public interface CommentService {
     );
 
     Comment getComment(UUID commentId);
+
+    void addPhoto(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            MultipartFile file
+    );
 }

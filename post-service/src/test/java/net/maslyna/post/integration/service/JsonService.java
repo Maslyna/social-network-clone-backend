@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.TestComponent;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 @TestComponent
 @RequiredArgsConstructor

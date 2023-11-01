@@ -11,9 +11,6 @@ import java.time.Instant;
 public interface Publishable<T extends Serializable> extends BaseEntity<T> {
     Long getUserId();
 
-    void setUserId(Long id);
-
     Instant getCreatedAt();
 
-    void setCreatedAt(Instant createdAt);
 }

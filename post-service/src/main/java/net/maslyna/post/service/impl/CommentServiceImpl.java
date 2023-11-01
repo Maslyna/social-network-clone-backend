@@ -2,24 +2,32 @@ package net.maslyna.post.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.model.FileType;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
 import net.maslyna.post.exception.CommentNotFoundException;
 import net.maslyna.post.model.CommentStatus;
 import net.maslyna.post.model.dto.request.CommentRequest;
 import net.maslyna.post.model.entity.Comment;
+import net.maslyna.post.model.entity.Photo;
 import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.repository.CommentRepository;
+import net.maslyna.post.repository.PhotoRepository;
 import net.maslyna.post.service.CommentService;
+import net.maslyna.post.service.PhotoService;
 import net.maslyna.post.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -29,9 +37,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 @Transactional
 public class CommentServiceImpl implements CommentService {
+    private final PhotoRepository photoRepository;
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final PropertiesMessageService messageService;
+    private final PhotoService photoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -118,6 +128,27 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(NOT_FOUND,
                         messageService.getProperty("error.comment.not-found", commentId)
                 ));
+    }
+
+    @Override
+    public void addPhoto(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            MultipartFile file
+    ) {
+        Post post = postService.getPost(authenticatedUserId, postId);
+        Comment comment = getComment(commentId);
+        if (!comment.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
+        Photo photo = photoService.save(authenticatedUserId, FileType.POST_CONTENT, file);
+
+        comment.setPhoto(photo);
+        photoRepository.save(photo);
     }
 
     private Comment createComment(
