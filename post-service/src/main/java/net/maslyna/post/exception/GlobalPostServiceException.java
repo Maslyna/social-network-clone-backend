@@ -1,9 +1,11 @@
 package net.maslyna.post.exception;
 
+import net.maslyna.common.exception.AbstractServiceException;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.server.ResponseStatusException;
 
-public class GlobalPostServiceException extends ResponseStatusException {
+import java.util.Map;
+
+public class GlobalPostServiceException extends AbstractServiceException {
     public GlobalPostServiceException(HttpStatusCode status) {
         super(status);
     }
@@ -12,15 +14,7 @@ public class GlobalPostServiceException extends ResponseStatusException {
         super(status, reason);
     }
 
-    public GlobalPostServiceException(int rawStatusCode, String reason, Throwable cause) {
-        super(rawStatusCode, reason, cause);
-    }
-
-    public GlobalPostServiceException(HttpStatusCode status, String reason, Throwable cause) {
-        super(status, reason, cause);
-    }
-
-    protected GlobalPostServiceException(HttpStatusCode status, String reason, Throwable cause, String messageDetailCode, Object[] messageDetailArguments) {
-        super(status, reason, cause, messageDetailCode, messageDetailArguments);
+    public GlobalPostServiceException(HttpStatusCode status, String reason, Map<String, Object> details) {
+        super(status, reason, details);
     }
 }
