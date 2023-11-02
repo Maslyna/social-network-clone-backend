@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -66,6 +67,27 @@ public class PostController {
         );
     }
 
+    @PostMapping("/{postId}/photo")
+    public ResponseEntity<String> addPhoto(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(
+                postService.uploadPhoto(authenticatedUserId, postId, file)
+        );
+    }
+
+    @DeleteMapping("/{postId}/photo/{photoId}")
+    @ResponseStatus(OK)
+    public void deletePhoto(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @PathVariable("photoId") UUID photoId
+    ) {
+        postService.deletePhoto(authenticatedUserId, postId, photoId);
+    }
+
     @Operation(description = "get all published posts")
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPublicPosts(
@@ -78,7 +100,7 @@ public class PostController {
                     message = "error.validation.sort.direction.message"
             )
             String order,
-            @RequestParam(value = "hashtag", required = false)  String[] hashtags,
+            @RequestParam(value = "hashtag", required = false) String[] hashtags,
             @RequestParam(name = "sortBy", defaultValue = "createdAt") String... sortBy
     ) {
         return ResponseEntity.ok(

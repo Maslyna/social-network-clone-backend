@@ -51,4 +51,11 @@ public interface CommentService {
             UUID commentId,
             MultipartFile file
     );
+
+    void removePhoto(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            UUID photoId
+    );
 }

@@ -5,6 +5,7 @@ import net.maslyna.post.model.entity.post.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -29,4 +30,14 @@ public interface PostService {
     );
 
     void deletePost(Long authenticatedUserId, UUID postId);
+
+    String uploadPhoto(Long authenticatedUserId, UUID postId, MultipartFile file);
+
+    void deletePhoto(Long authenticatedUserId, UUID postId, UUID photoId);
+
+    @Transactional(readOnly = true)
+    boolean isPostExists(UUID postId);
+
+    @Transactional(readOnly = true)
+    void checkIsPostExists(UUID postId);
 }

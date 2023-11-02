@@ -17,6 +17,7 @@ public record PostResponse (
         String text,
         UUID originalPost,
         Set<HashtagResponse> hashtags,
+        Set<PhotoResponse> photos,
         long commentsAmount,
         long likesAmount
 ) {

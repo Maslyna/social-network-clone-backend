@@ -1,4 +1,4 @@
-package net.maslyna.post.exception.handler;
+package net.maslyna.secutiry.exceptions.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestControllerAdvice
 @RequiredArgsConstructor

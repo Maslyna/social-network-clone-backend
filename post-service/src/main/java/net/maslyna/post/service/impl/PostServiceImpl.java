@@ -2,31 +2,35 @@ package net.maslyna.post.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maslyna.common.model.FileType;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.post.exception.AccessDeniedException;
+import net.maslyna.post.exception.NotFoundException;
 import net.maslyna.post.exception.PostNotFoundException;
 import net.maslyna.post.model.PostStatus;
 import net.maslyna.post.model.dto.request.PostRequest;
 import net.maslyna.post.model.entity.Hashtag;
+import net.maslyna.post.model.entity.Photo;
 import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.model.entity.post.RePost;
 import net.maslyna.post.producer.KafkaProducer;
 import net.maslyna.post.repository.HashtagRepository;
 import net.maslyna.post.repository.PostRepository;
 import net.maslyna.post.repository.RePostRepository;
+import net.maslyna.post.service.PhotoService;
 import net.maslyna.post.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,7 @@ public class PostServiceImpl implements PostService {
     private final HashtagRepository hashtagRepository;
     private final KafkaProducer kafkaProducer;
     private final PropertiesMessageService messageService;
+    private final PhotoService photoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -105,6 +110,7 @@ public class PostServiceImpl implements PostService {
                     messageService.getProperty("error.access.denied")
             );
         }
+
         //TODO: extract new method
         if (request.text() != null) {
             post.setText(request.text());
@@ -133,6 +139,44 @@ public class PostServiceImpl implements PostService {
 
         postRepository.delete(post);
         log.info("post with id = {} was deleted", post.getId());
+    }
+
+    @Override
+    public String uploadPhoto(Long authenticatedUserId, UUID postId, MultipartFile file) {
+        Post post = getPostById(postId);
+        if (!post.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(FORBIDDEN);
+        }
+        Photo photo = photoService.save(authenticatedUserId, FileType.POST_CONTENT, file);
+        post.addPhoto(photo);
+        return photo.getContentUrl();
+    }
+
+
+    @Override
+    public void deletePhoto(Long authenticatedUserId, UUID postId, UUID photoId) {
+        Post post = getPostById(postId);
+        if (!post.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(FORBIDDEN);
+        }
+        Photo photo = photoService.getPhotoById(photoId);
+        post.removePhoto(photo);
+        photoService.delete(authenticatedUserId, photo);
+    }
+
+    @Override
+    public boolean isPostExists(UUID postId) {
+        return postRepository.existsById(postId);
+    }
+
+    @Override
+    public void checkIsPostExists(UUID postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new NotFoundException(
+                    NOT_FOUND,
+                    messageService.getProperty("error.post.not-found", postId)
+            );
+        }
     }
 
     private Page<Post> getPublicPosts(Long userId, PageRequest pageRequest) {

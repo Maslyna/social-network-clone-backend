@@ -12,7 +12,6 @@ import net.maslyna.post.model.entity.Comment;
 import net.maslyna.post.model.entity.Photo;
 import net.maslyna.post.model.entity.post.Post;
 import net.maslyna.post.repository.CommentRepository;
-import net.maslyna.post.repository.PhotoRepository;
 import net.maslyna.post.service.CommentService;
 import net.maslyna.post.service.PhotoService;
 import net.maslyna.post.service.PostService;
@@ -37,7 +36,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 @Transactional
 public class CommentServiceImpl implements CommentService {
-    private final PhotoRepository photoRepository;
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final PropertiesMessageService messageService;
@@ -90,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             CommentRequest commentRequest
     ) {
-        Post post = postService.getPost(authenticatedUserId, postId);
+        postService.checkIsPostExists(postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(
@@ -111,7 +109,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             UUID postId
     ) {
-        Post post = postService.getPost(authenticatedUserId, postId);
+        postService.checkIsPostExists(postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(
@@ -137,7 +135,7 @@ public class CommentServiceImpl implements CommentService {
             UUID commentId,
             MultipartFile file
     ) {
-        Post post = postService.getPost(authenticatedUserId, postId);
+        postService.checkIsPostExists(postId);
         Comment comment = getComment(commentId);
         if (!comment.getUserId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(
@@ -148,7 +146,26 @@ public class CommentServiceImpl implements CommentService {
         Photo photo = photoService.save(authenticatedUserId, FileType.POST_CONTENT, file);
 
         comment.setPhoto(photo);
-        photoRepository.save(photo);
+    }
+
+    @Override
+    public void removePhoto(
+            Long authenticatedUserId,
+            UUID postId,
+            UUID commentId,
+            UUID photoId
+    ) {
+        postService.checkIsPostExists(postId);
+        Comment comment = getComment(commentId);
+        if (!comment.getUserId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(
+                    FORBIDDEN,
+                    messageService.getProperty("error.access.denied")
+            );
+        }
+        Photo photo = photoService.getPhotoById(photoId);
+        comment.setPhoto(null);
+        photoService.delete(authenticatedUserId, photo);
     }
 
     private Comment createComment(

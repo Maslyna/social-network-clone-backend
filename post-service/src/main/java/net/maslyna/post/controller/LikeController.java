@@ -98,7 +98,6 @@ public class LikeController {
     }
 
 
-
     @DeleteMapping("/{postId}/like")
     @ResponseStatus(OK)
     public void deleteLikeOnPost(

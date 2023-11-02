@@ -96,6 +96,7 @@ public class CommentController {
         );
     }
 
+    @Operation(description = "add photo on comment")
     @PostMapping("/{postId}/comments/{commentId}/photo")
     public void addPhotoOnComment(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -104,6 +105,17 @@ public class CommentController {
             @RequestParam("file") MultipartFile file
     ) {
         commentService.addPhoto(authenticatedUserId, postId, commentId, file);
+    }
+
+    @Operation(description = "delete photo from comment and storage service")
+    @DeleteMapping("/{postId}/comments/{commentId}/photo/{photoId}")
+    public void deletePhotoOnComment(
+            @RequestHeader("userId") Long authenticatedUserId,
+            @PathVariable("postId") UUID postId,
+            @PathVariable("commentId") UUID commentId,
+            @PathVariable("photoId") UUID photoId
+    ) {
+        commentService.removePhoto(authenticatedUserId, postId, commentId, photoId);
     }
 
     @Operation(description = "delete comment")
