@@ -17,7 +17,6 @@ import java.util.UUID;
 public class Photo implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)

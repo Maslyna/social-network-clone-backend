@@ -1,6 +1,5 @@
 package net.maslyna.post.client;
 
-import feign.Headers;
 import net.maslyna.common.model.FileType;
 import net.maslyna.post.client.model.FileStatus;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -19,7 +18,7 @@ public interface FileClient {
             @RequestHeader("userId") Long userId,
             @RequestParam("contentId") UUID contentId,
             @RequestParam("fileType") FileType type,
-            @RequestParam("file") MultipartFile file
+            @RequestPart("file") MultipartFile file
     );
 
     @DeleteMapping("/api/v1/file/{contentId}")

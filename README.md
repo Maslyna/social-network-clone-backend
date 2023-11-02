@@ -11,7 +11,7 @@
 - Spring Data JPA
 - PostgresSQL
 - Kafka
-
+- GCP Storage
 
 ---
 
@@ -28,7 +28,7 @@
 > Create endpoints to handle user profiles. Users should be able to update their profiles,
 > change passwords, and manage account settings.
 
-- [ ] Post Creation and Interaction
+- [X] Post Creation and Interaction
 
 > Implement functionality for users to create, edit, and delete posts. Allow users to like, comment on, and share posts.
 > Consider features like attaching images or other media to posts.

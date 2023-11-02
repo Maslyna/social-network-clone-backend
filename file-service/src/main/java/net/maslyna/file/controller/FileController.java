@@ -19,12 +19,12 @@ import java.util.UUID;
 public class FileController {
     private final MediaService mediaService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<String> save(
             @RequestHeader("userId") Long userId,
             @RequestParam("contentId") UUID contentId,
             @RequestParam("fileType") FileType type,
-            @RequestParam("file") MultipartFile file
+            @RequestPart("file") MultipartFile file
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mediaService.save(contentId, userId, type, file));

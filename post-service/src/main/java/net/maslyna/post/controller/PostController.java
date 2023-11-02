@@ -67,6 +67,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "add photo on post")
     @PostMapping("/{postId}/photo")
     public ResponseEntity<String> addPhoto(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -78,6 +79,7 @@ public class PostController {
         );
     }
 
+    @Operation(description = "delete photo from post")
     @DeleteMapping("/{postId}/photo/{photoId}")
     @ResponseStatus(OK)
     public void deletePhoto(

@@ -9,6 +9,12 @@ spring:
             storage:
                 credentials:
                     default-scopes: file:${CREDENTIALS_LOCATION}
+        openfeign:
+            compression:
+                request:
+                    mime-types:
+                        - multipart/form-data
+                        - application/json
     datasource:
         username: sa
         password: password

@@ -41,7 +41,6 @@ public class MediaServiceImpl implements MediaService {
         FileInfo fileInfo = createFile(contentId, userId, type, file);
         try {
             Blob blob = storageService.upload(fileInfo.getFileName(), file.getInputStream(), file.getContentType());
-            log.info("file '{}' was saved", fileInfo.getFileName());
             return blob.getMediaLink();
         } catch (IOException e) {
             throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST, "error.file.not-valid");
