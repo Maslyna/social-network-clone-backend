@@ -56,6 +56,28 @@
 
 ---
 
+## API Endpoint Centralization
+
+The API endpoints for our services are centralized and accessible via
+our [API Gateway](http://localhost:8765/webjars/swagger-ui/index.html?urls.primaryName=security-service).
+This centralized structure ensures easy management and provides a unified entry point to access various services within
+our ecosystem. By consolidating the endpoints, we simplify the process for developers and users to interact with our
+system.
+
+#### USER-SERVICE endpoints:
+![](images/user-service-api-docs.png)
+
+#### SECURITY-SERVICE endpoints:
+![](images/security-service-api-docs.png)
+
+#### POST-SERVICE endpoints:
+![](images/post-service-api-docs.png)
+
+#### FOLLOWER-SERVICE endpoints:
+![](images/follower-service-api-docs.png)
+
+---
+
 ## TESTs
 
 #### Global test coverage:
