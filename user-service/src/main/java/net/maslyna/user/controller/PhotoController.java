@@ -1,5 +1,6 @@
 package net.maslyna.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -27,6 +28,7 @@ public class PhotoController {
     private final PhotoService photoService;
     private final PhotoMapper photoMapper;
 
+    @Operation(summary = "set new user photo")
     @PostMapping("/edit/photo")
     @ResponseStatus(CREATED)
     public void setUserPhoto(
@@ -36,6 +38,7 @@ public class PhotoController {
         photoService.setProfilePhoto(userId, file);
     }
 
+    @Operation(summary = "add new photo on user account")
     @PostMapping("/photo")
     @ResponseStatus(CREATED)
     public void addPhoto(
@@ -45,6 +48,7 @@ public class PhotoController {
         photoService.addPhoto(userId, file);
     }
 
+    @Operation(summary = "delete a photo from user account")
     @DeleteMapping("/photo/{photoId}")
     public ResponseEntity<FileStatus> removePhoto(
             @RequestHeader("userId") Long userId,
@@ -53,6 +57,7 @@ public class PhotoController {
         return photoService.removePhoto(userId, photoId);
     }
 
+    @Operation(summary = "get user photos")
     @GetMapping("/{userId}/photo")
     public ResponseEntity<Page<PhotoResponse>> getUserPhotos(
             @PathVariable("userId") Long userId,

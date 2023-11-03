@@ -1,5 +1,6 @@
 package net.maslyna.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -27,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper mapper;
 
+    @Operation(summary = "user registration")
     @PostMapping
     public ResponseEntity<AuthenticationResponse> registration(
             @RequestBody @Valid UserRegistrationRequest request
@@ -35,6 +37,7 @@ public class UserController {
                 .body(userService.registration(request));
     }
 
+    @Operation(summary = "get all users")
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(
             @RequestParam(value = "page", defaultValue = "0")
@@ -50,6 +53,7 @@ public class UserController {
                         .map(mapper::userToUserResponse));
     }
 
+    @Operation(summary = "get user info by id")
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(
             @PathVariable("userId") Long userId
@@ -58,6 +62,7 @@ public class UserController {
                 .body(mapper.userToUserResponse(userService.getUser(userId)));
     }
 
+    @Operation(summary = "edit user")
     @PutMapping("/edit")
     @ResponseStatus(OK)
     public void editUserById(

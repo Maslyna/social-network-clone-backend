@@ -18,3 +18,8 @@ eureka:
             defaultZone: http://localhost:8761/eureka
 server:
     port: 8100
+
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs

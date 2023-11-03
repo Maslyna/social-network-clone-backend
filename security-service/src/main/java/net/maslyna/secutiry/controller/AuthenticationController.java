@@ -1,5 +1,6 @@
 package net.maslyna.secutiry.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "new user registration")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registration(
             @RequestBody @Valid RegistrationRequest request
@@ -33,6 +35,7 @@ public class AuthenticationController {
                 .body(authenticationService.registration(request));
     }
 
+    @Operation(summary = "edit user")
     @PutMapping("/edit")
     public ResponseEntity<AuthenticationResponse> edit(
             @AuthenticationPrincipal Account account,
@@ -41,6 +44,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.edit(account, request));
     }
 
+    @Operation(summary = "generate new bearer token")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @AuthenticationPrincipal Account account
@@ -49,6 +53,7 @@ public class AuthenticationController {
                 .body(authenticationService.authenticate(account));
     }
 
+    @Operation(summary = "validate bearer token")
     @GetMapping("/validate")
     public ResponseEntity<AccountResponse> validateToken(
             @AuthenticationPrincipal Account account

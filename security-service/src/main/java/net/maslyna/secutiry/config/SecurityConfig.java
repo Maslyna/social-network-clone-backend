@@ -2,8 +2,6 @@ package net.maslyna.secutiry.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maslyna.secutiry.service.AccountService;
-import net.maslyna.secutiry.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,8 +24,6 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 public class SecurityConfig {
     //TODO: IMPLEMENT SECURITY CONFIG
     private final AuthenticationFilter jwtAuthFilter;
-    private final TokenService tokenService;
-    private final AccountService accountService;
     private final LogoutHandler logoutHandler;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +32,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/api/v1/security/**").permitAll();
+                    request.requestMatchers("/api/v1/security/register").permitAll();
+                    request.requestMatchers("/api/v1/security/authenticate").permitAll();
+                    request.requestMatchers("/api-docs/**").permitAll();
                     request.anyRequest().authenticated();
                 }) // TODO: check every time is matchers are correct
                 .authenticationProvider(authenticationProvider())

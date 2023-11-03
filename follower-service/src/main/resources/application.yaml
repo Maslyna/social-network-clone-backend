@@ -27,3 +27,7 @@ eureka:
 
 server:
     port: 8300
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs

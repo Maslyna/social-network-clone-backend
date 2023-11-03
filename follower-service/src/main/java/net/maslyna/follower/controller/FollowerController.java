@@ -1,5 +1,6 @@
 package net.maslyna.follower.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -20,6 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class FollowerController {
     private final FollowerService followerService;
 
+    @Operation(summary = "follow to another user")
     @PostMapping("/user/{userId}/followers")
     @ResponseStatus(OK)
     public void follow(
@@ -29,6 +31,7 @@ public class FollowerController {
         followerService.follow(authUserId, userId);
     }
 
+    @Operation(summary = "unfollow from user")
     @DeleteMapping("/user/{userId}/followers")
     @ResponseStatus(OK)
     public void unfollow(
@@ -38,6 +41,7 @@ public class FollowerController {
         followerService.unfollow(authUserId, userId);
     }
 
+    @Operation(summary = "returns boolean value 'is user subscribed'")
     @GetMapping("/user/{userId}/is-subscribed")
     public ResponseEntity<Boolean> isSubscribed(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -48,6 +52,7 @@ public class FollowerController {
         );
     }
 
+    @Operation(summary = "returns boolean value 'is user followed'")
     @GetMapping("/user/{userId}/is-followed")
     public ResponseEntity<Boolean> isFollowed(
             @RequestHeader("userId") Long authenticatedUserId,
@@ -58,6 +63,7 @@ public class FollowerController {
         );
     }
 
+    @Operation(summary = "get private followers")
     @GetMapping("/user/followers")
     public ResponseEntity<?> getFollowers(
             @RequestHeader("userId") Long userId,
@@ -80,6 +86,7 @@ public class FollowerController {
         );
     }
 
+    @Operation(summary = "get user's followers")
     @GetMapping("/user/{userId}/followers")
     public ResponseEntity<?> getFollowers(
             @PathVariable("userId") Long userId,
@@ -104,6 +111,7 @@ public class FollowerController {
         );
     }
 
+    @Operation(summary = "get private subscriptions")
     @GetMapping("/user/subscriptions")
     public ResponseEntity<?> getSubscriptions(
             @RequestHeader("userId") Long userId,
@@ -126,6 +134,7 @@ public class FollowerController {
         );
     }
 
+    @Operation(summary = "get user's subscriptions")
     @GetMapping("/user/{userId}/subscriptions")
     public ResponseEntity<?> getSubscriptions(
             @PathVariable("userId") Long userId,

@@ -27,3 +27,19 @@ services:
     user-service: 'lb://USER-SERVICE'
     post-service: 'lb://POST-SERVICE'
     follower-service: 'lb://FOLLOWER-SERVICE'
+
+#http://localhost:8765/webjars/swagger-ui/index.html
+springdoc:
+    api-docs:
+        enabled: true
+    swagger-ui:
+        url: http://localhost:8765/v3/api-docs
+        urls:
+            - name: security-service
+              url: /security-service/api-docs
+            - name: user-service
+              url: /user-service/api-docs
+            - name: post-service
+              url: /post-service/api-docs
+            - name: follower-service
+              url: /follower-service/api-docs

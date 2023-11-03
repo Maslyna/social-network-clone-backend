@@ -27,3 +27,7 @@ security:
     #    random key, that I generated at http://network-logix.net
     key: "772c7d21253627397820457440553d4b4b472d6936757d7547695a663c4e536e"
     prefix: "Bearer "
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs

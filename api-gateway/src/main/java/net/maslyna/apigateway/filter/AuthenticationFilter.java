@@ -44,9 +44,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (authHeader == null || authHeader.isEmpty()) {
                     throw new MissingAuthHeaderException(HttpStatus.BAD_REQUEST, "missing auth header");
                 }
-                ResponseEntity<AccountResponse> response;
-
-                response = sendValidationRequest(authHeader);
+                ResponseEntity<AccountResponse> response = sendValidationRequest(authHeader);
 
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                     ServerHttpRequest request = exchange.getRequest()

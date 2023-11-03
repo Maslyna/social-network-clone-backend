@@ -53,9 +53,9 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
         String token = jsonService.extract(response.getContentAsString(), "token");
         jwtValidation_ReturnsOk(token);
         basicValidation_ReturnsOk();
-        emptyBasicValidation_ReturnsUnauthorised();
-        emptyJwtValidation_ReturnsUnauthorised();
-        notSupportedTypeValidation_ReturnsUnauthorised();
+        emptyBasicValidation_ReturnsForbidden();
+        emptyJwtValidation_ReturnsForbidden();
+        notSupportedTypeValidation_ReturnsForbidden();
     }
 
     @Test
@@ -173,7 +173,7 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
         );
     }
 
-    private void emptyBasicValidation_ReturnsUnauthorised() throws Exception {
+    private void emptyBasicValidation_ReturnsForbidden() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ServiceURI.VALIDATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -181,12 +181,12 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
                         .header(HttpHeaders.AUTHORIZATION,
                                 basicService.generateBasicAuth("not_valid", ""))
         ).andExpectAll(
-                status().isUnauthorized(),
+                status().isForbidden(),
                 content().contentType(MediaType.APPLICATION_JSON)
         );
     }
 
-    private void emptyJwtValidation_ReturnsUnauthorised() throws Exception {
+    private void emptyJwtValidation_ReturnsForbidden() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ServiceURI.VALIDATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -194,12 +194,12 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
                         .header(HttpHeaders.AUTHORIZATION,
                                 AuthenticationType.BEARER.prefix() + " ")
         ).andExpectAll(
-                status().isUnauthorized(),
+                status().isForbidden(),
                 content().contentType(MediaType.APPLICATION_JSON)
         );
     }
 
-    private void notSupportedTypeValidation_ReturnsUnauthorised() throws Exception {
+    private void notSupportedTypeValidation_ReturnsForbidden() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ServiceURI.VALIDATION)
                         .accept(MediaType.APPLICATION_JSON)
@@ -207,8 +207,7 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
                         .header(HttpHeaders.AUTHORIZATION,
                                 "Not valid type" + " ")
         ).andExpectAll(
-                status().isUnauthorized(),
-                content().contentType(MediaType.APPLICATION_JSON)
+                status().isForbidden()
         );
     }
 

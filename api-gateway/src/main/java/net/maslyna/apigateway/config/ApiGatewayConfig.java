@@ -24,6 +24,19 @@ public class ApiGatewayConfig {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder rlb, AuthenticationFilter authenticationFilter) {
         return rlb.routes()
+                // SECURITY-SERVICE routes
+                .route(p -> p.path("/security-service/api-docs/**")
+                        .filters(f -> f.rewritePath("/security-service/(?<segment>.*)", "/${segment}"))
+                        .uri(SECURITY_SERVICE))
+                .route(p -> p.path("/security-service/**")
+                        .filters(f -> f.rewritePath("/security-service/(?<segment>.*)", "/${segment}"))
+                        .uri(SECURITY_SERVICE))
+
+                // USER-SERVICE routes
+                .route(p -> p.path("/user-service/api-docs/**")
+                        .filters(f ->
+                                f.rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
+                        .uri(USER_SERVICE))
                 .route(p -> p.path("/user-service/api/v1/user")
                         .filters(f -> f
                                 .rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
@@ -33,6 +46,11 @@ public class ApiGatewayConfig {
                                 .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
                                 .rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
                         .uri(USER_SERVICE))
+
+                //POST-SERVICE routes
+                .route(p -> p.path("/post-service/api-docs/**")
+                        .filters(f -> f.rewritePath("/post-service/(?<segment>.*)", "/${segment}"))
+                        .uri(POST_SERVICE))
                 .route(p -> p.path("/post-service/api/v1/post")
                         .filters(f -> f.rewritePath("/post-service/(?<segment>.*)", "/${segment}"))
                         .uri(POST_SERVICE))
@@ -41,7 +59,12 @@ public class ApiGatewayConfig {
                                 .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
                                 .rewritePath("/post-service/(?<segment>.*)", "/${segment}"))
                         .uri(POST_SERVICE))
-                .route(p -> p.path("/follower-service/**")
+
+                //FOLLOWER-SERVICE routes
+                .route(p -> p.path("/follower-service/api-docs/**")
+                        .filters(f -> f.rewritePath("/follower-service/(?<segment>.*)", "/${segment}"))
+                        .uri(FOLLOWER_SERVICE))
+                .route(p -> p.path("/follower-service/user/**")
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
                                 .rewritePath("/follower-service/(?<segment>.*)", "/${segment}"))
                         .uri(FOLLOWER_SERVICE))
