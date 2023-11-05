@@ -1,4 +1,4 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.model;
 
 public record TestRegistrationResponse(
         String token

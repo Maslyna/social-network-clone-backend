@@ -1,4 +1,4 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,0 +1,23 @@
+spring:
+    application:
+        name: user-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/user-service
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+    client:
+        enabled: false
+server:
+    port: 8100
+
+springdoc:
+    api-docs:
+        enabled: false

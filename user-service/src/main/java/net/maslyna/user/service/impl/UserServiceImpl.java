@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import net.maslyna.common.service.PropertiesMessageService;
 import net.maslyna.user.client.SecurityClient;
 import net.maslyna.user.exception.*;
+import net.maslyna.user.mapper.UserMapper;
 import net.maslyna.user.model.dto.request.EditUserRequest;
 import net.maslyna.user.model.dto.request.SecurityRegistrationRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
 import net.maslyna.user.model.dto.response.AuthenticationResponse;
+import net.maslyna.user.model.dto.response.UserRegistrationResponse;
+import net.maslyna.user.model.dto.response.UserResponse;
 import net.maslyna.user.model.entity.User;
 import net.maslyna.user.repository.UserRepository;
 import net.maslyna.user.service.UserService;
@@ -19,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +33,12 @@ public class UserServiceImpl implements UserService {
     private final SecurityClient securityClient;
 
     @Override
-    public AuthenticationResponse registration(UserRegistrationRequest request) {
+    public UserRegistrationResponse registration(UserRegistrationRequest request) {
         isEmailValid(request.email());
         User user = createUser(request.email());
 
-        return userSecurityServiceRegistration(request, user);
+        AuthenticationResponse authenticationResponse = userSecurityServiceRegistration(request, user);
+        return UserRegistrationResponse.builder().id(user.getId()).token(authenticationResponse.token()).build();
     }
 
     @Override
@@ -75,7 +80,7 @@ public class UserServiceImpl implements UserService {
             user.setNickname(userRequest.nickname());
 
         if (userRequest.isPublicAccount() != null)
-            user.setPublicAccount(user.isPublicAccount());
+            user.setPublicAccount(userRequest.isPublicAccount());
 
         if (userRequest.bio() != null)
             user.setBio(userRequest.bio());
@@ -94,6 +99,7 @@ public class UserServiceImpl implements UserService {
                         .email(email) // TODO: random name generator
                         .createdAt(Instant.now())
                         .isPublicAccount(true)
+                        .userPhotos(new ArrayList<>())
                         .build()
         );
     }

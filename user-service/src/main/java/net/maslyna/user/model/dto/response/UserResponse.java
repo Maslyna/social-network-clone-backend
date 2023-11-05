@@ -10,6 +10,7 @@ public record UserResponse(
         String name,
         String nickname,
         String email,
+        String bio,
         String location,
         Instant createdAt,
         Instant birthday,

@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface PhotoService {
     void setProfilePhoto(Long userId, MultipartFile file);
 
-    void addPhoto(Long userId, MultipartFile file);
+    UUID addPhoto(Long userId, MultipartFile file);
 
     ResponseEntity<String> getLink(UUID photoId);
 

@@ -44,12 +44,13 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void addPhoto(Long userId, MultipartFile file) {
+    public UUID addPhoto(Long userId, MultipartFile file) {
         final User user = userService.getUser(userId);
         final UUID photoId = UUID.randomUUID();
 
         Photo photo = createPhoto(user, photoId, file);
         user.addPhoto(photo);
+        return photo.getId();
     }
 
     @Override
@@ -65,7 +66,8 @@ public class PhotoServiceImpl implements PhotoService {
         if (!user.getId().equals(photo.getUser().getId())) {
             throw new GlobalUserServiceException(HttpStatus.FORBIDDEN); //TODO: create custom exception
         }
-
+        user.removePhoto(photo);
+        photoRepository.delete(photo);
         return fileClient.delete(photo.getId(), user.getId());
     }
 

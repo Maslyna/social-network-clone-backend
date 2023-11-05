@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
-@FeignClient("file-service")
+@FeignClient(name = "file-service", url = "${eureka.client.file-service-url:''}")
 public interface FileClient {
 
     @PostMapping(path = "/api/v1/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

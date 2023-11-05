@@ -40,12 +40,11 @@ public class PhotoController {
 
     @Operation(summary = "add new photo on user account")
     @PostMapping("/photo")
-    @ResponseStatus(CREATED)
-    public void addPhoto(
+    public ResponseEntity<UUID> addPhoto(
             @RequestHeader("userId") Long userId,
             @RequestParam("file") MultipartFile file
     ) {
-        photoService.addPhoto(userId, file);
+        return ResponseEntity.status(CREATED).body(photoService.addPhoto(userId, file));
     }
 
     @Operation(summary = "delete a photo from user account")

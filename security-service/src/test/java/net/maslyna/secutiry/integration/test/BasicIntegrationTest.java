@@ -1,4 +1,4 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.test;
 
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;

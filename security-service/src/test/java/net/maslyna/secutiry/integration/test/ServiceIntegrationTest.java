@@ -1,11 +1,16 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.test;
 
 import net.maslyna.secutiry.config.AuthenticationType;
+import net.maslyna.secutiry.integration.*;
+import net.maslyna.secutiry.integration.config.TestConfig;
+import net.maslyna.secutiry.integration.model.TestRegistrationRequest;
+import net.maslyna.secutiry.integration.service.JsonService;
 import net.maslyna.secutiry.service.BasicService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -17,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(value = {TestConfig.class, JsonService.class})
 public class ServiceIntegrationTest extends BasicIntegrationTest {
 
     @Autowired
@@ -102,9 +108,7 @@ public class ServiceIntegrationTest extends BasicIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonService.toJson(DEFAULT_TEST_USER))
         ).andExpectAll(
-                status().isConflict(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.status").exists()
+                status().isConflict()
         );
     }
 

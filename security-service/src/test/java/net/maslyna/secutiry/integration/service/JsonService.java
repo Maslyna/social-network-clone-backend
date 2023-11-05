@@ -1,13 +1,13 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.boot.test.context.TestComponent;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-@Service
+@TestComponent
 @RequiredArgsConstructor
 public class JsonService {
     private final ObjectMapper objectMapper;

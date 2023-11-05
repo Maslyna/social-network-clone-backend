@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import net.maslyna.user.mapper.UserMapper;
 import net.maslyna.user.model.dto.request.EditUserRequest;
 import net.maslyna.user.model.dto.request.UserRegistrationRequest;
-import net.maslyna.user.model.dto.response.AuthenticationResponse;
+import net.maslyna.user.model.dto.response.UserRegistrationResponse;
 import net.maslyna.user.model.dto.response.UserResponse;
 import net.maslyna.user.service.UserService;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class UserController {
 
     @Operation(summary = "user registration")
     @PostMapping
-    public ResponseEntity<AuthenticationResponse> registration(
+    public ResponseEntity<UserRegistrationResponse> registration(
             @RequestBody @Valid UserRegistrationRequest request
     ) {
         return ResponseEntity.status(CREATED)
@@ -56,10 +56,11 @@ public class UserController {
     @Operation(summary = "get user info by id")
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @RequestHeader(required = false, name = "userId") Long authUserId
     ) {
         return ResponseEntity.status(OK)
-                .body(mapper.userToUserResponse(userService.getUser(userId)));
+                .body(mapper.userToUserResponse(userService.getUser(userId), authUserId));
     }
 
     @Operation(summary = "edit user")
@@ -67,7 +68,7 @@ public class UserController {
     @ResponseStatus(OK)
     public void editUserById(
             @RequestHeader("userId") Long userId,
-            @RequestBody EditUserRequest userRequest
+            @Valid @RequestBody EditUserRequest userRequest
     ) {
         userService.editUser(userId, userRequest);
     }

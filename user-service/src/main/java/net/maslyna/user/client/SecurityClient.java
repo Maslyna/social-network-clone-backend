@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient("security-service")
+@FeignClient(name = "security-service", url = "${eureka.client.security-service-url:''}")
 public interface SecurityClient {
     @PostMapping("/api/v1/security/register")
     ResponseEntity<AuthenticationResponse> register(

@@ -1,10 +1,10 @@
-package net.maslyna.secutiry.integration;
+package net.maslyna.secutiry.integration.config;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-@Configuration
+@TestConfiguration
 public class TestConfig {
     @Bean
     ObjectMapper objectMapper() {

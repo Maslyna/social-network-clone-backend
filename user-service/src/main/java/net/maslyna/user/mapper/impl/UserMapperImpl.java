@@ -14,6 +14,13 @@ public class UserMapperImpl implements UserMapper {
                 : getResponseForPrivateAccount(user);
     }
 
+    @Override
+    public UserResponse userToUserResponse(User user, Long authUserId) {
+        return user.isPublicAccount() || user.getId().equals(authUserId)
+                ? getResponseForPublicAccount(user)
+                : getResponseForPrivateAccount(user);
+    }
+
     private UserResponse getResponseForPublicAccount(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -23,6 +30,7 @@ public class UserMapperImpl implements UserMapper {
                 .imageUrl(user.getProfilePhoto() != null ? user.getProfilePhoto().getImageUrl() : null)
                 .birthday(user.getBirthday())
                 .location(user.getLocation())
+                .bio(user.getBio())
                 .build();
     }
 
