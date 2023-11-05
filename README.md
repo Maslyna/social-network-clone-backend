@@ -80,10 +80,6 @@ system.
 
 ## TESTs
 
-#### Global test coverage:
-
-TODO: make global test coverage
-
 #### 1. SECURITY-SERVICE coverage:
 
 ![security-service-test-coverage.png](images/security-service-test-coverage.png)
@@ -95,3 +91,7 @@ TODO: make global test coverage
 #### 3. FOLLOWER-SERVICE coverage
 
 ![](images/follower-service-test-coverage.png)
+
+#### 4. USER-SERVICE coverage:
+
+![](images/user-service-test-coverage.png)
